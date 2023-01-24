@@ -18,7 +18,7 @@ Il cancro è già abbastanza pesante. Se riuscirete nell'intento, permetterete a
 
 Questa competizione viene valutata in base al Dice coefficient e a 3D Hausdorff distance. Il coefficiente Dice può essere utilizzato per confrontare il rapporto tra i pixel di una segmentazione prevista e la corrispondente verità a terra. La formula è data da:
 
-$$2\cdot \frac{|X\cap Y|}{|X|+|Y|}$$
+$2\cdot \frac{|X\cap Y|}{|X|+|Y|}$
 
 dove X è l'insieme dei pixel previsti e Y è la ground truth. Il coefficiente Dice è pari a 0 quando sia X che Y sono vuoti. Il punteggio della classifica è la media dei coefficienti di Dice per ogni immagine del test set.
 La distanza di Hausdorff è un metodo per calcolare la distanza tra gli oggetti di segmentazione A e B, considerando il punto più lontano di A dal punto più vicino di B.

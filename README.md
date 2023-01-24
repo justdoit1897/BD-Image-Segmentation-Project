@@ -8,7 +8,7 @@ L'UW-Madison Carbone Cancer Center è un pioniere della radioterapia basata sull
 
 In questa competizione, dovrete creare un modello per segmentare automaticamente lo stomaco e l'intestino nelle scansioni MRI. Le scansioni MRI provengono da pazienti oncologici reali che hanno effettuato 1-5 scansioni MRI in giorni diversi durante il loro trattamento con radiazioni. Dovrete basare il vostro algoritmo su un data set di queste scansioni per trovare soluzioni creative di deep learning che aiutino i pazienti oncologici a ricevere cure migliori.
 
-*Inserire l'immagine*
+![Segmentazione scansione](https://lh5.googleusercontent.com/zbBUgbj1jyZxyu3r1vr5zKKr8yK1hSdwAM3HpD_n6j2W-5-wKP3ZRusi_3yskSgnC-tMRKqOEtLycbLkTWCJAUe4Cylv_VsW81DYI4ray02uZLeSnlzAuZRIU7L2Q0KURYSMqFI)
 
 In questa figura, il tumore (linea spessa rosa) è vicino allo stomaco (linea spessa rossa). Al tumore vengono indirizzate dosi elevate di radiazioni, evitando lo stomaco. I livelli di dose sono rappresentati dall'arcobaleno dei contorni, con le dosi più alte rappresentate dal rosso e quelle più basse dal verde.
 
@@ -36,10 +36,15 @@ Infine, va detto che i pixel sono numerati dall’alto in basso e da sinistra a 
 Il file di invio dovrebbe contenere un header e avere la seguente formattazione:
 
 `id,class,predicted
+
 1,large_bowel,1 1 5 1
+
 1,small_bowel,1 1
+
 1,stomach,1 1
+
 2,large_bowel,1 5 2 17
+
 etc.`
 
 # DATA

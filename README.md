@@ -36,10 +36,15 @@ Infine, va detto che i pixel sono numerati dall’alto in basso e da sinistra a 
 Il file di invio dovrebbe contenere un header e avere la seguente formattazione:
 
 `id,class,predicted`
+
 `1,large_bowel,1 1 5 1`
+
 `1,small_bowel,1 1`
+
 `1,stomach,1 1`
+
 `2,large_bowel,1 5 2 17`
+
 `etc.`
 
 # DATA

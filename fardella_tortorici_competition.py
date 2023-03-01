@@ -23,9 +23,6 @@ TRAIN_CSV = os.path.join(BASE_DIR, 'train.csv')
 
 print(f"* Directory train.csv: {TRAIN_CSV}\n* Directory file di train: {TRAIN_DIR}\n")
 
-# SEED impostato di default per garantire la riproducibilità della run
-SEED = 42
-
 # Come prima cosa, generiamo un dataframe dal file train.csv
 train_df = pd.read_csv(TRAIN_CSV)
 
@@ -119,6 +116,66 @@ train_df["width"] = train_df["path"].apply(lambda x: os.path.split(x)[-1].split(
 # DA USARE SE INSERITO NEL NOTEBOOK
 # train_df.head(10)
 print(f"\n--- Prime 10 righe del dataframe aumentato con altezza e larghezza ---\n {train_df.head(10)}\n")
+
+############################################################################################################
+# Nuovi Dataframe per statistica su maschere, dunque su qualità scansioni
+
+# CODICE DA COPIARE NEL NOTEBOOK
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+# i = 0
+# data = []
+# for case in train_df["case_id"].unique():
+#     case_df = train_df[train_df['case_id'] == case]
+#     for day in case_df['day_id'].unique():
+#         day_df = case_df[case_df['day_id'] == day]
+        
+#         if len(day_df) == 432:
+#             day_df.reset_index()
+#             count = 0
+#             for index, row in day_df.iterrows():
+#                 if row['segmentation'] != 'nan':
+#                     count += 1
+#             nan_count = (len(day_df)) - count
+            
+#             data.append([case, day, len(day_df), nan_count, count, round(count/len(day_df), 4)])
+#             i += 1
+# mask_df = pd.DataFrame(data, columns=["case_id", "day_id", "n_elems", "nan_count", "seg_count", "%_seg"])
+
+# mask_df.to_csv('./statistica_maschere_CT.csv', index=False)
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+# Vogliamo capire alcune caratteristiche delle immagini appartenenti a casi con meno slices, come per esempio la dimensione
+
+statistica_mask_df = pd.read_csv('./statistica_maschere.csv')
+print(f"\n--- DATAFRAME STATISTICA MASCHERE ---\n{statistica_mask_df.head(10)}")
+
+cp_statistica_mask_df = pd.read_csv('./statistica_maschere_CP.csv')
+print(f"\n--- DATAFRAME STATISTICA MASCHERE (CASI PARTICOLARI) ---\n{cp_statistica_mask_df.head()}")
+
+ct_statistica_mask_df = pd.read_csv('./statistica_maschere_CT.csv')
+print(f"\n--- DATAFRAME STATISTICA MASCHERE (CASO TIPICO) ---\n{ct_statistica_mask_df.head()}")
+
+avg_cp = round(cp_statistica_mask_df.loc[:, '%_seg'].mean(), 4)
+avg_ct = round(ct_statistica_mask_df.loc[:, '%_seg'].mean(), 4)
+
+if avg_cp > avg_ct:
+    print(f"\nLE IMMAGINI PARTICOLARI ({avg_cp}) HANNO MEDIAMENTE PIU' SEGMENTAZIONI DEL CASO TIPICO ({avg_ct}) \n")
+else:
+    print(f"\nLE IMMAGINI TIPICHE ({avg_ct}) HANNO MEDIAMENTE PIU' SEGMENTAZIONI DEI CASI PARTICOLARI ({avg_cp})\n")
+
+# CODICE DA COPIARE NEL NOTEBOOK
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+# train_df['case_id']=train_df['case_id'].astype(int)
+# train_df['day_id']=train_df['day_id'].astype(int)
+    
+# pd.merge(train_df, cp_statistica_mask_df, 'inner', on=["case_id", "day_id"], sort=True).to_csv('./casi_part_joined_df.csv', index=False)
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+joined_df = pd.read_csv('./casi_part_joined_df.csv')
+
+print(f"\n--- DATAFRAME JOIN CON STATISTICA MASCHERE (CASI PARTICOLARI) ---\n{joined_df.head()}")
+        
+############################################################################################################
 
 # Per la fase di classificazione, piuttosto che usare delle categorie, preferiamo passare
 # ad etichette numeriche 
@@ -225,7 +282,7 @@ def prepare_mask(string: str, height: int, width: int) -> np.ndarray:
     # Viene restituita la maschera nella forma opportuna (w x h)
     return mask_array.reshape(width, height)
 
-# Implementiamo, poi, una semplice funzione per il caricamento delle immagini
+# Implementiamo, poi, una smeplice funzione per il caricamento delle immagini
 
 def carica_immagine(path: str) -> Image:
     """Funzione per il caricamento di un'immagine e la sua conversione
@@ -347,7 +404,30 @@ train_size = int(len(ds)*0.9)
 # Per sottrazione, ricaviamo la dimensione del validation set
 val_size = len(ds) - train_size
 
-# Sfruttando pytorch, implementiamo la divisione
+# Sfruttando pytorch, effettuiamo la suddivisione casuale train-validation, usando un seed impostato manualmente,
+# per garantire la riproducibilità dell'esecuzione
+SEED = 42
 train_ds, val_ds = torch.utils.data.random_split(ds, [train_size, val_size], generator=torch.Generator().manual_seed(SEED))
+
 print(f"Length of the training dataset : {len(train_ds)}")
 print(f"Length of the validation dataset : {len(val_ds)}")
+
+# L'addestramento avviene per batch, per cui definiamo una grandezza per gli stessi
+BATCH_SIZE = 64
+
+# Suddividiamo i dati in batch (secondo il numero fissato) e prepariamo i dati ad essere
+# passati al modello di addestramento
+train_dl = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle = True, drop_last = True)
+val_dl = DataLoader(val_ds, batch_size=BATCH_SIZE, shuffle=True, drop_last = True)
+
+for train_image_batch, train_mask_batch in train_dl:
+    break
+for val_image_batch, val_mask_batch in val_dl:
+    break
+
+train_batch = torch.cat([make_grid(train_image_batch, nrow=8), make_grid(train_mask_batch, nrow=8)], dim=2)
+val_batch = torch.cat([make_grid(val_image_batch, nrow=8), make_grid(val_mask_batch, nrow=8)], dim=2)
+
+# show_image(train_batch, "Training Batch")
+
+# show_image(val_batch, "Validation Batch")

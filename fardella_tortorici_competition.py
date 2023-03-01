@@ -225,7 +225,7 @@ def prepare_mask(string: str, height: int, width: int) -> np.ndarray:
     # Viene restituita la maschera nella forma opportuna (w x h)
     return mask_array.reshape(width, height)
 
-# Implementiamo, poi, una smeplice funzione per il caricamento delle immagini
+# Implementiamo, poi, una semplice funzione per il caricamento delle immagini
 
 def carica_immagine(path: str) -> Image:
     """Funzione per il caricamento di un'immagine e la sua conversione

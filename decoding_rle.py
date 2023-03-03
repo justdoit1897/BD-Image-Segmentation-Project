@@ -160,9 +160,9 @@ print(f"\n--- righe : {righe} ---")
 
 pixel_size = (1.5, 1.5)
 
-#mask = crea_maschera_vuota(266, 266, pixel_size)
+mask = crea_maschera_vuota(266, 266, pixel_size)
 
-mask = crea_maschera(266, 266)
+#mask = crea_maschera(266, 266)
 out = riempi_maschera(mask, colonne, righe, 255, ripetizioni)
 
 # Visualizzo la maschera

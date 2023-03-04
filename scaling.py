@@ -92,7 +92,9 @@ for case in cases:
 
     scans_per_day.append(scans_by_case)
 
-from tabulate import tabulate
+
+'''
+
 
 for case, scans in zip(cases, scans_per_day):
     print(f"Case {case[4:]}")
@@ -102,9 +104,29 @@ for case, scans in zip(cases, scans_per_day):
         data.append([f"Day {scans.index(day)}", "\n".join(day)])
     print(tabulate(data, headers=headers, tablefmt="grid"))
 
+'''
 
+from tabulate import tabulate
 
+data = []
 
+for i, case in enumerate(cases):
+    case_name = case[4:]
+    case_path = os.path.join(TRAIN_DIR, case)
+    case_days = os.listdir(case_path)
+
+    for j, day in enumerate(case_days):
+        day_path = os.path.join(case_path, day)
+        scan_path = os.path.join(day_path, "scans")
+        scans = os.listdir(scan_path)
+        scans.sort()
+        for scan in scans:
+            scan_name = scan.replace('slice_', '').replace('.png', '_.png')
+            elements = scan_name[:-4].split('_')
+            data.append([case_name, f"Day {j}", scan, elements[0], elements[1], elements[2], elements[3], elements[4]])
+
+headers = ["case", "day", "scan", "slice_id", "width_img", "height_img", "width_px", "height_px"]
+print(tabulate(data, headers=headers, tablefmt="grid"))
 
 # Carica l'immagine
 img = cv2.imread("slice_0021_266_266_1.50_1.50.png")

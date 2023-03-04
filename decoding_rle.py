@@ -2,6 +2,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import cv2
+import os
 
 """
 Questa funzione prende in input la larghezza e l'altezza dell'immagine in pixel 
@@ -11,54 +12,9 @@ Infine, crea una maschera vuota di dimensioni (height*pixel_height, width*pixel_
 utilizzando la funzione numpy.zeros() e restituisce la maschera creata.
 """
 
-def crea_maschera_vuota(width, height, pixel_size):
-    
-    # Calcola le dimensioni dei pixel in pixel
-    pixel_width = round(pixel_size[0] / width)
-    pixel_height = round(pixel_size[1] / height)
-
-    # Crea una maschera vuota con le dimensioni dei pixel calcolate
-    mask = np.zeros((height*pixel_height, width*pixel_width), dtype=np.uint8)
-
-    return mask
-
-# Funzione per decodificare una codifica RLE in un'immagine
-def decode_rle(rle_list, width, height):
-    img = np.zeros((height, width), dtype=np.uint8)
-    pos = 0
-    
-    # Convert the RLE to a list of integers
-    rle = [int(x) for x in rle_list.split(' ')]
-    
-    for i in range(0, len(rle), 2):
-        pixel = rle[i]
-        length = rle[i+1]
-        img[pos // width, pos % width : (pos+length) % width] = pixel
-        pos += length
-    return Image.fromarray(img)
-
-# Funzione per riempire una maschera con i pixel di un'immagine
-def fill_mask_from_image(mask, img):
-    # Converto l'immagine in un array numpy
-    img_array = np.array(img)
-    # Copio i pixel dell'immagine sulla maschera
-    mask[img_array != 0] = 1
-    return mask
-
-# Creo una maschera vuota
-mask_width = 100
-mask_height = 100
-mask = np.zeros((mask_height, mask_width), dtype=np.uint8)
-
 # Creo un'immagine a partire da una codifica RLE invertita
-rle = '15323 4 15587 8 15852 10 16117 11 16383 12 16649 12 16915 12 17181 12 17447 12 17713 12 17979 12 18245 12 18511 12 18777 12 19043 12 19309 12 19575 12 19841 12 20107 12 20373 12 20639 12 20905 12 21171 12 21437 12 21703 12 21969 12 22235 12 22501 12 22767 12 23033 12 23299 12 23565 12 23831 12 24097 12 24363 12 24629 12 24895 12 25161 13 25427 13 25693 14 25959 14 26224 15 26489 16 26755 17 27020 19 27286 20 27552 21 27818 21 28084 21 28350 22 28616 22 28882 22 29147 23 29413 23 29678 24 29944 24 30210 25 30476 25 30742 25 31008 25 31274 25 31540 25 31806 25 32072 24 32338 24 32604 24 32871 22 33137 22 33403 21 33669 21 33936 19 34203 17 34469 14 34736 12 35003 11 35271 8 35539 3'
-img = decode_rle(rle, mask_width, mask_height)
-
-# Riempio la maschera con i pixel dell'immagine
-filled_mask = fill_mask_from_image(mask, img)
-
-plt.imshow(np.array(filled_mask))
-plt.show()
+#rle = '15323 4 15587 8 15852 10 16117 11 16383 12 16649 12 16915 12 17181 12 17447 12 17713 12 17979 12 18245 12 18511 12 18777 12 19043 12 19309 12 19575 12 19841 12 20107 12 20373 12 20639 12 20905 12 21171 12 21437 12 21703 12 21969 12 22235 12 22501 12 22767 12 23033 12 23299 12 23565 12 23831 12 24097 12 24363 12 24629 12 24895 12 25161 13 25427 13 25693 14 25959 14 26224 15 26489 16 26755 17 27020 19 27286 20 27552 21 27818 21 28084 21 28350 22 28616 22 28882 22 29147 23 29413 23 29678 24 29944 24 30210 25 30476 25 30742 25 31008 25 31274 25 31540 25 31806 25 32072 24 32338 24 32604 24 32871 22 33137 22 33403 21 33669 21 33936 19 34203 17 34469 14 34736 12 35003 11 35271 8 35539 3'
+rle = '12927 6 13186 15 13450 19 13715 21 13980 24 14245 26 14510 27 14776 28 15042 29 15307 31 15574 30 15840 31 16106 31 16372 31 16638 31 16904 31 17170 31 17437 30 17703 30 17969 30 18235 30 18502 29 18768 29 19034 29 19300 29 19567 29 19833 29 20099 29 20365 29 20631 28 20897 28 21163 28 21429 28 21695 28 21961 28 22227 29 22493 29 22759 29 23025 29 23292 28 23558 28 23824 28 24090 28 24357 27 24623 27 24889 27 25155 27 25421 27 25687 27 25953 27 26219 28 26485 28 26750 29 27016 29 27282 29 27548 29 27814 30 28080 30 28345 31 28611 31 28877 31 29143 31 29409 31 29675 32 29941 32 30208 31 30475 30 30741 29 31008 28 31275 26 31541 25 31808 24 32074 23 32340 22 32606 22 32872 22 33139 20 33405 20 33672 18 33940 15 34207 12 34482 1'
 
 ##########################################################################
 #                                   OKK
@@ -160,12 +116,20 @@ print(f"\n--- righe : {righe} ---")
 
 pixel_size = (1.5, 1.5)
 
-mask = crea_maschera_vuota(266, 266, pixel_size)
+#mask = crea_maschera_vuota(266, 266, pixel_size)
+mask = crea_maschera(266, 266)
+ 
+riempi_maschera(mask, colonne, righe, 255, ripetizioni)
+#out = riempi_maschera(mask, righe, colonne, 255, ripetizioni)
 
-#mask = crea_maschera(266, 266)
-out = riempi_maschera(mask, colonne, righe, 255, ripetizioni)
+os.environ["QT_QPA_PLATFORM"] = "xcb"
 
+plt.imshow(np.array(mask))
+plt.show()
+
+'''
 # Visualizzo la maschera
 cv2.imshow("Maschera", mask)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+'''

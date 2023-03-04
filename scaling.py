@@ -2,6 +2,7 @@ import cv2
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 BASE_DIR = "../BD-Image-Segmentation-Comp/" 
 TRAIN_DIR = os.path.join(BASE_DIR, 'train')
@@ -60,7 +61,23 @@ for case_path_dict in cases_path:
     print(f"I percorsi dei giorni del caso {case_path} sono: {case_days}")
 
 """
-    
+
+percorsi = []
+
+for case_dict in cases_path:
+    for case_path, day_paths in case_dict.items():
+        case_name = os.path.basename(case_path)
+        for day_path in day_paths:
+            day_name = os.path.basename(day_path)
+            for scan_path in os.listdir(day_path):
+                scan_name = os.path.basename(scan_path)
+                percorsi.append([case_path, day_path, scan_path])
+
+headers = ["case_path", "day_path", "scan_path"]
+df = pd.DataFrame(percorsi, columns=headers)
+print(df)
+                
+'''
 for case_dict in cases_path:
     for case_path, day_paths in case_dict.items():
         print(f"\tCase path: {case_path}\n")
@@ -68,6 +85,7 @@ for case_dict in cases_path:
             print(f"Day path: {day_path}")
             for scan_path in os.listdir(day_path):
                 print(f"Scan path: {os.path.join(day_path, scan_path)}\n")
+'''
 
 '''
 La lista scans_per_day contiene le scansioni suddivise per caso e giorno, in cui ogni elemento
@@ -106,8 +124,6 @@ for case, scans in zip(cases, scans_per_day):
 
 '''
 
-from tabulate import tabulate
-
 data = []
 
 for i, case in enumerate(cases):
@@ -125,8 +141,11 @@ for i, case in enumerate(cases):
             elements = scan_name[:-4].split('_')
             data.append([case_name, f"Day {j}", scan, elements[0], elements[1], elements[2], elements[3], elements[4]])
 
-headers = ["case", "day", "scan", "slice_id", "width_img", "height_img", "width_px", "height_px"]
-print(tabulate(data, headers=headers, tablefmt="grid"))
+headers = ["case", "day", "scan_name", "slice_id", "width_img", "height_img", "width_px", "height_px"]
+#print(tabulate(data, headers=headers, tablefmt="grid"))
+
+df = pd.DataFrame(data, columns=headers)
+print(df.head(10))
 
 # Carica l'immagine
 img = cv2.imread("slice_0021_266_266_1.50_1.50.png")

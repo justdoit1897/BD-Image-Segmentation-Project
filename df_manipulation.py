@@ -4,7 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-BASE_DIR = "../BD-Image-Segmentation-Comp/" 
+# BASE_DIR = "../BD-Image-Segmentation-Comp/" 
+BASE_DIR = "BD-Image-Seg-Dataset/" 
+
 TRAIN_DIR = os.path.join(BASE_DIR, 'train')
 TRAIN_CSV = os.path.join(BASE_DIR, 'train.csv')
 
@@ -58,26 +60,26 @@ df.insert(1, 'day', df.pop('day'))
 # distribuisco di nuovo gli indici del df
 df = df.reset_index(drop=True)
 
-'''
-scans_per_day = []
 
-for _, row in df.iterrows():
-    case_path = row["case_path"]
-    scan_path = row["scans_day_path"]
-    
-    scans = os.listdir(scan_path)
-    
-    scans.sort()
-    
-    scans_day_path = [os.path.join(scan_path, scan) for scan in scans]
-    
-    scans_per_day.append(scans_day_path)
-    
-df["scans"] = scans_per_day
+# scans_per_day = []
 
-print(df)
-df.to_csv('aaa.csv', index=False)
-'''
+# for _, row in df.iterrows():
+#     case_path = row["case_path"]
+#     scan_path = row["scans_day_path"]
+    
+#     scans = os.listdir(scan_path)
+    
+#     scans.sort()
+    
+#     scans_day_path = [os.path.join(scan_path, scan) for scan in scans]
+    
+#     scans_per_day.append(scans_day_path)
+    
+# df["scans"] = scans_per_day
+
+# print(df)
+# df.to_csv('aaa.csv', index=False)
+
 
 # Loop attraverso ogni riga del DataFrame
 for i, row in df.iterrows():
@@ -93,4 +95,4 @@ for i, row in df.iterrows():
         new_row = {'scans_name': scan, 'scans_day_path': scans_path}
         
 # Visualizza il DataFrame aggiornato
-print(df)
+print(df.head(10))

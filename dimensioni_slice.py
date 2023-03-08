@@ -9,60 +9,6 @@ BASE_DIR = "../BD-Image-Segmentation-Comp/"
 TRAIN_DIR = os.path.join(BASE_DIR, 'train')
 TRAIN_CSV = os.path.join(BASE_DIR, 'train.csv')
 
-train_df = pd.read_csv(TRAIN_CSV)
-
-print(train_df)
-#train_df.head()
-
-# Calcolo del numero di istanze per ogni classe
-class_counts = train_df['class'].value_counts()
-
-# Creazione del grafico a barre con colori personalizzati per ogni classe
-colors = ['red', 'green', 'blue']
-plt.bar(class_counts.index, class_counts.values, color=[colors[i] for i in range(len(class_counts))])
-
-# Aggiunta delle etichette dell'asse x e y e del titolo del grafico
-plt.xlabel('Class')
-plt.ylabel('Number of Instances')
-plt.title('Number of Instances per Class')
-
-# Mostrare il grafico
-plt.show()
-
-# Voglio mostrare solo le istanze del DataFrame che hanno una segmentazione non nulla
-
-# Eliminazione delle righe con valori mancanti nella colonna "segmentation"
-df_filtered = train_df.dropna(subset=['segmentation'])
-
-# Calcolo del numero di istanze per ogni classe nella colonna "class" del DataFrame filtrato
-class_counts = df_filtered['class'].value_counts()
-
-# Creazione del grafico a barre con colori personalizzati per ogni classe
-colors = ['red', 'green', 'blue']
-plt.bar(class_counts.index, class_counts.values, color=[colors[i] for i in range(len(class_counts))])
-
-# Aggiunta delle etichette dell'asse x e y e del titolo del grafico
-plt.xlabel('Class')
-plt.ylabel('Number of Instances')
-plt.title('Number of Instances per Class (with non-null segmentation)')
-
-# Mostrare il grafico
-plt.show()
-
-'''
-
-Abbiamo creato un DataFrame di esempio con alcune righe che hanno valori mancanti nella colonna 
-"segmentation" e altre righe con una segmentazione definita. Abbiamo quindi utilizzato il metodo 
-dropna() del DataFrame per eliminare le righe con valori mancanti nella colonna "segmentation" e 
-creare un nuovo DataFrame "df_filtered" solo con le righe rimanenti.
-
-Successivamente, abbiamo utilizzato il DataFrame filtrato "df_filtered" per calcolare il numero 
-di istanze per ogni classe nella colonna "class", utilizzando la funzione value_counts() come nel 
-precedente esempio. Infine, abbiamo creato un grafico a barre con i risultati e abbiamo aggiunto 
-le etichette dell'asse x, dell'asse y e del titolo del grafico.
-
-'''
-
 list_slices = glob.glob(TRAIN_DIR+'/*/*/scans/*.png')
 #print(list_slices)
 
@@ -79,7 +25,7 @@ image_details['slice_name'] = splits[6]
 
 slice_info = image_details['slice_name'].str.split(n=6, expand=True, pat="_")
 
-image_details['slice_id'] = slice_info[1]
+image_details['slice_id'] = slice_info[1].astype(int)
 
 image_details['width'] = slice_info[2].astype(int)
 image_details['height'] = slice_info[3].astype(int)
@@ -89,7 +35,7 @@ image_details['width_px'] = slice_info[4].astype(float)
 image_details['height_px'] = slice_info[5].str.replace('.png', '', regex=False).astype(float)
 
 # ordino in ordine crescente in base a case_id e day_id
-image_details = image_details.sort_values(by=['case_id', 'day_id'], ascending=[True, True])
+image_details = image_details.sort_values(by=['case_id', 'day_id', 'slice_id'], ascending=True).reset_index(drop=True)
 
 #image_details.head()
 print(image_details)
@@ -231,3 +177,23 @@ plt.ylabel('Numero di slice')
 
 # Visualizzazione del grafico
 plt.show()
+
+# Dal dataframe "image_details" mi estraggo le righe le cui slice hanno dimensione 234x234
+image_details_234x234 = image_details[(image_details['width'] == 234) & (image_details['height'] == 234)].copy()
+print("\n-------------------------------------------------------------------- image_details_234x234 --------------------------------------------------------------------\n")
+print(image_details_234x234)
+
+# Dal dataframe "image_details" mi estraggo le righe le cui slice hanno dimensione 266x266
+image_details_266x266 = image_details[(image_details['width'] == 266) & (image_details['height'] == 266)].copy()
+print("\n-------------------------------------------------------------------- image_details_266x266 --------------------------------------------------------------------\n")
+print(image_details_266x266)
+
+# Dal dataframe "image_details" mi estraggo le righe le cui slice hanno dimensione 276x276
+image_details_276x276 = image_details[(image_details['width'] == 276) & (image_details['height'] == 276)].copy()
+print("\n-------------------------------------------------------------------- image_details_276x276 --------------------------------------------------------------------\n")
+print(image_details_276x276)
+
+# Dal dataframe "image_details" mi estraggo le righe le cui slice hanno dimensione 360x310
+image_details_360x310 = image_details[(image_details['width'] == 360) & (image_details['height'] == 310)].copy()
+print("\n-------------------------------------------------------------------- image_details_360x310 --------------------------------------------------------------------\n")
+print(image_details_360x310)

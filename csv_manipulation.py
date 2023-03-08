@@ -82,7 +82,7 @@ order_by_slice = order_by_slice.drop('index', axis=1)
 
 print(order_by_slice)
 
-# raggruppa per case_id e conta quanti giorni ci sono per ciascun case_id
+# raggruppo per case_id e conta quanti giorni ci sono per ciascun case_id
 days_per_case = df.groupby('case_id')['day'].nunique().reset_index()
 
 days_per_case['case_id'] = days_per_case['case_id'].astype(int)
@@ -94,16 +94,8 @@ grouped = days_per_case.groupby('day')['case_id'].apply(list).reset_index(name='
 print(days_per_case)
 print(grouped)
 
-#print(df_filtrato)
+maschere_non_vuote = order_by_slice.drop(order_by_slice[order_by_slice['segmentation'].apply(lambda x: x== ['nan', 'nan', 'nan'])].index)
+print(maschere_non_vuote)
 
-#lista = compact_df['segmentation'].tolist()
-
-#from itertools import chain
-
-#unique_segments = set(chain.from_iterable(compact_df['segmentation']))
-#filtered_segments = list(filter(lambda x: x != ['nan', 'nan', 'nan'], unique_segments))
-
-
-order_by_slice = order_by_slice.drop(order_by_slice[order_by_slice['segmentation'].apply(lambda x: x== ['nan', 'nan', 'nan'])].index)
-
-print(order_by_slice)
+maschere_vuote = order_by_slice.drop(order_by_slice[order_by_slice['segmentation'].apply(lambda x: x!= ['nan', 'nan', 'nan'])].index)
+print(maschere_vuote)

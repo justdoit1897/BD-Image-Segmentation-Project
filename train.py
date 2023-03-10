@@ -507,25 +507,37 @@ def colora_maschera(mask_path, rows, cols, colors, lengths):
 
 '''
     
-def colora_maschera(mask_path, rows, cols, color, lengths):
-    # print(f"Rows is: {rows}\nCols is: {cols}\n")
+# def colora_maschera(mask_path, rows, cols, color, lengths):
+#     # print(f"Rows is: {rows}\nCols is: {cols}\n")
     
-    for index, row in enumerate(rows):
-        col = cols[index]
+#     for index, row in enumerate(rows):
+#         col = cols[index]
         
-        if not row or not col:
-            continue
+#         if not row or not col:
+#             continue
         
-        mask = cv.imread(mask_path)
+#         mask = cv.imread(mask_path)
         
-        color = np.array(color).reshape((1, 1, -1))
+#         color = np.array(color).reshape((1, 1, -1))
           
-        for x, y, l in zip(col, row, lengths):
-            mask[y:y+l, x:x+l] = color
-        cv.imwrite(mask_path, mask)        
+#         for x, y, l in zip(col, row, lengths):
+#             mask[y:y+l, x:x+l] = color
+#         cv.imwrite(mask_path, mask)        
     
     # color = np.array(color).reshape((1, 1, -1))
     
+def colora_maschera(mask_path, rows, cols, lengths):
+    
+    maschera_vuota = cv.imread(mask_path)
+    
+    for idx, color in enumerate([(0, 0, 255), (0, 255, 0), (255, 0, 0)]):
+        
+        color = np.array(color).reshape((1, 1, -1))
+        
+        for x, y, l in zip(cols[idx], rows[idx], lengths[idx]):
+            maschera_vuota[y:y+l, x:x+l] = color
+    
+    cv.imwrite(mask_path, maschera_vuota)
     print(f"\nSto colorando la maschera vuota in: {mask_path}")
 
 
@@ -574,32 +586,31 @@ image_details['is_created_mask'] = [True] * image_details.shape[0]
 
 # print(image_details)    
 
-# print(pixels[100][0])
+#print(pixels[100][0])
+#print('\n')
+
+# print(lengths[100])
 # print('\n')
 
-# print(lengths[100][0])
+# print(rows_img_all[100])
 # print('\n')
 
-# print(rows_img_all[100][0])
-# print('\n')
-
-# print(cols_img_all[100][0])
+# print(cols_img_all[100])
 # print('\n')
 
 colori = [np.array([255, 0, 0]), np.array([0, 255, 0]), np.array([0, 0, 255])]
 
+# for row in image_details.iterrows():
 
-for row in image_details.iterrows():
-
-    if row[1]['is_created_mask'] == False:
-        crea_maschera_vuota(row[1]['mask_path'], 266, 266)
-        row[1]['is_created_mask'] = True
-    else:
-        print("maschere vuote già create")
+#     if row[1]['is_created_mask'] == False:
+#         crea_maschera_vuota(row[1]['mask_path'], 266, 266)
+#         row[1]['is_created_mask'] = True
+#     else:
+#         print("maschere vuote già create")
     
-    for i, color in enumerate(colori):
-        colora_maschera(row[1]['mask_path'], rows_img_all[row[0]],
-        cols_img_all[row[0]], color, lengths[row[0]][i])
+#     for i, color in enumerate(colori):
+#         colora_maschera(row[1]['mask_path'], rows_img_all[row[0]],
+#         cols_img_all[row[0]], color, lengths[row[0]][i])
     
     
     # for index, i in enumerate(rows_img_all):
@@ -614,5 +625,16 @@ for row in image_details.iterrows():
     
     # colora_maschera(row[1]['mask_path'], )
     
-# mask_path, rows, cols, colors, lengths
-        
+# mask_path, rows, cols, lengths
+
+for index, row in image_details.iterrows():
+    
+    mask_path = row['mask_path']
+    
+    if row['is_created_mask'] == False:
+            crea_maschera_vuota(row[1]['mask_path'], 266, 266)
+            row['is_created_mask'] = True
+    else:
+        print("Maschere vuote già create")
+    
+    colora_maschera(mask_path, rows_img_all[index], cols_img_all[index], lengths[index])

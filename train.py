@@ -5,12 +5,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import glob
 import cv2 as cv
+import mask_ops as mop
 
-from PIL import Image
 from itertools import zip_longest 
 
-
 BASE_DIR = "../BD-Image-Segmentation-Comp/" 
+
 TRAIN_DIR = os.path.join(BASE_DIR, 'train')
 TRAIN_CSV = os.path.join(BASE_DIR, 'train.csv')
 
@@ -481,14 +481,14 @@ def posizioni_pixel(pixels, larghezza):
     row = [px // larghezza for px in pixels]
     return row, col
 
-def crea_maschera_vuota(path, width, height):
+# def crea_maschera_vuota(path, width, height):
 
-    # Creo una maschera vuota con le dimensioni dei pixel calcolate
-    mask = np.zeros((height, width, 3), dtype=np.uint8)
+#     # Creo una maschera vuota con le dimensioni dei pixel calcolate
+#     mask = np.zeros((height, width, 3), dtype=np.uint8)
 
-    cv.imwrite(path, mask)
+#     cv.imwrite(path, mask)
     
-    print(f"\nMaschera vuota di dimensione {width}x{height} creata in: {path}")
+#     print(f"\nMaschera vuota di dimensione {width}x{height} creata in: {path}")
 
 '''
 
@@ -526,19 +526,19 @@ def colora_maschera(mask_path, rows, cols, colors, lengths):
     
     # color = np.array(color).reshape((1, 1, -1))
     
-def colora_maschera(mask_path, rows, cols, lengths):
+# def colora_maschera(mask_path, rows, cols, lengths):
     
-    maschera_vuota = cv.imread(mask_path)
+#     maschera_vuota = cv.imread(mask_path)
     
-    for idx, color in enumerate([(0, 0, 255), (0, 255, 0), (255, 0, 0)]):
+#     for idx, color in enumerate([(0, 0, 255), (0, 255, 0), (255, 0, 0)]):
         
-        color = np.array(color).reshape((1, 1, -1))
+#         color = np.array(color).reshape((1, 1, -1))
         
-        for x, y, l in zip(cols[idx], rows[idx], lengths[idx]):
-            maschera_vuota[y:y+l, x:x+l] = color
+#         for x, y, l in zip(cols[idx], rows[idx], lengths[idx]):
+#             maschera_vuota[y:y+l, x:x+l] = color
     
-    cv.imwrite(mask_path, maschera_vuota)
-    print(f"\nSto colorando la maschera vuota in: {mask_path}")
+#     cv.imwrite(mask_path, maschera_vuota)
+#     print(f"\nSto colorando la maschera vuota in: {mask_path}")
 
 
 pixels = []
@@ -581,8 +581,8 @@ print('\n')
 
 #pixels, lenghts = split_rle_0(image_details['segmentation'])
 
-#image_details['is_created_mask'] = [False] * image_details.shape[0]
-image_details['is_created_mask'] = [True] * image_details.shape[0]
+image_details['is_created_mask'] = [False] * image_details.shape[0]
+# image_details['is_created_mask'] = [True] * image_details.shape[0]
 
 # print(image_details)    
 
@@ -627,14 +627,33 @@ colori = [np.array([255, 0, 0]), np.array([0, 255, 0]), np.array([0, 0, 255])]
     
 # mask_path, rows, cols, lengths
 
-for index, row in image_details.iterrows():
+# for index, row in image_details.iterrows():
     
-    mask_path = row['mask_path']
+#     mask_path = row['mask_path']
+#     print(f"\nWorking on {mask_path}\n")
     
-    if row['is_created_mask'] == False:
-            crea_maschera_vuota(row[1]['mask_path'], 266, 266)
-            row['is_created_mask'] = True
-    else:
-        print("Maschere vuote già create")
+#     if row['is_created_mask'] == False:
+#             mop.crea_maschera_vuota(mask_path, 266, 266)
+#             row['is_created_mask'] = True
+#     else:
+#         print("Maschere vuote già create")
     
-    colora_maschera(mask_path, rows_img_all[index], cols_img_all[index], lengths[index])
+#     mop.colora_maschera(mask_path, rows_img_all[index], cols_img_all[index], lengths[index])
+
+data = {
+    'Righe': rows_img_all,
+    'Colonne': cols_img_all,
+    'Lunghezze Run': lengths
+}
+
+row_cols_len_df = pd.DataFrame(data)
+
+print(f"\n--- DATAFRAME RIGHE, COLONNE E LUNGHEZZE RUN ---\n{row_cols_len_df.head(5)}")
+
+image_details_full_df = image_details.merge(row_cols_len_df, left_index=True, right_index=True)
+
+print(f"\n--- DATAFRAME COMPLETO ---\n{image_details.head(5)}")
+
+mop.genera_tutte_maschere(image_details_full_df)
+
+# mop.genera_tutte_maschere(image_details, rows_img_all, cols_img_all, lengths)

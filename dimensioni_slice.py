@@ -34,7 +34,7 @@ image_details['width_px'] = slice_info[4].astype(float)
 #.round(2).apply(lambda x: '{:.2f}'.format(x))
 image_details['height_px'] = slice_info[5].str.replace('.png', '', regex=False).astype(float)
 
-# ordino in ordine crescente in base a case_id e day_id
+# ordino in ordine crescente in base a case_id, day_id e slice_id
 image_details = image_details.sort_values(by=['case_id', 'day_id', 'slice_id'], ascending=True).reset_index(drop=True)
 
 #image_details.head()

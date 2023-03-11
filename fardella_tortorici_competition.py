@@ -16,7 +16,8 @@ from torchvision.transforms import ToTensor, Resize
 print("\n--- FINE DELLE IMPORT ---\n")
 
 print("\nDefinizione delle directories:")
-BASE_DIR = 'fardella_tortorici/BD-Image-Seg-Dataset'
+BASE_DIR = "../BD-Image-Segmentation-Comp/" 
+# BASE_DIR = 'fardella_tortorici/BD-Image-Seg-Dataset'
 TRAIN_DIR = os.path.join(BASE_DIR, 'train')
 # Il file train.csv contiene i metadati utili alla segmentazione e alla classificazione
 TRAIN_CSV = os.path.join(BASE_DIR, 'train.csv')
@@ -190,6 +191,21 @@ for index, label in enumerate(class_names):
 # DA USARE SE INSERITO NEL NOTEBOOK
 # train_df.head(10)
 print(f"\n--- Prime 10 righe del dataframe dopo aver sostituito le classi ---\n {train_df.head(10)}\n")
+
+# CODICE DA NON COPIARE NEL NOTEBOOK
+################################################################################################
+# train_df.sort_values(['case_id', 'day_id', 'slice_id'])
+
+# unique_heights = train_df['height'].unique()
+
+# print(f"\nValori possibili per altezza: {unique_heights}")
+
+# for height in unique_heights:
+#     train_df.loc[train_df['height'] == height].to_csv('df_slice_'+str(height)+'.csv', index=False)
+#     print(f"\nSalvato Dataframe per immagini con altezza di {height}\n")
+
+# train_df.to_csv('df_training_completo.csv', index=False)
+################################################################################################
 
 # Dobbiamo sfruttare, adesso, la codifica RLE delle maschere, quindi
 # implementiamo delle funzioni per:

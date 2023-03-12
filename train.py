@@ -7,6 +7,7 @@ import glob
 import cv2 as cv
 import mask_ops as mop
 
+from tqdm import tqdm
 from itertools import zip_longest 
 
 BASE_DIR = "../BD-Image-Segmentation-Comp/" 
@@ -657,3 +658,41 @@ print(f"\n--- DATAFRAME COMPLETO ---\n{image_details.head(5)}")
 mop.genera_tutte_maschere(image_details_full_df)
 
 # mop.genera_tutte_maschere(image_details, rows_img_all, cols_img_all, lengths)
+
+###################################### PARTE 6 ######################################
+
+# Voglio equalizzare le immagini e sovrascriverle nei percorsi di origine
+
+'''
+
+La funzione equalizza_immagini legge un'immagine in scala di grigi dal percorso specificato, 
+ne equalizza l'istogramma e sovrascrive l'immagine originale con quella equalizzata. 
+Infine, viene stampato un messaggio che indica che l'immagine equalizzata è stata salvata 
+al percorso specificato. 
+
+'''
+
+def equalizza_immagini(path: str):
+    
+    """Funzione usata per equalizzare e salvare un'immagine 
+    delle dimensioni specificate
+
+    Args:
+        path (str): percorso in cui salvare l'immagine
+        width (int): larghezza dell'immagine
+        height (int): altezza dell'immagine
+    """
+    
+    # Leggo l'immagine situata in 'path' in scala di grigi
+    
+    img = cv.imread(path, 0) 
+
+    equ = cv.equalizeHist(img)
+    
+    cv.imwrite(path, equ)
+    
+    #print(f"\nEqualizzazione immagine in: {path}")
+print(f"Inizio equalizzazione...\n")    
+for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
+    equalizza_immagini(row['path'])
+print(f"\nFine equalizzazione.\n")

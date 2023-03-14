@@ -2,13 +2,17 @@
 relative alle maschere utili alla competizione.
 """
 
+# Imports
+
 from pandas import DataFrame
 import numpy as np
 import cv2 as cv
 
+# Consts
 
 COLORS = [(1,0,0), (0,1,0), (0,0,1)]
 
+# Functions
 
 def mask_from_segmentation(segmentation: str, shape: tuple[int, int], color: tuple[int, int, int]) -> np.ndarray:
     """Funzione usata per creare una maschera per un segmento codificato RLE

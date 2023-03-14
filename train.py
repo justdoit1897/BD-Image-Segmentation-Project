@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import glob
 import cv2 as cv
-import mask_ops as mop
+import modules.mask_ops as mop
 
 from tqdm import tqdm
 from itertools import zip_longest 

@@ -164,6 +164,9 @@ print("\n-------------------------------------------------------------------- im
 #image_details.head()
 print(image_details)
 
+# salvo in dataframe
+image_details.to_csv('image_details_merged.csv', index=False)
+
 # Voglio vedere quante immagini hanno profondità dei pixel 1.50 mm e quante 1.63 mm
 num_images_150 = image_details.loc[(image_details['width_px'] == 1.50) & (image_details['height_px'] == 1.50)].shape[0]
 print("Il numero di immagini con width_px e height_px pari a 1.50 mm è:", num_images_150)
@@ -303,6 +306,9 @@ print("\n-------------------------------------------------------------------- im
 print(image_details_234x234)
 print(image_details_234x234['path'][0])
 
+# salvo in dataframe
+image_details_234x234.to_csv('image_details_234x234.csv', index=False)
+
 # contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
 count_234 = 0
 for i in range(len(image_details_234x234)):
@@ -339,6 +345,9 @@ image_details_266x266 = image_details[(image_details['width'] == 266) & (image_d
 print("\n-------------------------------------------------------------------- image_details_266x266 --------------------------------------------------------------------\n")
 print(image_details_266x266)
 
+# salvo in dataframe
+image_details_266x266.to_csv('image_details_266x266.csv', index=False)
+
 # contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
 count_266 = 0
 for i in range(len(image_details_266x266)):
@@ -368,6 +377,9 @@ image_details_276x276 = image_details[(image_details['width'] == 276) & (image_d
 print("\n-------------------------------------------------------------------- image_details_276x276 --------------------------------------------------------------------\n")
 print(image_details_276x276)
 
+# salvo in dataframe
+image_details_276x276.to_csv('image_details_276x276.csv', index=False)
+
 # contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
 count_276 = 0
 for i in range(len(image_details_276x276)):
@@ -393,6 +405,9 @@ print(f"\nLa percentuale di slice di dimensione 276x276 con maschere totalmente 
 image_details_360x310 = image_details[(image_details['width'] == 360) & (image_details['height'] == 310)].copy().reset_index()
 print("\n-------------------------------------------------------------------- image_details_360x310 --------------------------------------------------------------------\n")
 print(image_details_360x310)
+
+# salvo in dataframe
+image_details_360x310.to_csv('image_details_360x310.csv', index=False)
 
 # contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
 count = 0

@@ -42,9 +42,9 @@ segmentation = '45601 5 45959 10 46319 12 46678 14 47037 16 47396 18 47756 18 48
                 58932 14 59292 15 59651 16 60011 17 60371 17 60731 17 61091 17 61451 17 61812 15 62172 15 62532 15 62892 14 \
                 63253 12 63613 12 63974 10 64335 7'
 
-shape = (310, 360)
+dimensioni = (310, 360)         # altezza, larghezza
 
-case_mask = mask_from_segmentation(segmentation, shape)
+case_mask = mask_from_segmentation(segmentation, dimensioni)
 
 plt.figure(figsize=(5, 5))
 plt.title("Mask Example:")

@@ -597,8 +597,7 @@ print('\n')
 
 #pixels, lenghts = split_rle_0(image_details['segmentation'])
 
-image_details['is_created_mask'] = [False] * image_details.shape[0]
-# image_details['is_created_mask'] = [True] * image_details.shape[0]
+
 
 # print(image_details)    
 
@@ -670,7 +669,7 @@ image_details_full_df = image_details.merge(row_cols_len_df, left_index=True, ri
 
 print(f"\n--- DATAFRAME COMPLETO ---\n{image_details.head(5)}")
 
-mop.genera_tutte_maschere(image_details_full_df)
+#mop.genera_tutte_maschere(image_details_full_df)
 
 # mop.genera_tutte_maschere(image_details, rows_img_all, cols_img_all, lengths)
 
@@ -707,7 +706,172 @@ def equalizza_immagini(path: str):
     cv.imwrite(path, equ)
     
     #print(f"\nEqualizzazione immagine in: {path}")
-print(f"Inizio equalizzazione...\n")    
+
+image_details['is_equalized'] = [True] * image_details.shape[0]
+# image_details['is_equalized'] = [False] * image_details.shape[0]    
+
+for index, row in image_details.iterrows():
+    
+    if row['is_equalized'] == False:
+        print(f"Inizio equalizzazione...\n")    
+        
+        for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
+            equalizza_immagini(row['path'])
+        
+        print(f"\nFine equalizzazione.\n")
+        row['is_equalized'] = True
+        
+    else:
+        print("Immagini già equalizzate")
+        break
+
+
+###################################### PARTE 7 ######################################
+
+# def colora_maschera(mask_path, rows, cols, colors, lengths):
+    
+#     mask = cv.imread(mask_path)
+    
+#     for color in colors:
+        
+#         color = np.array(color).reshape((1, 1, -1))
+        
+#         for x, y, l in zip(cols, rows, lengths):
+#             mask[y:y+l, x:x+l] = color
+        
+#     cv.imwrite(mask_path, mask)
+
+def crea_maschera_vuota(path, width, height):
+
+    # Creo una maschera vuota con le dimensioni dei pixel calcolate
+    mask = np.zeros((height, width, 3), dtype=np.uint8)
+
+    cv.imwrite(path, mask)
+
+'''
+
+def colora_maschera(rle_encodings: list[str], height: int, width: int) -> np.ndarray:
+    
+    # segmentation, shape (altezza, larghezza)
+    
+    # Generiamo un numpy array (inizialmente appiattito)
+    mask_array = np.zeros((height, width, 3), dtype=np.uint8)
+    
+    color = 0
+    
+    for index, encoding in enumerate(rle_encodings):
+        
+        # Piccola conversione per le codifiche in nan
+        if encoding is np.nan:
+            continue
+            
+        if index == 0:
+            color = np.array([255, 0, 0]) # R
+        elif index == 1:
+            color = np.array([0, 255, 0])   # G
+        else:
+            color = np.array([0, 0, 255])   # B
+        
+        # Genero una lista di numeri per ogni elemento di rle_encodings
+        segm = np.asarray(encoding.split(), dtype=int)
+        
+        # Get start point and length between points
+        start_point = segm[0::2] - 1
+        length_point = segm[1::2]
+        
+        # Compute the location of each endpoint
+        end_point = start_point + length_point
+        
+        for start, end in zip(start_point, end_point):
+            mask_array[start:end] = 1
+        
+    mask_array = mask_array.reshape(height, width, 3)
+    
+    return mask_array
+
+'''
+
+def colora_maschera(rle_encodings: list[str], height: int, width: int) -> np.ndarray:
+    
+    # Generiamo un numpy array (inizialmente appiattito)
+    mask_array = np.zeros((height, width, 3), dtype=np.uint8)
+    
+    for index, encoding in enumerate(rle_encodings):
+        
+        # Piccola conversione per le codifiche in nan
+        if encoding is np.nan:
+            continue
+            
+        # Genero una lista di numeri per ogni elemento di rle_encodings
+        segm = np.asarray(encoding.split(), dtype=int)
+        
+        # Get start point and length between points
+        start_point = segm[0::2] - 1
+        length_point = segm[1::2]
+        
+        # Compute the location of each endpoint
+        end_point = start_point + length_point
+        
+        # Coloriamo la maschera
+        if index == 0:
+            color = (255, 0, 0)  # rosso
+        elif index == 1:
+            color = (0, 255, 0)  # verde
+        else:
+            color = (0, 0, 255)  # blu
+        
+        print(color)
+        print(color[index])
+        
+        for start, end in zip(start_point, end_point):
+            mask_array[start:end, :, index] = color[index]
+            
+    return mask_array
+
+
+image_details['is_created_mask'] = [True] * image_details.shape[0]
+# image_details['is_created_mask'] = [False] * image_details.shape[0]
+
+print(f"Inizio creazione maschere vuote...\n")    
+
 for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
-    equalizza_immagini(row['path'])
-print(f"\nFine equalizzazione.\n")
+    
+    mask_path = row['mask_path']
+    
+    if row['is_created_mask'] == False:
+        
+        crea_maschera_vuota(mask_path, row['height'], row['width'])
+        
+        row['is_created_mask'] = True
+        
+    else:
+        #print("Maschere vuote già create")
+        continue
+
+print(f"\nFine creazione maschere vuote.\n")
+
+
+
+print(f"Inizio colorazione maschere vuote...\n")   
+
+for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
+    
+    mask_path = row['mask_path']
+    
+    if row['is_created_mask'] == True:
+        
+        maschera_colorata = colora_maschera(row['segmentation'], row['height'], row['width'])
+        
+        cv.imwrite(mask_path, maschera_colorata)
+        
+    else:
+        print("Maschera vuota inesistente.")
+        continue
+    
+print(f"\nFine colorazione maschere vuote.\n")    
+    
+####################################################################
+
+
+
+

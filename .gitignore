@@ -2,3 +2,4 @@ train/
 __pycache__/
 res.png
 aligned_image.png
+mask_from_rle.py

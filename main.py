@@ -164,7 +164,7 @@ print("\n-------------------------------------------------------------------- im
 #image_details.head()
 print(image_details)
 
-# salvo in dataframe
+# salvo il dataframe
 image_details.to_csv('image_details_merged.csv', index=False)
 
 # Voglio vedere quante immagini hanno profondità dei pixel 1.50 mm e quante 1.63 mm
@@ -629,6 +629,8 @@ image_details_full_df = image_details.merge(row_cols_len_df, left_index=True, ri
 
 print(f"\n--- DATAFRAME COMPLETO ---\n{image_details.head(5)}")
 
+#print(image_details_360x310['segmentation'][101])
+
 #mop.genera_tutte_maschere(image_details_full_df)
 
 # mop.genera_tutte_maschere(image_details, rows_img_all, cols_img_all, lengths)
@@ -751,6 +753,28 @@ def colora_maschera(rle_encodings: list[str], height: int, width: int) -> np.nda
 
 '''
 
+def rle_to_image(rle_code, height, width):
+    
+    # Verifica se la codifica è 'nan'
+    
+    if isinstance(rle_code, float) and math.isnan(rle_code):
+        return np.zeros((height, width), dtype=np.uint8)
+    
+    # decodifica la codifica RLE
+    rle_numbers = [int(i) for i in rle_code.split()]
+    rle_pairs = np.array(rle_numbers).reshape(-1, 2)
+
+    # crea un'immagine vuota
+    img = np.zeros(height*width, dtype=np.uint8)
+
+    # colora i pixel coperti dalla maschera
+    for index, length in rle_pairs:
+        index -= 1
+        img[index:index+length] = 255
+
+    # ridimensiona l'immagine e la restituisce
+    return img.reshape((height, width))
+
 def colora_maschera(rle_encodings: list[str], height: int, width: int) -> np.ndarray:
     
     # Generiamo un numpy array (inizialmente appiattito)
@@ -810,8 +834,6 @@ for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
 
 print(f"\nFine creazione maschere vuote.\n")
 
-
-
 print(f"Inizio colorazione maschere vuote...\n")   
 
 for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
@@ -820,15 +842,20 @@ for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
     
     if row['is_created_mask'] == True:
         
-        maschera_colorata = colora_maschera(row['segmentation'], row['height'], row['width'])
+        red_segment = rle_to_image(row['segmentation'][0], row['height'], row['width'])
+        green_segment = rle_to_image(row['segmentation'][1], row['height'], row['width'])
+        blue_segment = rle_to_image(row['segmentation'][2], row['height'], row['width'])
+
+        merged_mask = cv.merge([red_segment, green_segment, blue_segment])
         
-        cv.imwrite(mask_path, maschera_colorata)
+        cv.imwrite(mask_path, merged_mask)  # Save merged mask to mask_path
         
     else:
         print("Maschera vuota inesistente.")
         continue
     
-print(f"\nFine colorazione maschere vuote.\n")    
+print(f"\nFine colorazione maschere vuote.\n")
+  
     
 ####################################################################
 

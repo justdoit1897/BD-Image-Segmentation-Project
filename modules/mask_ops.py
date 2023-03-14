@@ -14,6 +14,13 @@ COLORS = [(1,0,0), (0,1,0), (0,0,1)]
 
 # Functions
 
+def crea_maschera_vuota(path, width, height):
+
+    # Creo una maschera vuota con le dimensioni dei pixel calcolate
+    mask = np.zeros((height, width, 3), dtype=np.uint8)
+
+    cv.imwrite(path, mask)
+
 def mask_from_segmentation(segmentation: str, shape: tuple[int, int], color: tuple[int, int, int]) -> np.ndarray:
     """Funzione usata per creare una maschera per un segmento codificato RLE
 

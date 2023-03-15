@@ -271,4 +271,8 @@ for index, row in tqdm(merged_df.iterrows(), bar_format=bar_format):
     merged_df.at[index, 'black_pixels'] = num_neri
     merged_df.at[index, 'white_px/black_px'] = num_bianchi/num_neri   
 
+merged_df['white_pixels'] = merged_df['white_pixels'].astype(int)
+merged_df['black_pixels'] = merged_df['black_pixels'].astype(int)
+merged_df['white_px/black_px'] = merged_df['white_px/black_px'].round(2).apply(lambda x: '{:.6f}'.format(x))
+
 merged_df.to_csv('merged_df.csv', index=False)

@@ -7,6 +7,9 @@ import glob
 import cv2 as cv
 import modules.mask_ops as mop
 import math
+from colorama import init, Fore
+init()
+
 
 from tqdm import tqdm
 from itertools import zip_longest 
@@ -171,9 +174,7 @@ for index, row in tqdm(merged_df.iterrows(), total=len(merged_df)):
 
 print(f"\nFine creazione maschere vuote.\n")
 
-merged_df['is_created_mask'] = [True] * image_details.shape[0]
-# merged_df['is_created_mask'] = [True] * image_details.shape[0]
-
+'''
 print(f"Inizio colorazione maschere vuote...\n")   
 
 for index, row in tqdm(merged_df.iterrows(), total=len(merged_df)):
@@ -195,6 +196,8 @@ for index, row in tqdm(merged_df.iterrows(), total=len(merged_df)):
         continue
     
 print(f"\nFine colorazione maschere vuote.\n")
+
+'''
 
 '''
 
@@ -228,7 +231,7 @@ def equalizza_immagini(path: str):
 
 merged_df['is_equalized'] = [True] * merged_df.shape[0]
 # merged_df['is_equalized'] = [False] * merged_df.shape[0]    
-
+'''
 for index, row in merged_df.iterrows():
     
     if row['is_equalized'] == False:
@@ -243,6 +246,29 @@ for index, row in merged_df.iterrows():
     else:
         print("Immagini già equalizzate")
         break
+'''
 
-#################################################### SCOMPATTO IL DF 'merged_df' ####################################################
+#################################################### 'merged_df' #################################################### 
 
+# VOGLIO CALCOLARE PER OGNI RIGA DI 'merged_df' IL NUMERO DI PIXEL BIANCHI E NERI DI OGNI SLICE
+
+bar_format = "{l_bar}\x1b[31m{bar}\x1b[0m{r_bar} | {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]"
+
+for index, row in tqdm(merged_df.iterrows(), bar_format=bar_format):
+    
+    # Lettura dell'immagine
+    slice = cv.imread(row['path'])
+    slice_g_s = cv.cvtColor(slice, cv.COLOR_BGR2GRAY)
+
+    # Conteggio dei pixel bianchi e neri
+    num_bianchi = cv.countNonZero(slice_g_s)
+    num_neri = np.count_nonzero(np.all(slice == 0, axis=2))
+    
+    # Rapporto bianchi/neri 
+
+    # Aggiunta dei risultati come colonne del dataframe
+    merged_df.at[index, 'white_pixels'] = num_bianchi
+    merged_df.at[index, 'black_pixels'] = num_neri
+    merged_df.at[index, 'white_px/black_px'] = num_bianchi/num_neri   
+
+merged_df.to_csv('merged_df.csv', index=False)

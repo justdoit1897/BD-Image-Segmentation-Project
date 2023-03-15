@@ -156,7 +156,7 @@ def rle_to_image(rle_code, height, width):
 merged_df['is_created_mask'] = [True] * merged_df.shape[0]
 # merged_df['is_created_mask'] = [False] * merged_df.shape[0]
 
-print(f"Inizio creazione maschere vuote...\n")    
+print(f"\nInizio creazione maschere vuote...\n")    
 
 for index, row in tqdm(merged_df.iterrows(), total=len(merged_df)):
     
@@ -252,9 +252,17 @@ for index, row in merged_df.iterrows():
 
 # VOGLIO CALCOLARE PER OGNI RIGA DI 'merged_df' IL NUMERO DI PIXEL BIANCHI E NERI DI OGNI SLICE
 
-bar_format = "{l_bar}\x1b[31m{bar}\x1b[0m{r_bar} | {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]"
+bar_format = "{l_bar}\x1b[33m{bar}\x1b[0m{r_bar}]"
 
-for index, row in tqdm(merged_df.iterrows(), bar_format=bar_format):
+    # Rosso: \x1b[31m
+    # Verde: \x1b[32m
+    # Giallo: \x1b[33m
+    # Blu: \x1b[34m
+    # Magenta: \x1b[35m
+    # Ciano: \x1b[36m
+    # Bianco: \x1b[37m
+
+for index, row in tqdm(merged_df.iterrows(), total=len(merged_df), bar_format=bar_format):
     
     # Lettura dell'immagine
     slice = cv.imread(row['path'])
@@ -271,8 +279,8 @@ for index, row in tqdm(merged_df.iterrows(), bar_format=bar_format):
     merged_df.at[index, 'black_pixels'] = num_neri
     merged_df.at[index, 'white_px/black_px'] = num_bianchi/num_neri   
 
-merged_df['white_pixels'] = merged_df['white_pixels'].astype(int)
-merged_df['black_pixels'] = merged_df['black_pixels'].astype(int)
-merged_df['white_px/black_px'] = merged_df['white_px/black_px'].round(2).apply(lambda x: '{:.6f}'.format(x))
+merged_df['white_pixels'] = merged_df['white_pixels']
+merged_df['black_pixels'] = merged_df['black_pixels']
+merged_df['white_px/black_px'] = merged_df['white_px/black_px'].round(6)
 
 merged_df.to_csv('merged_df.csv', index=False)

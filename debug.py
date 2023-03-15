@@ -226,15 +226,15 @@ def equalizza_immagini(path: str):
     
     #print(f"\nEqualizzazione immagine in: {path}")
 
-image_details['is_equalized'] = [True] * image_details.shape[0]
-# image_details['is_equalized'] = [False] * image_details.shape[0]    
+merged_df['is_equalized'] = [True] * merged_df.shape[0]
+# merged_df['is_equalized'] = [False] * merged_df.shape[0]    
 
-for index, row in image_details.iterrows():
+for index, row in merged_df.iterrows():
     
     if row['is_equalized'] == False:
         print(f"Inizio equalizzazione...\n")    
         
-        for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
+        for index, row in tqdm(merged_df.iterrows(), total=len(merged_df)):
             equalizza_immagini(row['path'])
         
         print(f"\nFine equalizzazione.\n")
@@ -243,3 +243,6 @@ for index, row in image_details.iterrows():
     else:
         print("Immagini già equalizzate")
         break
+
+#################################################### SCOMPATTO IL DF 'merged_df' ####################################################
+

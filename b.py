@@ -1,47 +1,52 @@
-import numpy as np
-import matplotlib.pyplot as plt
+import os
 import cv2 as cv
+import matplotlib.pyplot as plt
+os.environ["QT_QPA_PLATFORM"] = "xcb"
+import numpy as np
 
-def rle_to_image(rle_code, height, width):
-    
-    # Verifica se la codifica è 'nan'
-    if rle_code == 'nan':
-        return np.zeros((height, width), dtype=np.uint8)
-    
-    # decodifica la codifica RLE
-    rle_numbers = [int(i) for i in rle_code.split()]
-    rle_pairs = np.array(rle_numbers).reshape(-1, 2)
 
-    # crea un'immagine vuota
-    img = np.zeros(height*width, dtype=np.uint8)
+# Carica le due immagini
+slice = cv.imread('slice_0081_266_266_1.50_1.50.png')
+mask = cv.imread('mask_slice_0081_266_266_1.50_1.50.png')
 
-    # colora i pixel coperti dalla maschera
-    for index, length in rle_pairs:
-        index -= 1
-        img[index:index+length] = 255
+# Specifica il peso delle due immagini
+alpha = 0.2  # peso per l'immagine A
+beta = 1 - alpha  # peso per l'immagine B
 
-    # ridimensiona l'immagine e la restituisce
-    return img.reshape((height, width))
+# Sovrappone le due immagini
+result = cv.addWeighted(slice, alpha, mask, beta, 0)
 
-# esempio di utilizzo
-rle_code_0 = '42008 5 42366 8 42725 10 43085 11 43445 11 43805 11 44164 12 44524 12 44884 12 45243 13 45603 13 45963 13 46322 13 46681 14 47041 13 47400 14 47760 14 48120 13 48480 13 48840 12 49201 10 49562 8 49923 5'
-rle_code_1 = 'nan'
-rle_code_2 = '31877 10 32235 13 32594 15 32953 17 33312 19 33671 20 34031 21 34391 21 34750 23 35110 24 35470 26 35830 27 36190 27 36550 28 36910 29 37270 30 37630 30 37990 31 38350 32 38710 33 39071 33 39431 33 39791 34 40152 34 40513 34 40873 34 41234 34 41595 33 41955 34 42316 34 42676 34 43037 34 43398 33 43758 34 44119 33 44479 33 44839 34 45199 34 45559 34 45920 33 46280 33 46640 33 47001 32 47361 32 47721 33 48082 32 48442 32 48802 32 49163 31 49523 31 49883 32 50243 32 50603 32 50962 33 51322 34 51682 34 52041 35 52401 36 52754 43 53112 45 53470 48 53829 49 54189 49 54548 50 54908 50 55267 51 55627 51 55987 50 56348 49 56708 49 57068 49 57428 49 57789 47 58149 47 58510 45 58872 42 59234 39 59595 37 59956 35 60318 32 60679 30 61041 27 61402 25 61763 23 62124 20 62486 17 62849 12'
-height = 310
-width = 360
+# Definisco i nomi delle classi e i rispettivi colori
+class_names = ['Large bowel', 'Small bowel', 'Stomach']
+colors = [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
 
-img = rle_to_image(rle_code_1, height, width)
-plt.imshow(img, cmap='gray')
+# Creo una figura vuota
+fig, ax = plt.subplots()
+
+# Aggiungo una legenda con i nomi delle classi e i rispettivi colori
+legend_handles = [plt.Rectangle((0,0),1,1, color=c, ec="k") for c in colors]
+ax.legend(legend_handles, class_names)
+
+# Mostra il risultato
+plt.imshow(result)
 plt.show()
 
-# esempio di utilizzo
-rle_code = ('nan', 'nan', '31880 5 32237 10 32596 13 32955 15 33314 16 33673 18 34032 19 34392 19 34751 21 35111 22 35471 23 35831 25 36191 26 36551 27 36911 27 37271 28 37631 29 37991 30 38351 31 38711 32 39071 33 39431 33 39792 33 40152 34 40513 34 40873 35 41234 35 41595 34 41955 35 42316 35 42677 34 43037 35 43398 34 43758 34 44119 34 44479 34 44840 33 45200 33 45560 34 45921 33 46281 33 46641 33 47002 32 47362 32 47722 32 48082 32 48443 31 48803 31 49163 31 49523 32 49884 31 50244 31 50604 31 50964 31 51323 32 51682 33 52041 35 52398 38 52752 45 53111 46 53470 48 53829 49 54189 49 54548 50 54908 50 55268 50 55628 50 55988 50 56349 49 56709 48 57070 47 57431 45 57792 43 58153 42 58515 39 58876 37 59237 35 59598 32 59960 29 60321 26 60683 23 61044 21 61405 19 61766 17 62127 15 62489 11')
-
-print(np.asarray(rle_code))
-
-('23871 3 24134 9 24398 13 24664 15 24929 17 25194 19 25460 20 25726 20 25991 22 26257 22 26523 23 26789 23 27055 23 27321 23 27587 23 27853 23 28119 23 28385 23 28651 23 28918 22 29184 22 29451 21 29718 20 29984 20 30251 19 30517 19 30784 18 31050 18 31317 17 31583 17 31850 16 32117 15 32383 15 32650 14 32917 13 33183 13 33450 12 33716 12 33982 12 34247 13 34513 13 34779 13 35045 13 35311 12 35577 12 35844 11 36110 10 36378 7 36646 2', '26769 7 27034 13 27299 18 27565 19 27830 21 28096 22 28362 23 28628 23 28894 23 29161 22 29427 22 29694 21 29960 20 30227 19 30494 18 30761 17 31028 16 31295 15 31561 14 31829 11 32097 7', '21449 11 21713 17 21978 21 22243 23 22508 25 22754 11 22773 27 23016 20 23038 29 23280 53 23544 55 23809 56 24074 58 24340 57 24606 57 24871 58 25138 56 25404 56 25671 54 25938 13 25956 34 26206 3 26225 29 26493 25 26761 20 27032 10')
-
-img = rle_to_image(rle_code_1, height, width)
-gray_img = cv.cvtColor(img, cv.COLOR_GRAY2RGB)
-plt.imshow(gray_img)
+# Mostra l'immagine
+plt.imshow(slice, cmap='gray')
 plt.show()
+
+# Mostra l'istogramma
+plt.hist(slice.ravel(), bins=256, range=(0, 255))
+plt.show()
+
+slice_g_s = cv.cvtColor(slice, cv.COLOR_BGR2GRAY)
+
+# Conta il numero di pixel bianchi
+white_pixels = cv.countNonZero(slice_g_s)
+black_pixels = np.count_nonzero(np.all(slice == 0, axis=2))
+
+# Mostra il numero di pixel bianchi e neri
+print("Il numero di pixel bianchi nell'immagine è:", white_pixels)
+print("Il numero di pixel neri nell'immagine è:", black_pixels)
+
+print(f"\nRapporto pixel bianchi/neri: {white_pixels/black_pixels}")

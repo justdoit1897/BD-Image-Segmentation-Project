@@ -2,14 +2,10 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import matplotlib.pyplot as plt
 import glob
 import cv2 as cv
 import modules.mask_ops as mop
 import math
-from colorama import init, Fore
-init()
-
 
 from tqdm import tqdm
 from itertools import zip_longest 

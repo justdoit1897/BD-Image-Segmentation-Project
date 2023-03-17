@@ -1,3 +1,5 @@
+# Imports
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,16 +12,19 @@ import modules.mask_ops as mop
 from tqdm import tqdm
 from itertools import zip_longest 
 
+# Consts
+
 BASE_DIR = "../BD-Image-Segmentation-Comp/" 
 
 TRAIN_DIR = os.path.join(BASE_DIR, 'train')
 TRAIN_CSV = os.path.join(BASE_DIR, 'train.csv')
 
-########################################### PARTE 1 ###########################################
+########################################### PARTE 1 - OPERAZIONI PRELIMINARI ###########################################
 
+# Definizione di un dataframe a partire da train.csv e presentazione del contenuto
 train_df = pd.read_csv(TRAIN_CSV)
-
-print(train_df)
+print(train_df.head())
+# CODICE PER NOTEBOOK
 #train_df.head()
 
 # Calcolo del numero di istanze per ogni classe
@@ -34,15 +39,17 @@ plt.xlabel('Class')
 plt.ylabel('Number of Instances')
 plt.title('Number of Instances per Class')
 
-# Mostrare il grafico
+# Presentazione del grafico
 #plt.show()
 
-# Voglio mostrare solo le istanze del DataFrame che hanno una segmentazione non nulla
+# 1.2 - Calcolo istanze con segmentazione non nulla: l'obiettivo qui è evidenziare quante e quali
+# righe del dataframe contengono informazioni circa la segmentazione
 
-# Eliminazione delle righe con valori mancanti nella colonna "segmentation"
+# Si filtra il dataframe eliminando le righe con valori mancanti nella colonna "segmentation" (i.e. 'nan')
 df_filtered = train_df.dropna(subset=['segmentation'])
 
-# Calcolo del numero di istanze per ogni classe nella colonna "class" del DataFrame filtrato
+# Viene effettuato il conteggio delle istanze per ogni classe, essendo certi che il DataFrame filtrato non
+# contiene valori nulli
 class_counts = df_filtered['class'].value_counts()
 
 # Creazione del grafico a barre con colori personalizzati per ogni classe
@@ -54,28 +61,30 @@ plt.xlabel('Class')
 plt.ylabel('Number of Instances')
 plt.title('Number of Instances per Class (with non-null segmentation)')
 
-# Mostrare il grafico
+# Presentazione del grafico
 #plt.show()
 
-'''
+# ######################################## COMMENTO ########################################
+# Abbiamo creato un DataFrame di esempio con alcune righe che hanno valori mancanti nella colonna 
+# "segmentation" e altre righe con una segmentazione definita. Abbiamo quindi utilizzato il metodo 
+# dropna() del DataFrame per eliminare le righe con valori mancanti nella colonna "segmentation" e 
+# creare un nuovo DataFrame "df_filtered" solo con le righe rimanenti.
 
-Abbiamo creato un DataFrame di esempio con alcune righe che hanno valori mancanti nella colonna 
-"segmentation" e altre righe con una segmentazione definita. Abbiamo quindi utilizzato il metodo 
-dropna() del DataFrame per eliminare le righe con valori mancanti nella colonna "segmentation" e 
-creare un nuovo DataFrame "df_filtered" solo con le righe rimanenti.
+# Successivamente, abbiamo utilizzato il DataFrame filtrato "df_filtered" per calcolare il numero 
+# di istanze per ogni classe nella colonna "class", utilizzando la funzione value_counts() come nel 
+# precedente esempio. Infine, abbiamo creato un grafico a barre con i risultati e abbiamo aggiunto 
+# le etichette dell'asse x, dell'asse y e del titolo del grafico.
+# ##########################################################################################
 
-Successivamente, abbiamo utilizzato il DataFrame filtrato "df_filtered" per calcolare il numero 
-di istanze per ogni classe nella colonna "class", utilizzando la funzione value_counts() come nel 
-precedente esempio. Infine, abbiamo creato un grafico a barre con i risultati e abbiamo aggiunto 
-le etichette dell'asse x, dell'asse y e del titolo del grafico.
+# 1.3 - Espansione e ordinamento del dataframe: l'obiettivo è quello di ricavare informazioni aggiuntive
+# dal dataframe di partenza, oltre che di effettuare un migliore ordinamento delle righe dello stesso
 
-'''
-
-# Sostituisco le classi con valori numerici per una miglior leggibilità
+# Sostituzione delle classi con valori numerici per una migliore leggibilità
 class_mapping = {'large_bowel': 0, 'small_bowel': 1, 'stomach': 2}
-
 train_df['class'] = train_df['class'].replace(class_mapping)
 
+# A partire dall'id di ogni riga, è possibile estrarre informazioni sull'identificativo del caso clinico,
+# del giorno di osservazione e dello specifico frame della scansione
 splits = train_df['id'].str.split("_", n = 4, expand = True)
 print(splits)
 
@@ -86,55 +95,69 @@ train_df['slice_id'] = splits[3].astype(int)
 train_df['case_id'] = train_df['case_id'].str.replace('case', '').astype(int) 
 train_df['day_id'] = train_df['day_id'].str.replace('day', '').astype(int)
 
-# Elimino le colonne "class" e "segmentation" e ne salvo il contenuto in due liste quasi omonime
+# Ciò che si vuole ottenere, adesso, è un dataframe compattato, in cui ogni riga associata a un caso/giorno/slice,
+# contenga le informazioni relative alle tre etichette del problema in un'unica struttura dati.
+
+# Si eliminano le colonne "class" e "segmentation" e se ne salva il contenuto in due liste
 classe = train_df.pop('class')
 segmentation = train_df.pop('segmentation')
 
-# Raggruppo gli elementi delle liste in gruppi di tre
+# Si raggruppano gli elementi delle liste a tre a tre
 grouped_segmentation = list(zip_longest(*[iter(segmentation)]*3, fillvalue=None))
 grouped_class = list(zip_longest(*[iter(classe)]*3, fillvalue=None))
 
-# Elimino i duplicati sulla colonna "id"
+# Si eliminano i duplicati per la colonna "id"
 train_df = train_df.drop_duplicates(subset=['id'])
 
-# Reinserisco le colonne alla fine del dataframe
+# Le colonne processate in precedenza possono essere, quindi, appese al dataframe (in posizione finale), ottenendo
+# un dataframe compattato nel numero di righe
 train_df.insert(len(train_df.columns), 'class', grouped_class)
 train_df.insert(len(train_df.columns), 'segmentation', grouped_segmentation)
 
-# ordino in ordine crescente in base a case_id, day_id e slice_id
+# Viene dato un ordinamento per valori crescenti in di case_id, day_id e slice_id
 train_df = train_df.sort_values(by=['case_id', 'day_id', 'slice_id'], ascending=True).reset_index(drop=True)
 
-print(train_df)
+print(train_df.head())
+# CODICE NOTEBOOK
+# train_df.head()
 
-########################################### PARTE 2 ###########################################
+########################################### PARTE 2 - STATISTICHE IMMAGINI ###########################################
+# 2.1 - Individuazione percorsi e aumento dimensioni dataframe: l'obiettivo qui è associare ogni riga del dataframe ad
+# un'immagine del dataset, da cui estrarre, in un secondo momento, delle informazioni utili per eventuali valutazioni
+# statistiche.
 
 list_slices = glob.glob(TRAIN_DIR+'/*/*/scans/*.png')
 #print(list_slices)
 
+# Si inizializza un dataframe sulla base dei percorsi individuati dalla glob, per poi procedere all'estrazione di
+# informazioni associate a caso clinico, giorno, scansione (e tanti altri) direttamente dai file .png del dataset
 image_details = pd.DataFrame({'path':list_slices})
 
 splits = image_details['path'].str.split("/", n = 7, expand = True)
 
+# case_id e day_id
 image_details[['case_id', 'day_id']] = splits[4].str.split("_", expand = True)
-
 image_details['case_id'] = image_details['case_id'].str.replace('case', '').astype(int) 
 image_details['day_id'] = image_details['day_id'].str.replace('day', '').astype(int)
 
+# slice id
 image_details['slice_name'] = splits[6]
-
 slice_info = image_details['slice_name'].str.split(n=6, expand=True, pat="_")
-
 image_details['slice_id'] = slice_info[1].astype(int)
 
+# dimensioni
 image_details['width'] = slice_info[2].astype(int)
 image_details['height'] = slice_info[3].astype(int)
 
+# dimensioni dei pixel
 image_details['width_px'] = slice_info[4].astype(float)
 #.round(2).apply(lambda x: '{:.2f}'.format(x))
 image_details['height_px'] = slice_info[5].str.replace('.png', '', regex=False).astype(float)
 
-###########################
-# Creo i path delle cartelle che conterranno le maschere
+# Per funzioni implementate in seguito, si rende necessario definire i percorsi in cui si desidera
+# salvare le maschere associate a un caso
+
+# Vengono creati i percorsi che conterranno le maschere (sullo stesso livello della cartella scans)
 
 splits[5] = splits[5].str.replace('scans', 'masks')
 splits[6] = splits[6].str.replace('slice', 'mask_slice')
@@ -144,6 +167,7 @@ percorsi_cartelle = percorsi_cartelle.apply(lambda x: '/'.join(x.astype(str)), a
 
 percorsi_maschere = splits.apply(lambda x: '/'.join(x.astype(str)), axis=1)
 
+# Viene inserita nel dataframe una dimensione contenente tutti i percorsi appena individuati
 image_details.insert(1, 'mask_path', percorsi_maschere)
 
 for path in percorsi_cartelle:
@@ -152,28 +176,33 @@ for path in percorsi_cartelle:
         os.mkdir(path) 
         print("\nCartella creata con successo!\n")
 
-
-###########################
-
-# ordino in ordine crescente in base a case_id, day_id e slice_id
+# Si procede all'ordinamento crescente dei valori di case_id, day_id e slice_id del dataframe
 image_details = image_details.sort_values(by=['case_id', 'day_id', 'slice_id'], ascending=True).reset_index(drop=True)
 
 # aggiungo al df la riga contenente le maschere di segmentazione
 image_details.insert(len(image_details.columns), 'segmentation', grouped_segmentation)
 print("\n-------------------------------------------------------------------- image_details_merged_ --------------------------------------------------------------------\n")
-#image_details.head()
-print(image_details)
+print(image_details.head())
+# Codice NOTEBOOK
+# image_details.head()
 
-# salvo il dataframe
+# Per evitare il ricalcolo ad ogni esecuzione del codice, si salva il dataframe in un opportuno .csv
 image_details.to_csv('image_details_merged.csv', index=False)
 
-# Voglio vedere quante immagini hanno profondità dei pixel 1.50 mm e quante 1.63 mm
+# image_details = pd.read_csv('image_details_merged.csv')
+
+# 2.2 - Analisi statistica delle immagini: a seguito di ispezione visiva di alcuni campioni, si è cercato di indagare
+# su alcune caratteristiche salienti di ogni immagine. L'obiettivo qui è di individuare correlazioni tra la dimensione
+# dei pixel e la qualità delle immagini, ecc.
+
+# Si cerca di capire, innanzitutto, quante immagini hanno dimensione del pixel [1.50 mm x 1.50 mm] e quante [1.63 mm x 1.63 mm]
 num_images_150 = image_details.loc[(image_details['width_px'] == 1.50) & (image_details['height_px'] == 1.50)].shape[0]
 print("Il numero di immagini con width_px e height_px pari a 1.50 mm è:", num_images_150)
 
 num_images_163 = image_details.loc[(image_details['width_px'] == 1.63) & (image_details['height_px'] == 1.63)].shape[0]
 print("Il numero di immagini con width_px e height_px pari a 1.63 mm è:", num_images_163)
 
+# Si prova che non vi siano immagini caratterizzate da ulteriori dimensioni dei pixel
 print(num_images_150+num_images_163)
 
 # Dati per il grafico
@@ -193,9 +222,9 @@ ax.set_xlabel('Larghezza e altezza pixel (in mm)')
 ax.set_ylabel('Numero di slice')
 
 # Visualizzazione del grafico
-#plt.show()
+# plt.show()
 
-# Voglio vedere se le immagini con una data profondità sono tutte delle stesse dimensioni
+# Si cerca di capire, adesso, se le immagini con una data profondità sono tutte delle stesse dimensioni
 
 widths_px_1_50 = image_details[(image_details['width_px'] == 1.5) & (image_details['height_px'] == 1.5)]['width'].unique()
 print(widths_px_1_50)
@@ -203,16 +232,16 @@ print(widths_px_1_50)
 heights_px_1_50 = image_details[(image_details['width_px'] == 1.5) & (image_details['height_px'] == 1.5)]['height'].unique()
 print(heights_px_1_50)
 
-widths_px_63 = image_details[(image_details['width_px'] == 1.63) & (image_details['height_px'] == 1.63)]['width'].unique()
-print(widths_px_63)
+widths_px_1_63 = image_details[(image_details['width_px'] == 1.63) & (image_details['height_px'] == 1.63)]['width'].unique()
+print(widths_px_1_63)
 
 heights_px_1_63 = image_details[(image_details['width_px'] == 1.63) & (image_details['height_px'] == 1.63)]['height'].unique()
 print(heights_px_1_63)
 
-# si evince che le slice con profondità dei pixel pari a 1.50 mm hanno dimensione variabile, 
-# mentre quelle a profondità pari a 1.63 mm hanno tutte la stessa dimensione
+# Eseguendo il codice sovrastante, si evince come solo le slice con profondità dei pixel pari a 1.63 mm hanno tutte la stessa dimensione
 
-# Adesso voglio vedere se le immagini con larghezza pari a 266 hanno altezza variabile e viceversa
+# VALUTAZIONE DIMENSIONI DELLE IMMAGINI
+# Adesso si vuole vedere se le immagini con larghezza pari a 266 px hanno altezza variabile e viceversa
 
 heights_266 = image_details[(image_details['width'] == 266)]['height'].unique()
 print(heights_266)
@@ -220,67 +249,66 @@ print(heights_266)
 widths_266 = image_details[(image_details['height'] == 266)]['width'].unique()
 print(widths_266)
 
-# Voglio vedere quante immagini hanno larghezza 266
+# Viene calcolato il numero di immagini con:
+# - Larghezza 266 px
 num_images_266_width = image_details.loc[(image_details['width'] == 266)].shape[0]
 print("Il numero di immagini con larghezza 266 px è:", num_images_266_width)
 
-# Voglio vedere quante immagini hanno altezza 266
+# - Altezza 266 px
 num_images_266_height = image_details.loc[(image_details['height'] == 266)].shape[0]
 print("Il numero di immagini con altezza 266 px è:", num_images_266_height)
 
+# Combinando i risultati, si evince che una dimensione a 266 px è associata a immagini quadrate
 num_images_266x266 = image_details.loc[(image_details['width'] == 266) & (image_details['height'] == 266)].shape[0]
 print("Il numero di immagini 266x266 è:", num_images_266x266)
-# -> Ho dimostrato che le immagini con altezza/larghezza 266 sono quadrate
 
-# Faccio lo stesso con le immagini larghe 234
+# Si ripete il processo con le immagini larghe 234 px
 heights_234 = image_details[(image_details['width'] == 234)]['height'].unique()
 print(heights_234)
 
 widths_234 = image_details[(image_details['height'] == 234)]['width'].unique()
 print(widths_234)
 
-# Voglio vedere quante immagini hanno larghezza 234
+# Viene calcolato il numero di immagini con:
+# - Larghezza 234 px
 num_images_234_width = image_details.loc[(image_details['width'] == 234)].shape[0]
 print("Il numero di immagini con larghezza 234 px è:", num_images_234_width)
 
-# Voglio vedere quante immagini hanno altezza 234
+# - Altezza 234 px
 num_images_234_height = image_details.loc[(image_details['height'] == 234)].shape[0]
 print("Il numero di immagini con altezza 234 px è:", num_images_234_height)
 
+# Combinando i risultati, si evince che una dimensione a 234 px è associata a immagini quadrate
 num_images_234x234 = image_details.loc[(image_details['width'] == 234) & (image_details['height'] == 234)].shape[0]
 print("Il numero di immagini 234x234 è:", num_images_234x234)
 
-# -> Ho dimostrato che le immagini con altezza/larghezza 234 sono quadrate
-        
-# Mi torno l'altezza delle immagini larghe 360
+# Si completa adesso l'analisi, individuando i valori associati ad altezze di 310 px o larghezze di 360 px
 
 heights_360 = image_details[(image_details['width'] == 360)]['height'].unique()
 print(heights_360)
 
-# Mi torno la larghezza delle immagini alte 310
 
 widths_310 = image_details[(image_details['height'] == 310)]['width'].unique()
 print(widths_310)
 
-# Voglio vedere quante immagini hanno altezza 360
+# Viene calcolato il numero di immagini con:
+# - Larghezza 360 px
 num_images_360_width = image_details.loc[(image_details['width'] == 360)].shape[0]
 print("Il numero di immagini con larghezza 360 px è:", num_images_360_width)
 
-# Voglio vedere quante immagini hanno altezza 310
+# - Altezza 310 px
 num_images_310_height = image_details.loc[(image_details['height'] == 310)].shape[0]
 print("Il numero di immagini con altezza 310 px è:", num_images_310_height)
 
+# Combinando i risultati, si evince che le immagini larghe 360 px hanno tutte la stessa altezza (310 px)
 num_images_360x310 = image_details.loc[(image_details['width'] == 360) & (image_details['height'] == 310)].shape[0]
 print("Il numero di immagini 360x310 è:", num_images_360x310)
-
-# Ho dimostrato che le tutte immagini larghe 360 hanno altezza 310
 
 tot_slice = num_images_266x266 + num_images_234x234 + num_images_360x310
 
 print("totale slice profondità pixel 1.50 mm: ", tot_slice)
 
-# I valori combaciano :)
-# Creo un grafico dal quale si evince quanto fatto in maniera qualitativa
+# Viene realizzato un grafico dal quale si evince, in modo intuitivo, quanto detto in maniera qualitativa
 
 # Dati per il grafico
 labels = ['234x234', '266x266', '360x310']
@@ -300,16 +328,22 @@ plt.ylabel('Numero di slice')
 # Visualizzazione del grafico
 #plt.show()
 
-# Dal dataframe "image_details" mi estraggo le righe le cui slice hanno dimensione 234x234
+# STATISTICA SEGMENTAZIONE
+# Dal dataframe "image_details" vengono estratte le righe le cui slice hanno dimensione 234x234
 image_details_234x234 = image_details[(image_details['width'] == 234) & (image_details['height'] == 234)].copy().reset_index()
 print("\n-------------------------------------------------------------------- image_details_234x234 --------------------------------------------------------------------\n")
-print(image_details_234x234)
-print(image_details_234x234['path'][0])
+print(image_details_234x234.head())
 
-# salvo in dataframe
+# CODICE NOTEBOOK
+# image_details_234x234.head()
+
+# Per evitare di eseguire ogni volta il codice, il dataframe filtrato viene salvato in locale
 image_details_234x234.to_csv('image_details_234x234.csv', index=False)
 
-# contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
+# image_details_234x234 = pd.read_csv('image_details_234x234.csv')
+
+# L'obiettivo adesso è di contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
+# Si inizia individuando il numero di righe in cui 'segmentation' registra un valore di '(nan, nan, nan)'
 count_234 = 0
 for i in range(len(image_details_234x234)):
     is_nan = True
@@ -320,35 +354,27 @@ for i in range(len(image_details_234x234)):
     if is_nan:
         count_234 += 1
 
-'''
-Questo ciclo for scorre ogni elemento della colonna "segmentation", controllando se tutti i valori sono NaN. 
-Se tutti i valori sono NaN, il contatore delle righe viene incrementato. 
-'''
+# Questo ciclo for scorre ogni elemento della colonna "segmentation", controllando se tutti i valori sono NaN. 
+# Se tutti i valori sono NaN, il contatore delle righe viene incrementato. 
 
 print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_234x234.shape[0] - count_234}.")
 print(f"Il numero delle righe totali è {image_details_234x234.shape[0]}.")
 print(f"\nCi sono esattamente {count_234} slice di dimensione 234x234 con maschere totalmente vuote.")
 print(f"\nLa percentuale di slice di dimensione 234x234 con maschere totalmente vuote è pari al {count_234/image_details_234x234.shape[0]}/100")
-
-#lista prima riga contenente le 3 codifiche relative a classe 0, 1 e 2 
-#print(image_details_234x234['segmentation'][0])
-
-# primo elemento lista prima riga
-#print(image_details_234x234['segmentation'][0][0])
-
-
-#print("maschere di slice di dimensioni 234x234 non vuote: ", count)
  
-
-# Dal dataframe "image_details" mi estraggo le righe le cui slice hanno dimensione 266x266
+# Viene reiterato il procedeimento per le righe del dataframe 'image_details' le cui slice hanno dimensione 266 x 266
 image_details_266x266 = image_details[(image_details['width'] == 266) & (image_details['height'] == 266)].copy().reset_index()
 print("\n-------------------------------------------------------------------- image_details_266x266 --------------------------------------------------------------------\n")
-print(image_details_266x266)
+print(image_details_266x266.head())
 
-# salvo in dataframe
+# CODICE NOTEBOOK
+# image_details_266x266.head()
+
+# Per evitare di eseguire ogni volta il codice, il dataframe filtrato viene salvato in locale
 image_details_266x266.to_csv('image_details_266x266.csv', index=False)
 
-# contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
+# image_details_266x266 = pd.read_csv('image_details_266x266.csv')
+
 count_266 = 0
 for i in range(len(image_details_266x266)):
     is_nan = True
@@ -359,28 +385,24 @@ for i in range(len(image_details_266x266)):
     if is_nan:
         count_266 += 1
 
-'''
-Questo ciclo for scorre ogni elemento della colonna "segmentation", controllando se tutti i valori sono NaN. 
-Se tutti i valori sono NaN, il contatore delle righe viene incrementato. 
-'''
-
 print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_266x266.shape[0] - count_266}.")
 print(f"Il numero delle righe totali è {image_details_266x266.shape[0]}.")
 print(f"\nCi sono esattamente {count_266} slice di dimensione 266x266 con maschere totalmente vuote.")
 print(f"\nLa percentuale di slice di dimensione 266x266 con maschere totalmente vuote è pari al {count_266/image_details_266x266.shape[0]}/100")
 
-#print(image_details_266x266['segmentation'][0])
-#print(image_details_266x266['segmentation'][0][0])
-
-# Dal dataframe "image_details" mi estraggo le righe le cui slice hanno dimensione 276x276
+# Viene reiterato il procedeimento per le righe del dataframe 'image_details' le cui slice hanno dimensione 276 x 276
 image_details_276x276 = image_details[(image_details['width'] == 276) & (image_details['height'] == 276)].copy().reset_index()
 print("\n-------------------------------------------------------------------- image_details_276x276 --------------------------------------------------------------------\n")
-print(image_details_276x276)
+print(image_details_276x276.head())
 
-# salvo in dataframe
+# CODICE NOTEBOOK
+# image_details_276x276.head()
+
+# Per evitare di eseguire ogni volta il codice, il dataframe filtrato viene salvato in locale
 image_details_276x276.to_csv('image_details_276x276.csv', index=False)
 
-# contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
+# image_details_276x276 = pd.read_csv('image_details_276x276.csv')
+
 count_276 = 0
 for i in range(len(image_details_276x276)):
     is_nan = True
@@ -391,25 +413,24 @@ for i in range(len(image_details_276x276)):
     if is_nan:
         count_276 += 1
 
-'''
-Questo ciclo for scorre ogni elemento della colonna "segmentation", controllando se tutti i valori sono NaN. 
-Se tutti i valori sono NaN, il contatore delle righe viene incrementato. 
-'''
-
 print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_276x276.shape[0] - count_276}.")
 print(f"Il numero delle righe totali è {image_details_276x276.shape[0]}.")
 print(f"\nCi sono esattamente {count_276} slice di dimensione 276x276 con maschere totalmente vuote.")
 print(f"\nLa percentuale di slice di dimensione 276x276 con maschere totalmente vuote è pari al {count_276/image_details_276x276.shape[0]}/100")
 
-# Dal dataframe "image_details" mi estraggo le righe le cui slice hanno dimensione 360x310
+# Viene reiterato il procedeimento per le righe del dataframe 'image_details' le cui slice hanno dimensione 360 x 310
 image_details_360x310 = image_details[(image_details['width'] == 360) & (image_details['height'] == 310)].copy().reset_index()
 print("\n-------------------------------------------------------------------- image_details_360x310 --------------------------------------------------------------------\n")
-print(image_details_360x310)
+print(image_details_360x310.head())
 
-# salvo in dataframe
+# CODICE NOTEBOOK
+# image_details_360x310.head()
+
+# Per evitare di eseguire ogni volta il codice, il dataframe filtrato viene salvato in locale
 image_details_360x310.to_csv('image_details_360x310.csv', index=False)
 
-# contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
+# image_details_360x310 = pd.read_csv('image_details_360x310.csv')
+
 count = 0
 for i in range(len(image_details_360x310)):
     is_nan = True
@@ -419,11 +440,6 @@ for i in range(len(image_details_360x310)):
             break
     if is_nan:
         count += 1
-
-'''
-Questo ciclo for scorre ogni elemento della colonna "segmentation", controllando se tutti i valori sono NaN. 
-Se tutti i valori sono NaN, il contatore delle righe viene incrementato. 
-'''
 
 print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_360x310.shape[0] - count}.")
 print(f"Il numero delle righe totali è {image_details_360x310.shape[0]}.")

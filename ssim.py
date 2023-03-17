@@ -152,7 +152,7 @@ df = pd.read_csv('merged_df.csv')
 grouped = df.groupby(['case_id', 'day_id'])
 
 # Inizializza il dataframe per salvare le informazioni di similarità
-similar_images_df = pd.DataFrame(columns=['case_id', 'day_id', 'path_1', 'path_2', 'similarity'])
+similar_images_df = pd.DataFrame(columns=['case_id', 'day_id', 'path_1', 'path_2', 'ssim'])
 
 # Ciclo sui gruppi di slice
 for name, group in grouped:
@@ -170,8 +170,8 @@ for name, group in grouped:
                 row = {
                     'case_id': name[0],
                     'day_id': name[1],
-                    'path1': group.iloc[i]['path'],
-                    'path2': group.iloc[j]['path'],
+                    'path_1': group.iloc[i]['path'],
+                    'path_2': group.iloc[j]['path'],
                     'ssim': ssim
                 }
                 similar_images_df = pd.concat([similar_images_df, pd.DataFrame(row, index=[0])], ignore_index=True)

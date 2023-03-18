@@ -87,106 +87,10 @@ import os
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
+import modules.mask_ops as mop
 
 os.environ["QT_QPA_PLATFORM"] = "xcb"
 
-def rle_encode(mask: np.ndarray) -> str:
-    """Funzione usata per generare una codifica RLE a partire da una maschera binaria
-
-    Args:
-        mask (np.ndarray): maschera binaria da codificare in RLE
-
-    Returns:
-        str: codifica RLE della maschera
-    """
-    
-    rle_string = ""
-    
-    mask = mask.flatten()
-
-    # Aggiungi uno zero-padding alla maschera per evitare problemi di indicizzazione
-    padded_mask = np.pad(mask, (1,), mode="constant")
-
-    # Inizializza l'indice corrente a 0
-    current_index = 0
-    
-    # Inizializza la lunghezza corrente a 0
-    current_length = 0
-
-    # Itera attraverso ciascun pixel della riga
-    for pixel in padded_mask:
-        # Se il pixel è 1 e il pixel precedente era 0, inizia una nuova sequenza
-        if pixel == 1 and padded_mask[current_index - 1] == 0:
-            rle_string += str(current_index) + " "
-            current_length = 1
-        # Se il pixel è 1 e il pixel precedente era 1, aumenta la lunghezza della sequenza corrente
-        elif pixel == 1 and padded_mask[current_index - 1] == 1:
-            current_length += 1
-        # Se il pixel è 0 e il pixel precedente era 1, termina la sequenza corrente
-        elif pixel == 0 and padded_mask[current_index - 1] == 1:
-            rle_string += str(current_length) + " "
-            current_length = 0
-        
-        # Incrementa l'indice corrente
-        current_index += 1
-
-    # Se c'è ancora una sequenza attiva alla fine della riga, termina la sequenza
-    if current_length != 0:
-        rle_string += str(current_length) + " "
-
-    # Restituisci la stringa RLE
-    return rle_string
-
-
-def interpolate_masks(masks:list, output_path:str) -> tuple[np.ndarray, list[str]]:
-    """Funzione usata per generare una maschera per interpolazione dei dati
-    di un batch di immagini (5) e rispettiva codifica RLE.
-
-    Args:
-        masks (list): lista di percorsi contenenti immagini
-        output_path (str): percorso in cui salvare la maschera interpolata
-        
-    Returns:
-        tuple[np.ndarray, list[str]]: maschera interpolata e codifica RLE dei tre canali
-    """
-    
-    # Inizialmente, si leggono le maschere
-    img1 = cv.imread(masks[0], cv.IMREAD_COLOR)
-    img2 = cv.imread(masks[1], cv.IMREAD_COLOR)
-    img3 = cv.imread(masks[2], cv.IMREAD_COLOR)
-    img4 = cv.imread(masks[3], cv.IMREAD_COLOR)
-    img5 = cv.imread(masks[4], cv.IMREAD_COLOR)
-
-    # Si calcola la media delle intensità, pixel per pixel, delle maschere
-    mean_mask = np.mean(np.array([img1, img2, img3, img4, img5]), axis=0)
-
-    # Si traspone la scala dell'immagine (per avere valori compresi tra 0 e 255)
-    mean_mask = (mean_mask - np.min(mean_mask)) / (np.max(mean_mask) - np.min(mean_mask)) * 255
-
-    # Si converte l'immagine in formato uint8
-    mean_mask = mean_mask.astype(np.uint8)
-    
-    # Bisogna saturare, adesso l'informazione del colore per i 3 canali
-    # Si creano tre maschere su base condizionale (una per canale)
-    mask_red = mean_mask[:, :, 0] >= 1
-    mask_green = mean_mask[:, :, 1] >= 1
-    mask_blue = mean_mask[:, :, 2] >= 1
-
-    # Si sostituisce ai pixel di ciascuna maschera il valore di colore
-    # totalmente saturo
-    mean_mask[mask_red] = (255, 0, 0)
-    mean_mask[mask_green] = (0, 255, 0)
-    mean_mask[mask_blue] = (0, 0, 255)
-    
-    # Si converte l'immagine in RGB
-    # NB: LA CONVERSIONE DI COLORE SI USA SOLO PER ELABORARE L'IMMAGINE IN PYTHON
-    # IL SALVATAGGIO AVVIENE SECONDO QUELLA CHE PER OPENCV E' CODIFICA BGR
-    mean_mask = cv.cvtColor(mean_mask, cv.COLOR_BGR2RGB)
-
-    # Si salva l'immagine in output_path
-    cv.imwrite(output_path, mean_mask)
-    
-    return (mean_mask, [rle_encode(mean_mask[:,:,0]/255), rle_encode(mean_mask[:,:,1]/255), rle_encode(mean_mask[:,:,2]/255)])
 
 # Esempio di utilizzo
 masks = [
@@ -197,7 +101,7 @@ masks = [
         '../BD-Image-Segmentation-Comp/train/case2/case2_day1/masks/mask_slice_0078_266_266_1.50_1.50.png'
         ]
 output_path = 'interpolated_mask.png'
-interpolated_mask, encoded_channels = interpolate_masks(masks, output_path)
+interpolated_mask, encoded_channels = mop.interpolate_masks(masks, output_path)
 
 plt.imshow(interpolated_mask)
 plt.show()
@@ -233,8 +137,8 @@ ax1.imshow(before)
 ax2.imshow(img)
 
 # Imposta i titoli degli assi
-ax1.set_title("Mask w/o interpol.")
-ax2.set_title("Mask w. interpol.")
+ax1.set_title("Maschera senza interpolazione")
+ax2.set_title("Maschera con interpolazione")
 
 # Mostra la figura
 plt.show()

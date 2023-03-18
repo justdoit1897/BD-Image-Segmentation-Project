@@ -1,10 +1,10 @@
-
 # Per stimare la somiglianza tra due immagini, una metrica di distanza molto utilizzata è
 # la SSIM (Structural Similarity Index). Questa metrica tiene conto di fattori come 
 # la luminosità, il contrasto e la struttura dell'immagine, ed è stato dimostrato che questa
 # è una metrica più accurata rispetto ad altre metriche di distanza come la Mean Squared 
 # Error (MSE) o la Peak Signal-to-Noise Ratio (PSNR). 
 
+# Imports
 
 from skimage import io, metrics
 import pandas as pd

@@ -119,36 +119,6 @@ merged_df = pd.merge(train_df, image_details, on=['case_id', 'day_id', 'slice_id
 
 merged_df.to_csv('merged_df.csv', index=False)
 
-def crea_maschera_vuota(path, width, height):
-
-    # Creo una maschera vuota con le dimensioni dei pixel calcolate
-    mask = np.zeros((height, width, 3), dtype=np.uint8)
-    
-    # cv.imwrite(path, mask)
-    cv.imwrite(path, mask)
-
-def rle_to_image(rle_code, height, width):
-    
-    # Verifica se la codifica è 'nan'
-    
-    if isinstance(rle_code, float) and math.isnan(rle_code):
-        return np.zeros((height, width), dtype=np.uint8)
-    
-    # decodifica la codifica RLE
-    rle_numbers = [int(i) for i in rle_code.split()]
-    rle_pairs = np.array(rle_numbers).reshape(-1, 2)
-
-    # crea un'immagine vuota
-    img = np.zeros(height*width, dtype=np.uint8)
-
-    # colora i pixel coperti dalla maschera
-    for index, length in rle_pairs:
-        index -= 1
-        img[index:index+length] = 255
-
-    # ridimensiona l'immagine e la restituisce
-    return img.reshape((height, width))
-
 merged_df['is_created_mask'] = [True] * merged_df.shape[0]
 # merged_df['is_created_mask'] = [False] * merged_df.shape[0]
 
@@ -160,7 +130,7 @@ for index, row in tqdm(merged_df.iterrows(), total=len(merged_df)):
     
     if row['is_created_mask'] == False:
         
-        crea_maschera_vuota(mask_path, row['width'], row['height'])
+        mop.crea_maschera_vuota(mask_path, row['width'], row['height'])
         
         row['is_created_mask'] = True
         
@@ -179,9 +149,9 @@ for index, row in tqdm(merged_df.iterrows(), total=len(merged_df)):
     
     if row['is_created_mask'] == True:
         
-        red_segment = rle_to_image(row['segmentation'][0], row['height'], row['width'])
-        green_segment = rle_to_image(row['segmentation'][1], row['height'], row['width'])
-        blue_segment = rle_to_image(row['segmentation'][2], row['height'], row['width'])
+        red_segment = mop.rle_to_image(row['segmentation'][0], row['height'], row['width'])
+        green_segment = mop.rle_to_image(row['segmentation'][1], row['height'], row['width'])
+        blue_segment = mop.rle_to_image(row['segmentation'][2], row['height'], row['width'])
 
         merged_mask = cv.merge([red_segment, green_segment, blue_segment])
         

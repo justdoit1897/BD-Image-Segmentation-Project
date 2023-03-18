@@ -522,23 +522,21 @@ def posizioni_pixel(pixels, larghezza):
     
 #     print(f"\nMaschera vuota di dimensione {width}x{height} creata in: {path}")
 
-'''
 
-def colora_maschera(mask_path, rows, cols, colors, lengths):
+# def colora_maschera(mask_path, rows, cols, colors, lengths):
     
-    mask = cv.imread(mask_path)
+#     mask = cv.imread(mask_path)
     
-    for color in colors:
+#     for color in colors:
         
-        color = np.array(color).reshape((1, 1, -1))
+#         color = np.array(color).reshape((1, 1, -1))
         
-        for x, y, l in zip(cols, rows, lengths):
-            mask[y:y+l, x:x+l] = color
+#         for x, y, l in zip(cols, rows, lengths):
+#             mask[y:y+l, x:x+l] = color
         
-    cv.imwrite(mask_path, mask)
+#     cv.imwrite(mask_path, mask)
 
-'''
-    
+ 
 # def colora_maschera(mask_path, rows, cols, color, lengths):
 #     # print(f"Rows is: {rows}\nCols is: {cols}\n")
     
@@ -607,29 +605,11 @@ for pixel in pixels:
 
 num_righe_image_details = image_details.shape[0]
 
-#print(pixels[100])
-print('\n')
-#print(lengths[100])
+# print(pixels[100])
+# print('\n')
+# print(lengths[100])
 
 #pixels, lenghts = split_rle_0(image_details['segmentation'])
-
-
-
-# print(image_details)    
-
-#print(pixels[100][0])
-#print('\n')
-
-# print(lengths[100])
-# print('\n')
-
-# print(rows_img_all[100])
-# print('\n')
-
-# print(cols_img_all[100])
-# print('\n')
-
-colori = [np.array([255, 0, 0]), np.array([0, 255, 0]), np.array([0, 0, 255])]
 
 data = {
     'Righe': rows_img_all,
@@ -666,13 +646,11 @@ al percorso specificato.
 
 def equalizza_immagini(path: str):
     
-    """Funzione usata per equalizzare e salvare un'immagine 
-    delle dimensioni specificate
+    """Funzione usata per effettuare l'equalizzazione dell'istogramma (con conseguente
+    sovrascrittura) dell'immagine in un dato percorso
 
     Args:
         path (str): percorso in cui salvare l'immagine
-        width (int): larghezza dell'immagine
-        height (int): altezza dell'immagine
     """
     
     # Leggo l'immagine situata in 'path' in scala di grigi
@@ -719,114 +697,82 @@ for index, row in image_details.iterrows():
         
 #     cv.imwrite(mask_path, mask)
 
-def crea_maschera_vuota(path, width, height):
 
-    # Creo una maschera vuota con le dimensioni dei pixel calcolate
-    mask = np.zeros((height, width, 3), dtype=np.uint8)
-
-    cv.imwrite(path, mask)
-
-'''
-
-def colora_maschera(rle_encodings: list[str], height: int, width: int) -> np.ndarray:
+# def colora_maschera(rle_encodings: list[str], height: int, width: int) -> np.ndarray:
     
-    # segmentation, shape (altezza, larghezza)
+#     # segmentation, shape (altezza, larghezza)
     
-    # Generiamo un numpy array (inizialmente appiattito)
-    mask_array = np.zeros((height, width, 3), dtype=np.uint8)
+#     # Generiamo un numpy array (inizialmente appiattito)
+#     mask_array = np.zeros((height, width, 3), dtype=np.uint8)
     
-    color = 0
+#     color = 0
     
-    for index, encoding in enumerate(rle_encodings):
+#     for index, encoding in enumerate(rle_encodings):
         
-        # Piccola conversione per le codifiche in nan
-        if encoding is np.nan:
-            continue
+#         # Piccola conversione per le codifiche in nan
+#         if encoding is np.nan:
+#             continue
             
-        if index == 0:
-            color = np.array([255, 0, 0]) # R
-        elif index == 1:
-            color = np.array([0, 255, 0])   # G
-        else:
-            color = np.array([0, 0, 255])   # B
+#         if index == 0:
+#             color = np.array([255, 0, 0]) # R
+#         elif index == 1:
+#             color = np.array([0, 255, 0])   # G
+#         else:
+#             color = np.array([0, 0, 255])   # B
         
-        # Genero una lista di numeri per ogni elemento di rle_encodings
-        segm = np.asarray(encoding.split(), dtype=int)
+#         # Genero una lista di numeri per ogni elemento di rle_encodings
+#         segm = np.asarray(encoding.split(), dtype=int)
         
-        # Get start point and length between points
-        start_point = segm[0::2] - 1
-        length_point = segm[1::2]
+#         # Get start point and length between points
+#         start_point = segm[0::2] - 1
+#         length_point = segm[1::2]
         
-        # Compute the location of each endpoint
-        end_point = start_point + length_point
+#         # Compute the location of each endpoint
+#         end_point = start_point + length_point
         
-        for start, end in zip(start_point, end_point):
-            mask_array[start:end] = 1
+#         for start, end in zip(start_point, end_point):
+#             mask_array[start:end] = 1
         
-    mask_array = mask_array.reshape(height, width, 3)
+#     mask_array = mask_array.reshape(height, width, 3)
     
-    return mask_array
+#     return mask_array
 
-'''
-
-def rle_to_image(rle_code, height, width):
+# def colora_maschera(rle_encodings: list[str], height: int, width: int) -> np.ndarray:
     
-    # Verifica se la codifica è 'nan'
+#     # Generiamo un numpy array (inizialmente appiattito)
+#     mask_array = np.zeros((height, width, 3), dtype=np.uint8)
     
-    if isinstance(rle_code, float) and math.isnan(rle_code):
-        return np.zeros((height, width), dtype=np.uint8)
-    
-    # decodifica la codifica RLE
-    rle_numbers = [int(i) for i in rle_code.split()]
-    rle_pairs = np.array(rle_numbers).reshape(-1, 2)
-
-    # crea un'immagine vuota
-    img = np.zeros(height*width, dtype=np.uint8)
-
-    # colora i pixel coperti dalla maschera
-    for index, length in rle_pairs:
-        index -= 1
-        img[index:index+length] = 255
-
-    # ridimensiona l'immagine e la restituisce
-    return img.reshape((height, width))
-
-def colora_maschera(rle_encodings: list[str], height: int, width: int) -> np.ndarray:
-    
-    # Generiamo un numpy array (inizialmente appiattito)
-    mask_array = np.zeros((height, width, 3), dtype=np.uint8)
-    
-    for index, encoding in enumerate(rle_encodings):
+#     for index, encoding in enumerate(rle_encodings):
         
-        # Piccola conversione per le codifiche in nan
-        if encoding is np.nan:
-            continue
+#         # Piccola conversione per le codifiche in nan
+#         if encoding is np.nan:
+#             continue
             
-        # Genero una lista di numeri per ogni elemento di rle_encodings
-        segm = np.asarray(encoding.split(), dtype=int)
+#         # Genero una lista di numeri per ogni elemento di rle_encodings
+#         segm = np.asarray(encoding.split(), dtype=int)
         
-        # Get start point and length between points
-        start_point = segm[0::2] - 1
-        length_point = segm[1::2]
+#         # Get start point and length between points
+#         start_point = segm[0::2] - 1
+#         length_point = segm[1::2]
         
-        # Compute the location of each endpoint
-        end_point = start_point + length_point
+#         # Compute the location of each endpoint
+#         end_point = start_point + length_point
         
-        # Coloriamo la maschera
-        if index == 0:
-            color = (255, 0, 0)  # rosso
-        elif index == 1:
-            color = (0, 255, 0)  # verde
-        else:
-            color = (0, 0, 255)  # blu
+#         # Coloriamo la maschera
+#         if index == 0:
+#             color = (255, 0, 0)  # rosso
+#         elif index == 1:
+#             color = (0, 255, 0)  # verde
+#         else:
+#             color = (0, 0, 255)  # blu
         
-        print(color)
-        print(color[index])
+#         print(color)
+#         print(color[index])
         
-        for start, end in zip(start_point, end_point):
-            mask_array[start:end, :, index] = color[index]
+#         for start, end in zip(start_point, end_point):
+#             mask_array[start:end, :, index] = color[index]
             
-    return mask_array
+#     return mask_array
 
 
 image_details['is_created_mask'] = [True] * image_details.shape[0]
@@ -840,7 +786,7 @@ for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
     
     if row['is_created_mask'] == False:
         
-        crea_maschera_vuota(mask_path, row['height'], row['width'])
+        mop.crea_maschera_vuota(mask_path, row['height'], row['width'])
         
         row['is_created_mask'] = True
         
@@ -858,9 +804,9 @@ for index, row in tqdm(image_details.iterrows(), total=len(image_details)):
     
     if row['is_created_mask'] == True:
         
-        red_segment = rle_to_image(row['segmentation'][0], row['height'], row['width'])
-        green_segment = rle_to_image(row['segmentation'][1], row['height'], row['width'])
-        blue_segment = rle_to_image(row['segmentation'][2], row['height'], row['width'])
+        red_segment = mop.rle_to_image(row['segmentation'][0], row['height'], row['width'])
+        green_segment = mop.rle_to_image(row['segmentation'][1], row['height'], row['width'])
+        blue_segment = mop.rle_to_image(row['segmentation'][2], row['height'], row['width'])
 
         merged_mask = cv.merge([red_segment, green_segment, blue_segment])
         

@@ -330,7 +330,7 @@ plt.ylabel('Numero di slice')
 
 # STATISTICA SEGMENTAZIONE
 # Dal dataframe "image_details" vengono estratte le righe le cui slice hanno dimensione 234x234
-image_details_234x234 = image_details[(image_details['width'] == 234) & (image_details['height'] == 234)].copy().reset_index()
+image_details_234x234 = image_details[(image_details['width'] == 234) & (image_details['height'] == 234)].reset_index().drop(columns='index')
 print("\n-------------------------------------------------------------------- image_details_234x234 --------------------------------------------------------------------\n")
 print(image_details_234x234.head())
 
@@ -344,11 +344,13 @@ image_details_234x234.to_csv('image_details_234x234.csv', index=False)
 
 # L'obiettivo adesso è di contare il numero di righe con colonna "segmentation" diversa da "(nan, nan, nan)"
 # Si inizia individuando il numero di righe in cui 'segmentation' registra un valore di '(nan, nan, nan)'
+image_details_234x234_w_seg = image_details_234x234.merge(train_df, on=['case_id', 'day_id', 'slice_id']).drop_duplicates()
+
 count_234 = 0
-for i in range(len(image_details_234x234)):
+for i in range(len(image_details_234x234_w_seg)):
     is_nan = True
-    for j in range(len(image_details_234x234['segmentation'][i])):
-        if not pd.isna(image_details_234x234['segmentation'][i][j]):
+    for j in range(len(image_details_234x234_w_seg['segmentation'][i])):
+        if not pd.isna(image_details_234x234_w_seg['segmentation'][i][j]):
             is_nan = False
             break
     if is_nan:
@@ -357,13 +359,13 @@ for i in range(len(image_details_234x234)):
 # Questo ciclo for scorre ogni elemento della colonna "segmentation", controllando se tutti i valori sono NaN. 
 # Se tutti i valori sono NaN, il contatore delle righe viene incrementato. 
 
-print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_234x234.shape[0] - count_234}.")
-print(f"Il numero delle righe totali è {image_details_234x234.shape[0]}.")
+print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_234x234_w_seg.shape[0] - count_234}.")
+print(f"\nIl numero delle righe totali è {image_details_234x234.shape[0]}.")
 print(f"\nCi sono esattamente {count_234} slice di dimensione 234x234 con maschere totalmente vuote.")
-print(f"\nLa percentuale di slice di dimensione 234x234 con maschere totalmente vuote è pari al {count_234/image_details_234x234.shape[0]}/100")
+print(f"\nLa percentuale di slice di dimensione 234x234 con maschere totalmente vuote è pari al {round(count_234/image_details_234x234_w_seg.shape[0]*100, 4)}%")
  
 # Viene reiterato il procedeimento per le righe del dataframe 'image_details' le cui slice hanno dimensione 266 x 266
-image_details_266x266 = image_details[(image_details['width'] == 266) & (image_details['height'] == 266)].copy().reset_index()
+image_details_266x266 = image_details[(image_details['width'] == 266) & (image_details['height'] == 266)].reset_index().drop(columns='index')
 print("\n-------------------------------------------------------------------- image_details_266x266 --------------------------------------------------------------------\n")
 print(image_details_266x266.head())
 
@@ -375,23 +377,25 @@ image_details_266x266.to_csv('image_details_266x266.csv', index=False)
 
 # image_details_266x266 = pd.read_csv('image_details_266x266.csv')
 
+image_details_266x266_w_seg = image_details_266x266.merge(train_df, on=['case_id', 'day_id', 'slice_id']).drop_duplicates()
+
 count_266 = 0
-for i in range(len(image_details_266x266)):
+for i in range(len(image_details_266x266_w_seg)):
     is_nan = True
-    for j in range(len(image_details_266x266['segmentation'][i])):
-        if not pd.isna(image_details_266x266['segmentation'][i][j]):
+    for j in range(len(image_details_266x266_w_seg['segmentation'][i])):
+        if not pd.isna(image_details_266x266_w_seg['segmentation'][i][j]):
             is_nan = False
             break
     if is_nan:
         count_266 += 1
 
-print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_266x266.shape[0] - count_266}.")
-print(f"Il numero delle righe totali è {image_details_266x266.shape[0]}.")
+print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_266x266_w_seg.shape[0] - count_266}.")
+print(f"\nIl numero delle righe totali è {image_details_266x266_w_seg.shape[0]}.")
 print(f"\nCi sono esattamente {count_266} slice di dimensione 266x266 con maschere totalmente vuote.")
-print(f"\nLa percentuale di slice di dimensione 266x266 con maschere totalmente vuote è pari al {count_266/image_details_266x266.shape[0]}/100")
+print(f"\nLa percentuale di slice di dimensione 266x266 con maschere totalmente vuote è pari al {round(count_266/image_details_266x266_w_seg.shape[0]*100, 4)}%")
 
 # Viene reiterato il procedeimento per le righe del dataframe 'image_details' le cui slice hanno dimensione 276 x 276
-image_details_276x276 = image_details[(image_details['width'] == 276) & (image_details['height'] == 276)].copy().reset_index()
+image_details_276x276 = image_details[(image_details['width'] == 276) & (image_details['height'] == 276)].reset_index().drop(columns='index')
 print("\n-------------------------------------------------------------------- image_details_276x276 --------------------------------------------------------------------\n")
 print(image_details_276x276.head())
 
@@ -403,23 +407,25 @@ image_details_276x276.to_csv('image_details_276x276.csv', index=False)
 
 # image_details_276x276 = pd.read_csv('image_details_276x276.csv')
 
+image_details_276x276_w_seg = image_details_276x276.merge(train_df, on=['case_id', 'day_id', 'slice_id']).drop_duplicates()
+
 count_276 = 0
-for i in range(len(image_details_276x276)):
+for i in range(len(image_details_276x276_w_seg)):
     is_nan = True
-    for j in range(len(image_details_276x276['segmentation'][i])):
-        if not pd.isna(image_details_276x276['segmentation'][i][j]):
+    for j in range(len(image_details_276x276_w_seg['segmentation'][i])):
+        if not pd.isna(image_details_276x276_w_seg['segmentation'][i][j]):
             is_nan = False
             break
     if is_nan:
         count_276 += 1
 
-print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_276x276.shape[0] - count_276}.")
-print(f"Il numero delle righe totali è {image_details_276x276.shape[0]}.")
+print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_276x276_w_seg.shape[0] - count_276}.")
+print(f"\nIl numero delle righe totali è {image_details_276x276_w_seg.shape[0]}.")
 print(f"\nCi sono esattamente {count_276} slice di dimensione 276x276 con maschere totalmente vuote.")
-print(f"\nLa percentuale di slice di dimensione 276x276 con maschere totalmente vuote è pari al {count_276/image_details_276x276.shape[0]}/100")
+print(f"\nLa percentuale di slice di dimensione 276x276 con maschere totalmente vuote è pari al {round(count_276/image_details_276x276_w_seg.shape[0]*100)}%")
 
 # Viene reiterato il procedeimento per le righe del dataframe 'image_details' le cui slice hanno dimensione 360 x 310
-image_details_360x310 = image_details[(image_details['width'] == 360) & (image_details['height'] == 310)].copy().reset_index()
+image_details_360x310 = image_details[(image_details['width'] == 360) & (image_details['height'] == 310)].reset_index().drop(columns='index')
 print("\n-------------------------------------------------------------------- image_details_360x310 --------------------------------------------------------------------\n")
 print(image_details_360x310.head())
 
@@ -431,38 +437,51 @@ image_details_360x310.to_csv('image_details_360x310.csv', index=False)
 
 # image_details_360x310 = pd.read_csv('image_details_360x310.csv')
 
-count = 0
-for i in range(len(image_details_360x310)):
+image_details_360x310_w_seg = image_details_360x310.merge(train_df, on=['case_id', 'day_id', 'slice_id']).drop_duplicates()
+
+count_360 = 0
+for i in range(len(image_details_360x310_w_seg)):
     is_nan = True
-    for j in range(len(image_details_360x310['segmentation'][i])):
-        if not pd.isna(image_details_360x310['segmentation'][i][j]):
+    for j in range(len(image_details_360x310_w_seg['segmentation'][i])):
+        if not pd.isna(image_details_360x310_w_seg['segmentation'][i][j]):
             is_nan = False
             break
     if is_nan:
-        count += 1
+        count_360 += 1
 
-print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_360x310.shape[0] - count}.")
-print(f"Il numero delle righe totali è {image_details_360x310.shape[0]}.")
-print(f"\nCi sono esattamente {count} slice di dimensione 360x310 con maschere totalmente vuote.")
-print(f"\nLa percentuale di slice di dimensione 360x310 con maschere totalmente vuote è pari al {count/image_details_360x310.shape[0]}/100")
+print(f"\nIl numero di righe con colonna 'segmentation' diversa da (nan, nan, nan) è {image_details_360x310_w_seg.shape[0] - count_360}.")
+print(f"\nIl numero delle righe totali è {image_details_360x310_w_seg.shape[0]}.")
+print(f"\nCi sono esattamente {count_360} slice di dimensione 360x310 con maschere totalmente vuote.")
+print(f"\nLa percentuale di slice di dimensione 360x310 con maschere totalmente vuote è pari al {round(count_360/image_details_360x310_w_seg.shape[0]*100)}%")
 
 ########################################### PARTE 3 ###########################################
 '''
 # Dati per il grafico
 labels = ['234x234', '266x266', '276x276', '360x310']
-counters = [count_234, count_266, count_276, count]
+counters1 = [count_234, count_266, count_276, count_360]
+counters2 = [segmented_234, segmented_266, segmented_276, segmented_360]
+counters3 = [(count_234 + segmented_234), (count_266 + segmented_266), (count_276 + segmented_276), (count_360 + segmented_360)]
+lower_bound = 0
+upper_bound = count_266 + segmented_266 + 1000
 
 # Colori per le barre
 colors = ['red', 'green', 'blue', 'orange']
 
 # Creazione del grafico a barre
-fig, ax = plt.subplots()
-ax.bar(labels, counters, color=colors)
+fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+ax1.bar(labels, counters1, color=colors)
+ax2.bar(labels, counters2, color=colors)
+ax3.bar(labels, counters3, color=colors)
 
-# Aggiunta di titoli e label
-ax.set_title('Numero di maschere vuote per dimensione slice')
-ax.set_xlabel('Larghezza e altezza slice (in px)')
-ax.set_ylabel('Numero di slice')
+# Aggiunta di titoli, label e scala
+ax1.set_title('N° di maschere vuote per dimensione slice')
+ax1.set_ylabel('Numero di slice')
+ax1.set_ybound(lower_bound, upper_bound)
+ax2.set_title('N° di segmentazioni per dimensione slice')
+ax2.set_xlabel('Larghezza e altezza slice (in px)')
+ax2.set_ybound(lower_bound, upper_bound)
+ax3.set_title('Totale')
+ax3.set_ybound(lower_bound, upper_bound)
 
 # Visualizzazione del grafico
 plt.show()

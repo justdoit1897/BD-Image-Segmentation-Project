@@ -95,19 +95,20 @@ def rle_to_image(rle_code: str, height: int, width: int) -> np.ndarray:
     if isinstance(rle_code, float) and math.isnan(rle_code):
         return np.zeros((height, width), dtype=np.uint8)
     
-    # decodifica la codifica RLE
+    # Trasforma la stringa in una lista di numeri interi e genera
+    # un array NumPy fatto da coppie di interi (secondo la notazione RLE)
     rle_numbers = [int(i) for i in rle_code.split()]
     rle_pairs = np.array(rle_numbers).reshape(-1, 2)
 
-    # crea un'immagine vuota
+    # Crea un'immagine vuota
     img = np.zeros(height*width, dtype=np.uint8)
 
-    # colora i pixel coperti dalla maschera
+    # Colora i pixel coperti dalla maschera
     for index, length in rle_pairs:
         index -= 1
         img[index:index+length] = 255
 
-    # ridimensiona l'immagine e la restituisce
+    # Ridimensiona l'immagine e la restituisce
     return img.reshape((height, width))
 
 

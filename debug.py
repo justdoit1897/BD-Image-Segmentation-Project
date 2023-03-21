@@ -176,13 +176,10 @@ al percorso specificato.
 
 def equalizza_immagini(path: str):
     
-    """Funzione usata per equalizzare e salvare un'immagine 
-    delle dimensioni specificate
+    """Funzione usata per equalizzare un'immagine e sovrascriverla all'originale
 
     Args:
         path (str): percorso in cui salvare l'immagine
-        width (int): larghezza dell'immagine
-        height (int): altezza dell'immagine
     """
     
     # Leggo l'immagine situata in 'path' in scala di grigi
@@ -193,7 +190,6 @@ def equalizza_immagini(path: str):
     
     cv.imwrite(path, equ)
     
-    #print(f"\nEqualizzazione immagine in: {path}")
 
 merged_df['is_equalized'] = [True] * merged_df.shape[0]
 # merged_df['is_equalized'] = [False] * merged_df.shape[0]    

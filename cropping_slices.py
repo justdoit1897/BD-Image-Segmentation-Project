@@ -36,11 +36,13 @@ def find_outermost_white_pixels(image):
     bottom_right = (x + w, y + h)
     bottom_left = (x, y + h)
 
+    print(top_left, top_right, bottom_right, bottom_left)
+
     return top_left, top_right, bottom_right, bottom_left
 
 
 # Carica un'immagine in scala di grigi
-img = cv2.imread("slice_0081_266_266_1.50_1.50.png")
+img = cv2.imread("/home/vincenzo/BD-Image-Segmentation-Comp/train/case89/case89_day17/scans/slice_0080_360_310_1.50_1.50.png")
 
 # Trova i bordi dell'immagine
 top_left, top_right, bottom_right, bottom_left = find_outermost_white_pixels(img)
@@ -50,9 +52,9 @@ print(top_left, top_right, bottom_right, bottom_left)
 
 # image = cv2.rectangle(img, top_left, bottom_right, (255, 0, 0), 1)
 
-cropped = img[top_left[1] : bottom_left[1], top_left[0] : top_right[0]]
+cropped = img[top_left[0] : bottom_left[0], top_left[0] : top_right[0]]
 
-plt.imshow(cropped)
+plt.imshow(img[:, 25 : 335])
 plt.show()
 
 # merged_df = pd.read_csv('merged_df.csv')
@@ -60,21 +62,21 @@ plt.show()
 h, w = cropped.shape[:2]
 print(cropped.shape[:2])
 
-border_w = (300 - w) // 2
-border_h = (300 - h) // 2
+# border_w = (300 - w) // 2
+# border_h = (300 - h) // 2
 
-immagine_ridimensionata = cv2.copyMakeBorder(cropped, border_h, border_h, border_w, border_w, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+# immagine_ridimensionata = cv2.copyMakeBorder(cropped, border_h, border_h, border_w, border_w, cv2.BORDER_CONSTANT, value=(0, 0, 0))
 
-plt.imshow(immagine_ridimensionata)
-plt.show()
+# plt.imshow(immagine_ridimensionata)
+# plt.show()
 
-print(immagine_ridimensionata.shape[:2])
+# print(immagine_ridimensionata.shape[:2])
 
-normale = cv2.resize(img, [300, 300])
+# normale = cv2.resize(img, [300, 300])
 
-plt.imshow(normale)
-plt.show()
-print(normale.shape[:2])
+# plt.imshow(normale)
+# plt.show()
+# print(normale.shape[:2])
 
 '''
 import cv2

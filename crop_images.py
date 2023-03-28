@@ -1,6 +1,9 @@
 import os
 import cv2
 import pandas as pd
+import numpy as np
+import math
+
 from tqdm import tqdm
 
 PATH = './training'
@@ -19,20 +22,29 @@ if not os.path.exists(PATH):
         os.mkdir(SCANS_PATH) 
         print("\nCartella training/scans creata con successo!\n")
 
-image_details = pd.read_csv('./image_details_ordered.csv')
 
-image_details_360x310 = image_details[(image_details['width'] == 360) & (image_details['height'] == 310)].reset_index().drop(columns='index')
 
-print(image_details_360x310.head())
+merged_df = pd.read_csv('./merged_df.csv')
 
-for index, riga in tqdm(image_details_360x310.iterrows(), total=len(image_details_360x310)):
+merged_df_360x310 = merged_df[(merged_df['width'] == 360) & (merged_df['height'] == 310)].reset_index().drop(columns='index')
+
+# print(merged_df_360x310.head())
+
+# print(merged_df_360x310)        
+
+# for element in merged_df_360x310['segmentation']:
+#     if element == '(nan, nan, nan)':
+#         print(element)
+#         print("\n")
     
-    riga['case_id']
+for index, riga in tqdm(merged_df_360x310.iterrows(), total=len(merged_df_360x310)):
     
-    scan = cv2.imread(riga['path'])[:, 25:335]
-    maschera = cv2.imread(riga['mask_path'])[:, 25:335]
+    if riga['segmentation'] != '(nan, nan, nan)':
+        
+        scan = cv2.imread(riga['path'])[:, 25:335]
+        maschera = cv2.imread(riga['mask_path'])[:, 25:335]
     
-    cv2.imwrite(SCANS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + riga['slice_name'], scan)
-    cv2.imwrite(MASKS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + 'mask_' + riga['slice_name'], maschera)
+        cv2.imwrite(SCANS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + riga['slice_name'], scan)
+        cv2.imwrite(MASKS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + 'mask_' + riga['slice_name'], maschera)
 
 print(f"\nFine cropping.\n")

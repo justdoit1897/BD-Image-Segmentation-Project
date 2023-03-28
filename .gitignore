@@ -1,5 +1,6 @@
 train/
 __pycache__/
+training/
 res.png
 aligned_image.png
 mask_from_rle.py

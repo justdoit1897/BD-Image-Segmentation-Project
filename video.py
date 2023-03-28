@@ -21,8 +21,8 @@ img_list2.sort()
 video_name = "video_output.avi"
 
 # Specifica la larghezza e l'altezza del video
-width = 266
-height = 266
+width = 300
+height = 300
 
 # Inizializza l'oggetto VideoWriter
 fourcc = cv.VideoWriter_fourcc(*"MJPG")

@@ -6,8 +6,8 @@ import numpy as np
 
 
 # Carica le due immagini
-slice = cv.imread('slice_0081_266_266_1.50_1.50.png')
-mask = cv.imread('mask_slice_0081_266_266_1.50_1.50.png')
+slice = cv.imread('./train/case80/case80_day0/scans/slice_0081_266_266_1.50_1.50.png')
+mask = cv.imread('./train/case80/case80_day0/masks/mask_slice_0081_266_266_1.50_1.50.png')
 
 # Specifica il peso delle due immagini
 alpha = 0.2  # peso per l'immagine A
@@ -32,8 +32,8 @@ plt.imshow(result)
 plt.show()
 
 # Mostra l'immagine
-plt.imshow(slice, cmap='gray')
-plt.show()
+# plt.imshow(slice, cmap='gray')
+# plt.show()
 
 # Mostra l'istogramma
 plt.hist(slice.ravel(), bins=256, range=(0, 255))

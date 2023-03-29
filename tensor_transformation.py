@@ -13,16 +13,20 @@ l'asse della profondità.
 
 import numpy as np
 import pandas as pd
+from glob import glob
 
-df = pd.read_csv("to_train.csv")
+SLICES_PATH = './training/scans/'
+MASKS_PATH = './training/masks/'
+
+df = pd.read_csv("merged_df.csv")
 
 # carica le tue slice e maschere 3D e convertile in array numpy
 
-slice_array = np.array(df['slice_path'].values)
-mask_array = np.array(df['mask_path'].values)
+list_slices = glob.glob(SLICES_PATH + '*.png')
+list_masks = glob.glob(MASKS_PATH + '*.png')
 
-path1 = '../BD-Image-Segmentation-Comp/train/case2/case2_day1/scans/slice_0001_266_266_1.50_1.50.png'
-path2 = '../BD-Image-Segmentation-Comp/train/case2/case2_day1/masks/mask_slice_0001_266_266_1.50_1.50.png'
+slice_array = np.array(list_slices)
+mask_array = np.array(list_masks)
 
 # impila le slice e maschere 3D lungo l'asse della profondità
 data = np.stack([slice_array, mask_array], axis=-1)

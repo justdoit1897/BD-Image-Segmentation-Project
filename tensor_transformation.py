@@ -13,7 +13,7 @@ l'asse della profondità.
 
 import numpy as np
 import pandas as pd
-from glob import glob
+import glob
 
 SLICES_PATH = './training/scans/'
 MASKS_PATH = './training/masks/'

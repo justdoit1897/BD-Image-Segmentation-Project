@@ -2,11 +2,11 @@ import numpy as np
 import tensorflow as tf
 from keras import layers
 
-def get_unet_3d(inputs):
+def get_unet_3d(input_shape):
     
 
-# Definizione della 3D U-Net
-# inputs = layers.Input(shape=(None, None, None, 1))
+    # Definizione della 3D U-Net
+    inputs = layers.Input(input_shape)
 
     conv1 = layers.Conv3D(32, 3, activation='relu', padding='same')(inputs)
     conv1 = layers.Conv3D(32, 3, activation='relu', padding='same')(conv1)

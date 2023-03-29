@@ -60,8 +60,10 @@ def hausdorff_distance(y_true, y_pred):
     return K.max(hausdorff, axis=0)
 
 # Carica i dati di training
-train_data = np.load('training_data.npy')
-# train_data = np.load('training_data.npy', allow_pickle=True)
+# train_data = np.load('training_data.npy')
+train_data = np.load('training_data.npy', allow_pickle=True)
+
+print(train_data[0])
 
 # Prende solo le slice e le rispettive maschere
 X = train_data[:,0,:,:,:]
@@ -79,16 +81,18 @@ La funzione divide questi dati in quattro parti:
     -   X_train e Y_train, che vengono utilizzati per addestrare il modello 
     -   X_val e Y_val, che vengono utilizzati per valutare le prestazioni del modello durante l'addestramento. 
 
-La dimensione del set di validazione è impostata al 20% del dataset totale, utilizzando test_size=0.2, mentre random_state=42 garantisce 
+La dimensione del set di validazione è impostata al 10% del dataset totale, utilizzando test_size=0.2, mentre random_state=42 garantisce 
 che la divisione casuale sia la stessa in ogni esecuzione del codice.
 
 '''
 
 # Dividi i dati in training e validation set
-X_train, X_val, Y_train, Y_val = train_test_split(X, Y, test_size=0.2, random_state=42)
+X_train, X_val, Y_train, Y_val = train_test_split(X, Y, test_size=0.1, random_state=42)
 
 # Crea il modello UNet
-model = get_unet_3d(input_shape=(None, None, None, 1), n_labels=3)
+# model = get_unet_3d(input_shape=(None, None, None, 1), n_labels=3)
+
+model = get_unet_3d(input_shape = (None, None, None, 1))
 
 # Compila il modello
 # model.compile(optimizer=Adam(lr=1e-5), loss='categorical_crossentropy', metrics=['accuracy', MeanIoU(num_classes=3)])

@@ -60,10 +60,8 @@ def hausdorff_distance(y_true, y_pred):
     return K.max(hausdorff, axis=0)
 
 # Carica i dati di training
-# train_data = np.load('training_data.npy')
+# train_data = np.load('training_data.ninpy')
 train_data = np.load('training_data.npy', allow_pickle=True)
-
-print(train_data[0])
 
 # Prende solo le slice e le rispettive maschere
 X = train_data[:,0,:,:,:]

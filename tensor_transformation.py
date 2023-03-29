@@ -14,22 +14,45 @@ l'asse della profondità.
 import numpy as np
 import pandas as pd
 import glob
+import cv2 as cv
 
 SLICES_PATH = './training/scans/'
 MASKS_PATH = './training/masks/'
-
-df = pd.read_csv("merged_df.csv")
 
 # carica le tue slice e maschere 3D e convertile in array numpy
 
 list_slices = glob.glob(SLICES_PATH + '*.png')
 list_masks = glob.glob(MASKS_PATH + '*.png')
 
-slice_array = np.array(list_slices)
-mask_array = np.array(list_masks)
+list_slices = sorted(list_slices)
+list_masks = sorted(list_masks)
 
-# impila le slice e maschere 3D lungo l'asse della profondità
-data = np.stack([slice_array, mask_array], axis=-1)
+# creo 3 vettori colonna che conterranno rispettivamente la slice, la maschera e la profondità
+
+slice_array = []
+mask_array = []
+depth_array = []
+
+for slice_path in list_slices:
+    # apri l'immagine e ottieni la profondità dal nome del file
+    
+    img = cv.imread(slice_path)
+    depth = float(slice_path.split('/')[-1].split('_')[-2]) # assume che il nome del file sia nel formato: "slice_XXX_depth_1.5.png"
+    
+    # converto l'immagine in array numpy e aggiungi alla lista
+    # slice_np = np.array(img)
+    slice_array.append(img)
+    depth_array.append(depth)
+
+for mask_path in list_masks:
+    
+    # converto la maschera in array numpy e la aggiungo alla lista
+    mask = cv.imread(mask_path)
+    # mask_np = np.array(mask)
+    mask_array.append(mask)
+
+# impilo le slice e maschere 3D lungo l'asse della profondità
+data = np.stack([slice_array, mask_array, depth_array], axis=-1)
 
 # salva l'array numpy in training_data.npy
 np.save('training_data.npy', data)

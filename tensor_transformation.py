@@ -164,6 +164,9 @@ from tqdm import tqdm
 SLICES_PATH = './training/scans/'
 MASKS_PATH = './training/masks/'
 
+bar_format_yellow = "{l_bar}\x1b[33m{bar}\x1b[0m{r_bar}]"
+bar_format_blue = "{l_bar}\x1b[34m{bar}\x1b[0m{r_bar}]"
+
 # carica le tue slice e maschere 3D e convertile in array numpy
 
 list_slices = glob.glob(SLICES_PATH + '*.png')
@@ -191,7 +194,7 @@ def process_slice(slice_path):
     return (img, depth)
 
 with Parallel(n_jobs=-1, prefer="processes") as parallel:
-    results = parallel(delayed(process_slice)(slice_path) for slice_path in tqdm(list_slices))
+    results = parallel(delayed(process_slice)(slice_path) for slice_path in tqdm(list_slices, bar_format=bar_format_yellow))
 
 for i, result in enumerate(results):
     # aggiungi l'immagine all'array
@@ -211,7 +214,7 @@ def process_mask(mask_path):
     return mask
 
 with Parallel(n_jobs=-1, prefer="processes") as parallel:
-    results = parallel(delayed(process_mask)(mask_path) for mask_path in tqdm(list_masks))
+    results = parallel(delayed(process_mask)(mask_path) for mask_path in tqdm(list_masks, bar_format=bar_format_blue))
 
 for i, result in enumerate(results):
     mask_array[i] = result

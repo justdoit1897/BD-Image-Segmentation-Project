@@ -194,20 +194,20 @@ def equalizza_immagini(path: str):
 merged_df['is_equalized'] = [True] * merged_df.shape[0]
 # merged_df['is_equalized'] = [False] * merged_df.shape[0]    
 '''
-for index, row in merged_df.iterrows():
+print(f"Inizio equalizzazione...\n")    
+
+for index, row in tqdm(merged_df.iterrows(), total=len(merged_df)):
     
-    if row['is_equalized'] == False:
-        print(f"Inizio equalizzazione...\n")    
-        
-        for index, row in tqdm(merged_df.iterrows(), total=len(merged_df)):
-            equalizza_immagini(row['path'])
-        
-        print(f"\nFine equalizzazione.\n")
+    if row['is_equalized'] == False:        
+        equalizza_immagini(row['path'])        
         row['is_equalized'] = True
         
     else:
         print("Immagini già equalizzate")
         break
+
+print(f"\nFine equalizzazione.\n")
+    
 '''
 
 #################################################### 'merged_df' #################################################### 

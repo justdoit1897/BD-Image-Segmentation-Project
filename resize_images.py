@@ -39,8 +39,8 @@ for index, riga in tqdm(merged_df[(merged_df['width'] != 360) & (merged_df['heig
         resized_scan = cv2.resize(scan, [300,300])
         resized_mask = cv2.resize(maschera, [300,300])   
         
-        cv2.imwrite(SCANS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + riga['slice_name'], scan)
-        cv2.imwrite(MASKS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + 'mask_' + riga['slice_name'], maschera)
+        cv2.imwrite(SCANS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + riga['slice_name'], resized_scan)
+        cv2.imwrite(MASKS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + 'mask_' + riga['slice_name'], resized_mask)
     
 print(f"\n\t2. Inizio resize di maschere e slices 360x310.\n")
 
@@ -54,7 +54,7 @@ for index, riga in tqdm(merged_df[(merged_df['width'] == 360) & (merged_df['heig
         resized_scan = cv2.resize(scan, [300,300])
         resized_mask = cv2.resize(maschera, [300,300])   
         
-        cv2.imwrite(SCANS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + riga['slice_name'], scan)
-        cv2.imwrite(MASKS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + 'mask_' + riga['slice_name'], maschera)
+        cv2.imwrite(SCANS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + riga['slice_name'], resized_scan)
+        cv2.imwrite(MASKS_PATH + 'case' + str(riga['case_id']) + '_day' + str(riga['day_id']) + '_' + 'mask_' + riga['slice_name'], resized_mask)
         
 print(f"\nFine resize di maschere e slices.\n")

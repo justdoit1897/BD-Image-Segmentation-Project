@@ -226,5 +226,5 @@ data = np.concatenate([slice_array, mask_array], axis=-1)
 print("Fine creazione tensore.")
 
 # salva l'array numpy in training_data.npy
-np.save('training_slices.npy', data)
+np.save('training_data.npy', data)
 np.save('training_depth.npy', depth_array)

@@ -4,7 +4,6 @@ from keras import layers
 
 def get_unet_3d(input_shape):
     
-
     # Definizione della 3D U-Net
     inputs = layers.Input(input_shape)
 

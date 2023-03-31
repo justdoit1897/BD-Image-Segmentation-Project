@@ -52,6 +52,22 @@ def dice_coefficient(y_true, y_pred, smooth=1):
 def dice_loss(y_true, y_pred):
     return 1 - dice_coefficient(y_true, y_pred)
 
+# per essere fedeli alla consegna, si è scelto di creare questa funzione di loss e di utilizzarla nella rete, 
+# poiché essa combina entrambe le metriche di dice_coefficient e hausdorff_distance, 
+# tenendo conto dei pesi specificati e quindi rappresenta una misura più completa della similarità tra la maschera di 
+# segmentazione predetta e quella reale. 
+# Inoltre, utilizzare la combined_loss come funzione di perdita è più coerente con l'ottimizzazione del modello per 
+# migliorare la performance complessiva, piuttosto che ottimizzarlo solo per la metrica di dice_coefficient.
+
+def combined_loss(y_true, y_pred):
+    
+    alpha = 0.4
+    beta = 0.6
+    dice = dice_loss(y_true, y_pred)
+    hausdorff = hausdorff_distance(y_true, y_pred)
+    
+    return alpha * dice + beta * hausdorff
+
 # la funzione hausdorff_distance calcola la distanza di Hausdorff tra le maschere predette e quelle reali
 def hausdorff_distance(y_true, y_pred):
     d1 = K.sqrt(K.sum(K.square(y_true - y_pred), axis=[1,2,3]))
@@ -98,7 +114,11 @@ model = get_unet_3d(input_shape = (None, None, None, 1))
 
 # la rete viene compilata utilizzando l'ottimizzatore Adam, l'errore di Dice come funzione di perdita e il coefficiente di Dice
 # e la distanza di Hausdorff come metriche di valutazione.
-model.compile(optimizer='adam', loss=dice_loss, metrics=[dice_coefficient, hausdorff_distance])
+model.compile(optimizer='adam', loss=combined_loss, metrics=[dice_coefficient, hausdorff_distance])
+
+# otherwise...
+
+# model.compile(optimizer='adam', loss=dice_loss, metrics=[dice_coefficient, hausdorff_distance])
 
 # Prepara i checkpoint per salvare il modello
 checkpoint_path = "models/model.h5"

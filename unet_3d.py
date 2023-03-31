@@ -62,6 +62,7 @@ def hausdorff_distance(y_true, y_pred):
 # Carica i dati di training
 # train_data = np.load('training_data.ninpy')
 train_data = np.load('training_data.npy', allow_pickle=True)
+train_depth = np.load('training_depth.npy', allow_pickle=True)
 
 # Prende solo le slice e le rispettive maschere
 X = train_data[:,0,:,:,:]
@@ -79,7 +80,7 @@ La funzione divide questi dati in quattro parti:
     -   X_train e Y_train, che vengono utilizzati per addestrare il modello 
     -   X_val e Y_val, che vengono utilizzati per valutare le prestazioni del modello durante l'addestramento. 
 
-La dimensione del set di validazione è impostata al 10% del dataset totale, utilizzando test_size=0.2, mentre random_state=42 garantisce 
+La dimensione del set di validazione è impostata al 10% del dataset totale, utilizzando test_size=0.1, mentre random_state=42 garantisce 
 che la divisione casuale sia la stessa in ogni esecuzione del codice.
 
 '''

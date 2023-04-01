@@ -19,6 +19,7 @@ ai tre organi di interesse, utilizzando le maschere di segmentazione prodotte in
 '''
 
 import os
+import tracemalloc
 import numpy as np
 
 from sklearn.model_selection import train_test_split
@@ -27,6 +28,8 @@ from keras.optimizers import Adam
 from keras import backend as K
 
 from unet_model import get_unet_3d
+from tqdm import tqdm
+from matplotlib import pyplot as plt
 
 '''
 
@@ -81,8 +84,42 @@ train_data = np.load('training_data.npy', allow_pickle=True)
 train_depth = np.load('training_depth.npy', allow_pickle=True)
 
 # Prende solo le slice e le rispettive maschere
-X = train_data[:,0,:,:,:]
-Y = train_data[:,1,:,:,:]
+X = train_data[:,:,:,:3]
+Y = train_data[:,:,:,3:]
+
+tracemalloc.start()
+
+X = np.expand_dims(X, axis=-1)
+X = np.asarray(X, dtype=np.float16)
+
+Y = np.expand_dims(Y, axis=-1)
+Y = np.asarray(Y, dtype=np.float16)
+
+print("\nInizio combinazione slice con informazioni profondità\n")
+for index, item in tqdm(enumerate(X), total=len(X)):
+    # print(f"\nWorking on:\n{np.array(item).flatten()}\nshape: {np.array(item).shape}")
+    # print(f"adding item {train_depth[index, 0]}")
+    item[0,0,0,0] = train_depth[index, 0]
+    # print(f"added item {train_depth[index, 0]}")
+    # print(f"\nNEW item:\n{np.array(item[index,0,0,0])}\nshape: {np.array(item).shape}")
+
+print("\nFine combinazione slice con informazioni profondità\n")    
+    
+print("Inizio combinazione maschere con informazioni profondità\n")
+for index, item in tqdm(enumerate(Y), total=len(Y)):
+    item[0,0,0,0] = train_depth[index, 0]
+
+print("\nFine combinazione maschere con informazioni profondità\n")
+
+tracemalloc.stop()
+print(tracemalloc.get_traced_memory())
+
+# sample = X[15000,:,:,:,0]
+
+# print(f"X shape {np.array(X).shape}\nDepth of x in X:\n{X[15000,0,0,0,0]}")
+
+# plt.imshow(sample.astype(np.uint8))
+# plt.show()
 
 '''
 
@@ -101,20 +138,33 @@ che la divisione casuale sia la stessa in ogni esecuzione del codice.
 
 '''
 
+
+print("Inizio suddivisione training set/test set")
+
+tracemalloc.start()
+
 # Dividi i dati in training e validation set
 X_train, X_val, Y_train, Y_val = train_test_split(X, Y, test_size=0.1, random_state=42)
+
+tracemalloc.stop()
+print(tracemalloc.get_traced_memory())
+
+print("Fine suddivisione training set/test set")
 
 # Crea il modello UNet
 # model = get_unet_3d(input_shape=(None, None, None, 1), n_labels=3)
 
-model = get_unet_3d(input_shape = (None, None, None, 1))
+model = get_unet_3d(input_shape = (None, None, None, None, 1))
 
 # Compila il modello
 # model.compile(optimizer=Adam(lr=1e-5), loss='categorical_crossentropy', metrics=['accuracy', MeanIoU(num_classes=3)])
 
 # la rete viene compilata utilizzando l'ottimizzatore Adam, l'errore di Dice come funzione di perdita e il coefficiente di Dice
 # e la distanza di Hausdorff come metriche di valutazione.
+
+print("\nInizio compilazione modello")
 model.compile(optimizer='adam', loss=combined_loss, metrics=[dice_coefficient, hausdorff_distance])
+print("Fine compilazione modello")
 
 # otherwise...
 

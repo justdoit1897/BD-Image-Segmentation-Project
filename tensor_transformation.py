@@ -167,7 +167,7 @@ MASKS_PATH = './training/masks/'
 bar_format_yellow = "{l_bar}\x1b[33m{bar}\x1b[0m{r_bar}]"
 bar_format_blue = "{l_bar}\x1b[34m{bar}\x1b[0m{r_bar}]"
 
-# carica le tue slice e maschere 3D e convertile in array numpy
+# carico le slice e maschere 3D e convertile in array numpy
 
 list_slices = glob.glob(SLICES_PATH + '*.png')
 list_masks = glob.glob(MASKS_PATH + '*.png')

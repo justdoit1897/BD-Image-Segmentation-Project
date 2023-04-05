@@ -10,8 +10,8 @@ PATH = './training'
 MASKS_PATH = PATH + '/masks/'
 SCANS_PATH = PATH + '/scans/'
 
-ALTEZZA = 200
-LARGHEZZA = 200
+ALTEZZA = 256
+LARGHEZZA = 256
 
 bar_format_yellow = "{l_bar}\x1b[33m{bar}\x1b[0m{r_bar}]"
 bar_format_blue = "{l_bar}\x1b[34m{bar}\x1b[0m{r_bar}]"
@@ -135,3 +135,7 @@ for index, riga in tqdm(merged_df[(merged_df['width'] == 360) & (merged_df['heig
 print(f"\nFine resize di maschere e slices.\n")
 
 print(f"\nTotale immagini rettangolari a cui è stato effettuato lo skewing: {counter_skewing}/{count_rettangolari}\n")
+
+
+
+

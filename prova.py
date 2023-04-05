@@ -34,3 +34,18 @@ dataset = dataset.shuffle(buffer_size=NUM_IMAGES)
 dataset = dataset.map(load_image_and_mask, num_parallel_calls=tf.data.AUTOTUNE)
 dataset = dataset.batch(BATCH_SIZE)
 dataset = dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
+
+'''
+
+In questo esempio, load_image_and_mask è una funzione che carica e pre-elabora le immagini e le maschere utilizzando 
+le funzioni del modulo tf.image di TensorFlow. La funzione viene poi utilizzata per mappare i percorsi delle immagini e 
+delle maschere nel Dataset.
+
+Il Dataset viene poi configurato per eseguire il caricamento dei dati in batch (batch), la pre-caricamento delle immagini 
+successive durante l'elaborazione del batch corrente (prefetch) e la miscelazione dei dati in modo casuale all'interno del 
+buffer (shuffle). L'utilizzo di num_parallel_calls=tf.data.AUTOTUNE permette di sfruttare al massimo le risorse hardware 
+disponibili per l'elaborazione dei dati.
+
+Una volta creato il Dataset, è possibile utilizzarlo come input per il training del modello.
+
+'''

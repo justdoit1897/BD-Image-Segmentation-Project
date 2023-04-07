@@ -10,3 +10,4 @@ training_data.npy
 masks.tif
 scans.tif
 output.tif
+train_unet_2d.py

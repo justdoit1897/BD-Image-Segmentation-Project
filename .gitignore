@@ -8,3 +8,5 @@ slice_0081_266_266_1.50_1.50.png
 mask_slice_0081_266_266_1.50_1.50.png
 training_data.npy
 masks.tif
+scans.tif
+output.tif

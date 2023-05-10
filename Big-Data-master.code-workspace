@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../Big-Data-master"
+		},
+		{
+			"name": "BD-Image-Segmentation-Comp",
+			"path": "."
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

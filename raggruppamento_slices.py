@@ -89,14 +89,14 @@ LARGHEZZA = 256
 slices = []
 start = 0
 
-for length in count:
-    end = start + length
-    slices.append(df[start:end].reset_index(drop=True))
-    start = end
+# for length in count:
+#     end = start + length
+#     slices.append(df[start:end].reset_index(drop=True))
+#     start = end
 
-for df in slices:
-    for index, row in df.iterrows():
-        print(row[6], row[7])
+# for df in slices:
+#     for index, row in df.iterrows():
+#         print(row[6], row[7])
     
 
 # print(len(slices))

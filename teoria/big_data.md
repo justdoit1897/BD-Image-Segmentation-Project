@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" type="text/css" href="stili.css">
 
 # 4 - Distanze e Similarità
@@ -266,8 +265,9 @@ HDFS è **progettato per gestire file di grandi dimensioni**, tipicamente di dim
 ## Architettura
 
 Le componenti principali di HDFS sono:
+
 * **NameNode**: il NameNode è il componente centrale di HDFS e gestisce il namespace del file system, ovvero i nomi dei file e delle directory, nonché le informazioni di posizione e di replicazione dei blocchi di dati. Il NameNode funziona come un singolo punto di fallimento, quindi è importante avere un meccanismo di backup o di ripristino in caso di problemi.
-Il NameNode è caratterizzato da metadati scritti in due file, uno statico e uno dinamico, aventi la stessa struttura: il primo è FsImage, che contiene la lista dei nomi del file system, il secondo è EditLogs, che registra tutte le operazioni fatte nello spazio dei nomi.
+  Il NameNode è caratterizzato da metadati scritti in due file, uno statico e uno dinamico, aventi la stessa struttura: il primo è FsImage, che contiene la lista dei nomi del file system, il secondo è EditLogs, che registra tutte le operazioni fatte nello spazio dei nomi.
 * **DataNode**: il DataNode è il componente di storage di HDFS e gestisce i blocchi di dati, ovvero il contenuto dei file. Il DataNode si occupa dell'accesso ai dati, della lettura e scrittura dei blocchi e della replicazione dei blocchi su altri nodi del cluster. I datanode sono fisicamente organizzati in rack, ossia vengono considerati come facenti parte di un unico insieme.
 * **Secondary NameNode**: il Secondary NameNode è un nodo di supporto che aiuta il NameNode a gestire le informazioni sul file system. Il Secondary NameNode crea regolarmente snapshot del namespace del file system e delle informazioni di posizione dei blocchi di dati, che vengono utilizzati in caso di ripristino del sistema.
 
@@ -284,18 +284,19 @@ Un'altra caratteristica saliente di HDFS è la cosiddetta **high availability**,
 ## Caratteristiche avanzate
 
 * **High availability del NameNode** - Uso di almeno due NameNode ridondanti sempre in
-funzione, uno **attivo** e uno **passivo**. Il NameNode passivo entra in gioco nel momento in cui quello attivo va in fault, venendo messo prima in stand-by e poi divenendo il nuovo nodo passivo.
-Per implementare tale strategia, viene fatto uso del **QuorumJournalNode**, ossia un **pool di nodi** di journaling, in cui ogni nodo **genera e condivide i propri EditLog**, che poi il nodo candidato a diventare attivo deve leggere e garantire di aver aggiornato il proprio namespace in modo corretto. Si dimostra che, per $N$ nodi di journaling, sono gestibili $\frac{N-1}2$ fallimenti.
+  funzione, uno **attivo** e uno **passivo**. Il NameNode passivo entra in gioco nel momento in cui quello attivo va in fault, venendo messo prima in stand-by e poi divenendo il nuovo nodo passivo.
+  Per implementare tale strategia, viene fatto uso del **QuorumJournalNode**, ossia un **pool di nodi** di journaling, in cui ogni nodo **genera e condivide i propri EditLog**, che poi il nodo candidato a diventare attivo deve leggere e garantire di aver aggiornato il proprio namespace in modo corretto. Si dimostra che, per $N$ nodi di journaling, sono gestibili $\frac{N-1}2$ fallimenti.
 * **Federazione di HDFS** - Per come è pensata, HDFS è letteralmente il collo di bottiglia delle
-applicazioni distribuite, pertanto soffre di problemi come:
-   * **forte accoppiamento tra storage dei blocchi e spazio dei nomi;**
-   * **poca scalabilità dello spazio dei nomi;**
-   * **performance limitate dal throughput del NameNode;**
-   * **assenza di isolamento tra le applicazioni e tra chi gestisce il cluster e la gestione dello spazio dei nomi**.
+  applicazioni distribuite, pertanto soffre di problemi come:
 
-   Pertanto, si può pensare di **federare più HDFS**, facendo in modo che ogni NameNode abbia un pool di blocchi, che vi sia gestione separata dei DataNode, che vi sia isolamento tra le applicazioni, scalabilità dello spazio dei nomi e, in generale, un aumento delle performance.
+  * **forte accoppiamento tra storage dei blocchi e spazio dei nomi;**
+  * **poca scalabilità dello spazio dei nomi;**
+  * **performance limitate dal throughput del NameNode;**
+  * **assenza di isolamento tra le applicazioni e tra chi gestisce il cluster e la gestione dello spazio dei nomi**.
+
+  Pertanto, si può pensare di **federare più HDFS**, facendo in modo che ogni NameNode abbia un pool di blocchi, che vi sia gestione separata dei DataNode, che vi sia isolamento tra le applicazioni, scalabilità dello spazio dei nomi e, in generale, un aumento delle performance.
 * **Disk Balancing** - Ossia il **bilanciamento del carico** a livello dei singoli DataNode. Quando uno dei DataNode risulta in sovraccarico, **HDFS sposta internamente dei blocchi** per cercare di mantenere omogenea l'occupazione di spazio su tutti i dischi del DataNode.
-* **Erasure Coding** - Ossia un metodo di **protezione dei dati** per cui questi ultimi vengono suddivisi in frammenti, espansi e codificati con parti di dati ridondanti, per poi venire archiviati in posizioni diverse. In questo modo, se un'unità è guasta o i dati vengono danneggiati, essi possono essere ricostruiti a partire da tali frammenti, superando, di fatto, alcune limitazioni legate alla struttura a tre repliche di un blocco. 
+* **Erasure Coding** - Ossia un metodo di **protezione dei dati** per cui questi ultimi vengono suddivisi in frammenti, espansi e codificati con parti di dati ridondanti, per poi venire archiviati in posizioni diverse. In questo modo, se un'unità è guasta o i dati vengono danneggiati, essi possono essere ricostruiti a partire da tali frammenti, superando, di fatto, alcune limitazioni legate alla struttura a tre repliche di un blocco.
 
 ## Domande Frequenti
 
@@ -360,6 +361,7 @@ applicazioni distribuite, pertanto soffre di problemi come:
 Hadoop è un framework open source per il processing distribuito di grandi volumi di dati su cluster di computer.
 Il suo obiettivo principale è quello di fornire un modo efficiente per elaborare, archiviare e analizzare grandi quantità di dati, suddividendoli in blocchi e distribuendoli su un cluster di macchine.
 Il cuore di Hadoop è composto dalle seguenti componenti:
+
 * il file system distribuito HDFS (Hadoop Distributed File System)
 * il framework per il calcolo parallelo MapReduce
 * il framework di gestione delle risorse YARN (Yet Another Resource Negotiator)
@@ -376,6 +378,7 @@ Hadoop è stato progettato per funzionare su cluster di computer commodity, cio�
 ### YARN
 
 Il funzionamento di YARN si basa su un'architettura client-server composta da tre componenti principali:
+
 * **ResourceManager**
 * **NodeManager**
 * **ApplicationMaster**
@@ -388,6 +391,7 @@ L'**ApplicationMaster** è un **componente specifico dell'applicazione** che vie
 L'ApplicationMaster comunica con il NodeManager per monitorare l'utilizzo delle risorse del nodo e per assicurarsi che l'applicazione abbia abbastanza risorse a disposizione.
 
 Il processo di esecuzione di un'applicazione su YARN prevede i seguenti passi:
+
 1. L'utente sottomette la richiesta di esecuzione dell'applicazione al ResourceManager.
 2. Il ResourceManager cerca i nodi del cluster con risorse sufficienti per soddisfare la richiesta dell'applicazione.
 3. Il ResourceManager assegna al NodeManager di ciascun nodo del cluster le risorse richieste dall'applicazione.
@@ -430,6 +434,7 @@ L'accesso a Hive è consentito a client eterogenei, grazie a connettori specific
 Ogni drive di Hive non si appoggia direttamente su MapReduce, ma usa uno **store di metadati** per schemi e tabelle.
 
 Hive utilizza una serie di componenti per l'elaborazione dei dati, tra cui:
+
 1. **HiveQL**: HiveQL è un dialetto SQL-like che permette di scrivere query per l'elaborazione dei dati. HiveQL supporta una vasta gamma di funzioni SQL standard, come SELECT, WHERE, GROUP BY, JOIN e altre. Hive converte automaticamente le query HiveQL in attività MapReduce da eseguire sul cluster.
 2. **Hive Metastore**: Hive Metastore è un database che memorizza i metadati dei dati archiviati in Hadoop, come lo schema dei dati e le informazioni sulle partizioni. Hive utilizza i metadati del metastore per generare le attività MapReduce necessarie per eseguire le query.
 3. **Driver Hive**: Il Driver Hive è il componente principale del framework Hive. Esso riceve le query dall'utente e le traduce in attività MapReduce che possono essere eseguite sui nodi del cluster Hadoop.
@@ -1140,7 +1145,7 @@ In questi approcci si cerca di creare i cluster come componenti connesse di un g
 
 Negli algoritmi grid-based i dati vengono discretizzati in $p$ intervalli (tipicamente) ad ampiezza costante. Per un dataset $d$-dimensionale, ciò porta ad un totale di $p^d$ ipercubi nei dati.
 
-Per determinare il sottoinsieme degli ipercubi **densi** viene utilizzata una **soglia di densità** $\tau$. 
+Per determinare il sottoinsieme degli ipercubi **densi** viene utilizzata una **soglia di densità** $\tau$.
 
 Il cluster risultante sarà dato da diversi ipercubi densi adiacenti, ovvero aventi tra di loro un lato (o un angolo) comune.
 
@@ -1165,7 +1170,7 @@ Ricevuti in **input**: un data-set $\mathcal D$, il numero $p$ degli intervalli 
 
 ### Algoritmi density based - DBSCAN
 
-> Gli algoritmi density-based identificano i cluster come regioni dello spazio dense, separate da zone a piu scarsa densità, che rappresentano quindi il rumore. 
+> Gli algoritmi density-based identificano i cluster come regioni dello spazio dense, separate da zone a piu scarsa densità, che rappresentano quindi il rumore.
 >
 > Questi algoritmi possiedono quindi l'intrinseca capacita di rilevare cluster di forma arbitraria e di filtrare il rumore identificando gli outlier.
 
@@ -1173,7 +1178,7 @@ Il principale algoritmo basato sulla densità è il DBSCAN (*Density-Based Spati
 
 L'approccio consiste nel classificare i singoli punti in base alla loro **densità** e nell'utilizzarli come **building blocks**.
 
-La densità di un punto nel data-set è definita dal numero di punti che si trovano lungo un raggio $Eps$ di quel punto (incluso il punto stesso). 
+La densità di un punto nel data-set è definita dal numero di punti che si trovano lungo un raggio $Eps$ di quel punto (incluso il punto stesso).
 
 In base alla loro densità, l'algoritmo DBSCAN prevede di classificare ciascun punto del data-set $\mathcal D$ in una di 3 categorie:
 
@@ -1223,9 +1228,9 @@ Si determinano due tipologie di criteri per fare **cluster validation**:
 
 ### Criteri di validazione interni
 
-> Si tratta di criteri che sono formulati prendendo in prestito alcuni aspetti della funzione obiettivo da ottimizzare. 
+> Si tratta di criteri che sono formulati prendendo in prestito alcuni aspetti della funzione obiettivo da ottimizzare.
 >
-> Di conseguenza, tendono a favorire algoritmi che usano lo stesso tipo di funzione obiettivo. 
+> Di conseguenza, tendono a favorire algoritmi che usano lo stesso tipo di funzione obiettivo.
 >
 > La loro utilità risiede soprattutto quando è impossibile usare un criterio esterno.
 
@@ -1243,12 +1248,9 @@ $$
 Intra = \sum_{\big ( \bar X_i, \bar X_j \big) \in P}  \cfrac {dist \big( \bar X_i, \bar X_j \big) } {|P|} = \cfrac {1} {|P|} \cdot \sum_{\big ( \bar X_i, \bar X_j \big) \in P} {dist \big( \bar X_i, \bar X_j \big) }
 $$
 
-
 $$
 Inter = \sum_{\big ( \bar X_i, \bar X_j \big) \in Q}  \cfrac {dist \big( \bar X_i, \bar X_j \big) } {|Q|} = \cfrac {1} {|Q|} \cdot \sum_{\big ( \bar X_i, \bar X_j \big) \in Q} {dist \big( \bar X_i, \bar X_j \big) }
 $$
-
-
 
 L'algoritmo segue i seguenti passi:
 
@@ -1283,17 +1285,17 @@ $$
 
 #### Misure Probabilistiche
 
-Si usa un metodo simile al passo di massimizzazione dell'approccio EM calcolando la log-likelihood di una mistura di distribuzioni che sottenda ipoteticamente i dati. 
+Si usa un metodo simile al passo di massimizzazione dell'approccio EM calcolando la log-likelihood di una mistura di distribuzioni che sottenda ipoteticamente i dati.
 
 Questa misura è utile quando è nota la forma che i cluster dovrebbero avere.
 
 #### Considerazioni Finali
 
-Come detto in precedenza, queste misure **dipendono fortemente dall'algoritmo di clustering**, che tende a favorire specifiche forme di clustering, che potrebbero non essere quelle reali. 
+Come detto in precedenza, queste misure **dipendono fortemente dall'algoritmo di clustering**, che tende a favorire specifiche forme di clustering, che potrebbero non essere quelle reali.
 
 Questa criticità rende difficile valutare un confronto tra i diversi criteri per testare la bontà di un algoritmo.
 
-È comunque utile notare come, nonostante le criticità intrinseche di questi criteri, essi siano utilizzabili come strumento per il **tuning dei parametri dell'algoritmo di clustering**. 
+È comunque utile notare come, nonostante le criticità intrinseche di questi criteri, essi siano utilizzabili come strumento per il **tuning dei parametri dell'algoritmo di clustering**.
 
 L'idea alla base di questa teoria risiede nel fatto che la variazione delle misure di validazione al crescere dei parametri tende a mostrare un punto di flesso per un dato numero di cluster, oltre il quale si evidenzia un plateau (questo comportamento è particolarmente evidente in $WCSS$ e nel rapporto intra-cluster/inter-cluster).
 

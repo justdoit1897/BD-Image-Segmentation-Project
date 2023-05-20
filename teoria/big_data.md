@@ -480,6 +480,7 @@ programmazione, sebbene Scala sia il linguaggio nativo del framework. Il support
 ## Ecosistema Spark
 
 Il framework si compone delle seguenti API:
+
 * **Spark Core** - Consente di lavorare indistintamente sui vari linguaggi di programmazione
 * **Spark SQL** - Permette l'astrazione dei dati SQL
 * **Spark Streaming** - Permette la manipolazione dei dati
@@ -498,6 +499,7 @@ Tra le caratteristiche garantite da Core abbiamo la **fault recovery**, ossia la
 Un'altra caratteristica interessante di Core è che le **operazioni** vengono **eseguite direttamente in memoria**, così da ridurre al minimo le interazioni con il le system. La rappresentazione dei dati usata in memoria prende il nome di **Resilient Distributed Dataset (RDD)**.
 
 Durante il usso di lavoro di Core, possiamo rappresentare i dati sostanzialmente in due livelli di astrazione:
+
 * ad **alto livello**, su cui viene de nito un **DataFrame** parallelo a SQL
 * a **basso livello**, dove troviamo gli **RDD**, su cui è possibile lavorare tramite un'interfaccia a oggetti.
 
@@ -509,25 +511,27 @@ Definiamo **data lineage** la **sequenza di RDD generati dalle varie trasformazi
 Un'altra caratteristica interessante di Core è l'uso della cosiddetta **lazy evaluation**, secondo cui i dati vengono modi cati solo quando bisogna eseguire l'azione. Questa proprietà consente di **massimizzare il throughput** di computazione e di concepire le **operazioni sulle RDD come una pipeline**.
 
 Per quanto concerne le trasformazioni possibili, Spark ne distingue due tipologie:
+
 * **Narrow** - Trasformazioni che avvengono **internamente alle partizioni**. Possono essere eseguite in pipeline. A questa categoria di trasformazioni appartengono:
-   * **Map**
-   * **FlatMap**
-   * **MapPartition**
-   * **Filter**
-   * **Sample**
-   * **Union**
+  * **Map**
+  * **FlatMap**
+  * **MapPartition**
+  * **Filter**
+  * **Sample**
+  * **Union**
 * **Wide (shuffle)** - Trasformazioni che possono coinvolgere **più partizioni** e che prevedono operazioni di **shuffle**. A questa categoria di trasformazioni appartengono:
-   * **Intersection**
-   * **Distinct**
-   * **ReduceByKey**
-   * **GroupByKey**
-   * **Join**
-   * **Cartesian**
-   * **Repartition**
-   * **Coalesce**
+  * **Intersection**
+  * **Distinct**
+  * **ReduceByKey**
+  * **GroupByKey**
+  * **Join**
+  * **Cartesian**
+  * **Repartition**
+  * **Coalesce**
 
 Le azioni sono operazioni che non producono RDD, ma sono vere e proprie computazioni sui dati.
 Alcune azioni sono:
+
 * **first()**
 * **take()**
 * **reduce()**
@@ -537,12 +541,13 @@ Alcune azioni sono:
 ### Spark SQL
 
 È una API orientata ai **dati strutturati**, in quanto utilizza il livello più alto di rappresentazione dei dati. Fornisce una rappresentazione a **DataFrame**, equivalente alla tabella relazionale. Questa rappresentazione ad alto livello astrae quella a più basso livello della RDD. Spark SQL usa un **linguaggio SQL-Like** per eseguire query distribuite. Fornisce un'interfaccia SQL all'ambiente Spark, con connettività JDB/ODBC e, grazie ad Hive, permette di eseguire **processing a batch**.
- 
+
 ### Spark Streaming
 
 È un'API che permette l'elaborazione di **flussi di dati**, letti da **fonti eterogenee** (es. Kafka e Flume) o direttamente da una socket TCP.
 
 Le caratteristiche principali di Spark Streaming sono:
+
 * **Gathering** - Ossia la raccolta dei dati da sorgenti semplici ( le system o socket TCP) o complesse
 * **Processing** - Ossia applicazione di trasformazioni e azioni su un modello dei dati specifico, il **DiscretizedStream (DStream)**, banalmente una sequenza di RDD
 * **Data storage** - Ossia la memorizzazione dei dati su le system, strutture di dashboard o database.
@@ -550,13 +555,14 @@ Le caratteristiche principali di Spark Streaming sono:
 ### Spark ML
 
 È un'API contenente algoritmi di machine learning. Al suo interno possiamo trovare:
+
 * Primitive per operazioni di **data preprocessing** (es. cleaning, imputazione)
 * **Algoritmi di apprendimento supervisionato** per classificazione, regressione, decision trees, random forests, Bayes-naive, ecc.
 * **Algoritmi di apprendimento non supervisionato** (es. K-means, misture di gaussiane)
 * **Algoritmi di recommendation**, utili per il mining di pattern frequenti
 * **Algoritmi di analisi dei grafi** per operazioni di ricerca di cammini tra nodi PageRank, ecc.
-* **Algoritmi di deep learning**, in quanto Spark ML ha solo un MLP nativo per reti non profonde, ma offre possibilità di integrazione con motori di deep learning come TensorFlow. \
-Quest'ultima integrazione è possibile grazie a librerie come TensorFrames, che rende i DataFrame di Spark il backend per gestire la computazione e TensorFlow il backend per le operazioni deep, e TensorFlowOnSpark, che distribuisce il job TensorFlow su un cluster Spark.
+* **Algoritmi di deep learning**, in quanto Spark ML ha solo un MLP nativo per reti non profonde, ma offre possibilità di integrazione con motori di deep learning come TensorFlow. 
+  Quest'ultima integrazione è possibile grazie a librerie come TensorFrames, che rende i DataFrame di Spark il backend per gestire la computazione e TensorFlow il backend per le operazioni deep, e TensorFlowOnSpark, che distribuisce il job TensorFlow su un cluster Spark.
 
 ### Spark GraphX
 
@@ -573,13 +579,15 @@ Un'applicazione Spark ha inizio nel momento in cui **vengono inizializzate una S
 Il processo Driver **coordina i processi esecutori** distribuiti sul cluster, i quali comunicano con il processo Driver attraverso il **Cluster Manager** (che può essere standalone, YARN o Mesos).
 
 La SparkSession è un processo Java, dunque necessita di una JVM. La gestione della SparkSession di erisce nelle varie versioni di Spark:
+
 * nelle **versioni 1.x** si utilizzavano SparkContext, SQLContext e HiveContext
 * nelle **versioni 2.x** si utilizza SparkSession, che integra l'oggetto SparkContext, responsabile
-della connessione al cluster.
+  della connessione al cluster.
 
 ### Modalità di Esecuzione
 
 Dal punto di vista della distribuzione dei job abbiamo tre modalità:
+
 * **Cluster mode**, in cui l'utente sottomette il driver al cluster manager, che poi gestisce la distribuzione degli esecutori
 * **Client mode**, in cui il driver rimane presso la macchina dell'utente, fuori dal cluster. In questo caso il client è responsabile del funzionamento degli esecutori
 * **Local mode**, in cui l'esecuzione è standalone su singola macchina e l'unica forma di parallelizzazione è a livello di thread (motivo per cui è spesso usata per scopi didattici, test e debug).
@@ -587,6 +595,7 @@ Dal punto di vista della distribuzione dei job abbiamo tre modalità:
 ### Ciclo di Vita dell'Applicazione
 
 Il ciclo di vita di un'applicazione Spark può essere suddiviso in più fasi:
+
 * **Configurazione**: In questa fase, vengono con gurati i parametri dell'applicazione, come ad esempio il numero di processi executor da utilizzare e la quantità di memoria da assegnare a ogni processo.
 * **Creazione del contesto**: In questa fase viene creato il contesto Spark, che rappresenta l'entry point per l'applicazione Spark. Il contesto Spark viene creato dal processo driver.
 * **Creazione dei RDD**: In questa fase, l'applicazione Spark crea i RDD, secondo le speci che viste in precedenza.
@@ -601,6 +610,7 @@ Durante le fasi intermedie, vi è uno scambio continuo di informazioni tra i pro
 Per invocare l'API di alto livello, **l'utente deve scrivere del codice** capace di manipolare DataFrame, Dataset o codice SQL. Tale codice viene poi **validato da Spark** per la generazione di un piano logico, reso ottimale grazie a **Catalyst**, che poi viene tradotto in un **piano fisico**. Spark esegue, successivamente, il piano sico, che altro non è che una sequenza di trasformazioni e azioni.
 
 Entrando più nel dettaglio:
+
 1. Dal codice utente (che non ha informazioni sui Dataframe) **viene generato un piano logico** non risolto e non valido, in termini di sequenze di trasformazioni e azioni.
 2. Il piano viene, quindi, sottoposto a **Catalyst**, che interroga **Catalog**, un repository contenente tutte le informazioni sui Dataframe, **al fine di validare il piano** rispetto ai Dataframe nora generati.
 3. Dopo aver validato il piano logico, **Catalyst lo ottimizza**, anche alterando la sequenza di operazioni pensata dall'utente.
@@ -638,24 +648,26 @@ L'apprendimento viene misurato dalla relazione $y=f(x, w, \theta)$.
 In base al tipo di apprendimento, gli algoritmi di machine learning devono impiegare $f$ distinte, specifiche per il compito in questione.
 
 Innanzitutto, distinguiamo **compiti con output strutturato e non**. Tra i compiti con output non strutturato abbiamo:
-* **Classificazione**, in cui l'algoritmo deve stimare una funzione che fa corrispondere ogni ingresso a una delle $k$ classi possibili, secondo una relazione $f : \mathbb{R}^n → \{1,⋯, k\}$. Questa rappresentazione è accettata poiché, spesso, i problemi di classi cazione fanno riferimento a classi numeriche.\
-L'utilità della classificazione non si limita soltanto all'attribuzione di una classe, ma può essere usata per stimare delle features mancanti.
+
+* **Classificazione**, in cui l'algoritmo deve stimare una funzione che fa corrispondere ogni ingresso a una delle $k$ classi possibili, secondo una relazione $f : \mathbb{R}^n → \{1,⋯, k\}$. Questa rappresentazione è accettata poiché, spesso, i problemi di classi cazione fanno riferimento a classi numeriche.L'utilità della classificazione non si limita soltanto all'attribuzione di una classe, ma può essere usata per stimare delle features mancanti.
 * **Regressione**, in cui, a partire dai dati in input, bisogna predire un valore numerico reale per una data funzione. L'approccio è simile alla classi cazione, ma cambia il codominio della funzione $f$, che diventa $\mathbb{R}$ in quanto deve predire singoli valori reali.
 * **Trascrizione**, in cui si deve estrarre una trascrizione in forma testuale di dati scarsamente strutturati (basti pensare alle OCR o alla speech recognition). Tale compito può essere pensato come una forma di classificazione in cui le etichette non sono numeriche, ma sono piuttosto le parole di un testo.
 * **Traduzione automatica**, con cui si traduce una sequenza discreta di simboli in un'altra.
 
 Per quanto concerne i compiti con output strutturato ricordiamo:
+
 * **Parsing**, ossia la trasformazione di un testo in una sequenza di simboli che definisce dei ruoli.
 * **Quality Assurance**, che consiste in un processo sistematico che determina se un prodotto o un servizio soddisfano (o meno) dei requisiti specifici.
 * **Segmentazione di immagini**, in cui viene restituito un output di etichette, corrispondente alle classi di segmentazione (o regione dell'immagine).
 
 Tra gli altri compiti abbiamo:
+
 * **Outlier Detection**, il cui scopo è quello di rilevare anomalie nel comportamento di determinati ingressi. Spesso si associa al clustering/classificazione interpretati in forma duale (ovvero si restituiscono gli elementi con comportamento "non normale").
 * **Sintesi e campionamento**, che consiste nella generazione di campioni strutturalmente simili ai dati di ingresso, in modo da incrementare la popolazione di ingresso con dati "come gli originali" e migliorare forme di apprendimento statistico.
 * **Imputazione di dati mancanti**, con cui si predicono le features mancanti a partire da un input incompleto.
 * **Denoising**, ossia la predizione di campioni non corrotti a partire da input rumorosi.
 * **Stima di una densità di probabilità o di una funzione massa**, con cui bisogna stimare una
-funzione $p_{\mathrm{model}} : \mathbb{R}^n → \mathbb{R}$ da intendersi come funzione di densità di probabilità (per variabili continue) o funzione di massa (per variabili discrete).
+  funzione $p_{\mathrm{model}} : \mathbb{R}^n → \mathbb{R}$ da intendersi come funzione di densità di probabilità (per variabili continue) o funzione di massa (per variabili discrete).
 
 Sebbene ne siano stati elencati diversi, sostanzialmente si parlerà sempre di tre tipologie di problemi: **classificazione, regressione e clustering**.
 
@@ -672,12 +684,13 @@ Perché un algoritmo di apprendimento possa essere considerato valido, è necess
 
 La procedura standard prevede che, qualora non sia disponibile un test set, si **suddivida il dataset** di partenza **in due partizioni**, un training set e un test set. A questo punto, la forma funzionale $L$ delle misure di errore, nota come **funzione di perdita**, deve essere la stessa per entrambe le misure di errore e deve essere scelta accuratamente in base al tipo di compito che l'algoritmo deve svolgere.
 
-**La capacità di generalizzare si basa sulla teoria dell'apprendimento statistico**, secondo cui esiste un processo statistico unico capace di descrivere un fenomeno sotto esame e che genera dati sia di addestramento che di test. Questo processo è descritto da un'unica pdf dei dati $p_{\mathrm{data}}$, non nota a priori.\
+**La capacità di generalizzare si basa sulla teoria dell'apprendimento statistico**, secondo cui esiste un processo statistico unico capace di descrivere un fenomeno sotto esame e che genera dati sia di addestramento che di test. Questo processo è descritto da un'unica pdf dei dati $p_{\mathrm{data}}$, non nota a priori.
 Si può stabilire, quindi, un'ipotesi aprioristica secondo cui i dati dei due set sono indipendenti e
 hanno la stessa distribuzione di probabilità, motivo per cui avranno lo stesso valore atteso.
 
 L'ideale allora diventa **cercare i parametri** $\bold{w}$ **tali che i due errori siano uguali**, sebbene ciò sia impossibile a causa di alcune distorsioni dovute al campionamento per la scelta dei dati.
 A causa di questo motivo, allora, si procede in questo modo:
+
 1. Si cerca di **minimizzare il training error** attraverso l'addestramento.
 2. Si cerca di m**antenere minima la di erenza tra training error e generalization error**.
 
@@ -1295,11 +1308,28 @@ Come detto in precedenza, queste misure **dipendono fortemente dall'algoritmo di
 
 Questa criticità rende difficile valutare un confronto tra i diversi criteri per testare la bontà di un algoritmo.
 
-È comunque utile notare come, nonostante le criticità intrinseche di questi criteri, essi siano utilizzabili come strumento per il **tuning dei parametri dell'algoritmo di clustering**.
+Tutti gli algoritmi di clustering utilizzano una serie di parametri come input, come il numero di cluster o la densità. 
 
-L'idea alla base di questa teoria risiede nel fatto che la variazione delle misure di validazione al crescere dei parametri tende a mostrare un punto di flesso per un dato numero di cluster, oltre il quale si evidenzia un plateau (questo comportamento è particolarmente evidente in $WCSS$ e nel rapporto intra-cluster/inter-cluster).
+Nonostante i criteri di valutazione interni abbiano criticità intrinseche, possono essere utilizzati come strumento per il **tuning** (regolazione) **dei parametri dell'algoritmo di clustering**.
+
+> L'idea alla base di questa teoria risiede nel fatto che la variazione delle misure di validazione al crescere dei parametri tende a mostrare un punto di flesso (**elbow**) alla scelta corretta del parametro. 
+
+La forma del punto di flesso può variare in base alla natura del parametro da regolare e alla misura di validazione utilizzata. Ad esempio, nel caso del clustering k-means, in cui il parametro da regolare è il numero dei cluster $k$, sia utilizzando come criterio $WCSS$ che il rapporto $\cfrac {Intra}{Inter}$, la misura andrà a decrescere fino al punto di flesso e poi potrebbe decrescere leggermente, andando a creare un **plateau**.
+
+![1684599699459](image/big_data/1684599699459.png)
+
+> Tali tecniche di tuning dei parametri con misure di validazione interne dovrebbero essere utilizzate come una **regola pratica informale**, piuttosto che come un criterio rigoroso.
 
 ### Criteri di valutazione esterni
+
+> Si tratta di criteri utilizzati quando sono disponibili le **etichette di classe**:
+>
+> * **Benchmark data-set**: quando vengono generati data-set sintetici da benchmark noti, è possibile associare etichette di cluster ai record generati.
+> * **Data-set Reali**: quando abbiamo a che fare con data-set con etichette di classe che dipendono dall’applicazione di classificazione e potrebbero non riflettere le caratteristiche dei cluster naturali dei dati.
+>
+> Il rischio maggiore con le etichette di classe è che queste si basano su proprietà specifiche dell'applicazione di quel data-set e potrebbero non riflettere i cluster naturali dei dati.
+>
+> Tuttavia, i criteri di valutazione esterni sono preferibili ai criteri interni perché possono evitare errori nelle valutazioni, se usati su più data-set.
 
 
 $$
@@ -1309,11 +1339,15 @@ $$
 \end{cases}
 $$
 
+#### Purity
+
 Dato $P_j = \underset i {max} \ \{m_{ij} \}$
 
 $$
 Purity = \cfrac {\sum_{j=1}^{k_d} P_j} {\sum_{j=1}^{k_d} M_j}
 $$
+
+#### Gini Index
 
 $$
 G_j = 1- \sum_{i=1}^{k_t} \bigg( \cfrac {m_{ij}} {M_j} \bigg)
@@ -1322,6 +1356,8 @@ $$
 $$
 G_{average} = \cfrac {\sum_{j=1}^{k_d} G_j \cdot M_j} {\sum_{j=1}^{k_d} M_j}
 $$
+
+#### Entropia
 
 $$
 E_j = - \sum_{i=1}^{k_t} \bigg( \cfrac {m_{ij}} {M_j} \bigg) \cdot log \bigg( \cfrac {m_{ij}} {M_j} \bigg)
@@ -1342,6 +1378,7 @@ La **classificazione** è uno dei tipici problemi del Machine Learning, come det
 Gli algoritmi di classificazione rientrano tra quelli di **apprendimento supervisionato**, in quanto l'apprendimento della struttura dei gruppi avviene per esempi (e non attraverso la loro tendenza al clustering).
 
 Si tratta, forse, della tipologia di algoritmo di machine learning più comune, e si compone tipicamente di due fasi:
+
 * **Fase di addestramento**, in cui viene costruito un modello addestrato a partire da esempi di addestramento.
 * **Fase di test**, in cui il modello addestrato viene utilizzato per predire l'etichetta di classe di dati mai visti prima.
 
@@ -1356,6 +1393,7 @@ Per un compito di classificazione, esistono diversi modelli (alberi di decisione
 ## Selezione delle feature
 
 È la **prima fase** del processo di classificazione e consiste nella **scelta delle features** nel dataset **con un certo contenuto informativo**, dato che quelle che danno poca informazione ai fini della classificazione rischiano di essere fuorvianti per il modello e rappresentano un peso inutile in termini di computazioni. Per la selezione delle features esistono tre principali metodologie:
+
 * **Modelli basati su filtro**, che sfruttano un **criterio matematico** per valutare la qualità di una feature o di un sottoinsieme di esse.
 * **Modelli wrapped**, che sfruttano un **algoritmo di classificazione** per valutare le performance del vero e proprio algoritmo di classificazione per uno specifico insieme di features, **per poi stabilire quale sia il sottoinsieme di features più utile** ai fini della vera e propria classificazione.
 * **Modelli embedded**, che utilizza la **soluzione di un algoritmo di classificazione** per ricavare suggerimenti utili sulle features più rilevanti, che, una volta isolate, possono essere utilizzate per un nuovo addestramento del modello.
@@ -1367,37 +1405,40 @@ L'uso di tali metodi ha, però, un problema riguardo ai costi computazionali, da
 Nella pratica, pertanto, **si tende ad analizzare le features in modo indipendente**, per poi selezionare quelle più discriminanti.
 
 Tra i modelli basati su ltro ricordiamo:
+
 * **Gini Index** - usato per **attributi categorici** (adattabile anche per attributi numerici discreti). Supposti $v_1, ⋯, v_r$ gli $r$ possibili valori di un attributo categorico e $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,⋯, k\}$, l'indice di
-Gini per il valore $v_i$ dell'attributo è definito come $G(v_i) = 1 −\sum_{j=1}^k p_j ^2. $
-Come visto con il clustering, **valori piccoli** dell'indice di Gini indicano una **maggiore capacità discriminatoria** dell'attributo, dato che punti appartenenti alla stessa classe per lo stesso valore $v_i$ dell'attributo restituiscono $G (v_i) = 0$.
-È possibile ricavare un indice di Gini complessivo per tutti i valori dell'attributo attraverso la relazione $ G=\sum _{i=1}^r\frac{n_i G\left( v_i \right)}{n}$, dove $n_i$ è il numero di punti che assumono il valore $v_i$ dell'attributo, da cui l'insieme dei punti $n = \sum _{i=1}^r n_i$
+  Gini per il valore $v_i$ dell'attributo è definito come $G(v_i) = 1 −\sum_{j=1}^k p_j ^2. $
+  Come visto con il clustering, **valori piccoli** dell'indice di Gini indicano una **maggiore capacità discriminatoria** dell'attributo, dato che punti appartenenti alla stessa classe per lo stesso valore $v_i$ dell'attributo restituiscono $G (v_i) = 0$.
+  È possibile ricavare un indice di Gini complessivo per tutti i valori dell'attributo attraverso la relazione $ G=\sum _{i=1}^r\frac{n_i G\left( v_i \right)}{n}$, dove $n_i$ è il numero di punti che assumono il valore $v_i$ dell'attributo, da cui l'insieme dei punti $n = \sum _{i=1}^r n_i$
 * **Entropia** - utile in quanto sfrutta la **correlazione tra variazioni di entropia e contenuto informativo** tipici della teoria dell'informazione. Posta $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,⋯, k\}$, l'entropia $E (v_i)$ è uguale a $ E(v_i)=-\sum_{j=1}^k p_j \log _2 \left( p_j \right) $
-**Valori elevati** dell'entropia implicano **alta mescolanza tra classi diverse**, mentre **un'entropia a 0 indica la perfetta separazione tra classi**, dunque un alto potere discriminatorio della feature.
-Come per l'indice di Gini, è possibile de nire un'entropia complessiva per l'attributo usando le supposizioni viste in precedenza, ed è pari a $ E=\sum _{i=1}^r\frac{n_i E\left( v_i \right)}{n} $.
-* **Fisher Score** - progettato per misurare il **rapporto tra separazione media inter-classe e intra-classe di attributi numerici**. **Più è alto** il Fisher Score, **più è alto il potere discriminatorio dell'attributo**. 
-Viene definito come $ F=\frac{\sum_{j=1}^k p_j \left( \mu_j-\mu \right)^2 }{\sum_{j=1}^k p_j \sigma_j^2 } $, dove $\mu_j$ e $\sigma_j$ sono, rispettivamente, la media e la deviazione standard dei punti appartenenti alla classe $j$, e dove $p_j$ è la frazione di punti appartenenti alla classe $j$.
-Il numeratore della formula rappresenta la separazione inter-classe media, mentre il denominatore la separazione intra-classe media.
+  **Valori elevati** dell'entropia implicano **alta mescolanza tra classi diverse**, mentre **un'entropia a 0 indica la perfetta separazione tra classi**, dunque un alto potere discriminatorio della feature.
+  Come per l'indice di Gini, è possibile de nire un'entropia complessiva per l'attributo usando le supposizioni viste in precedenza, ed è pari a $ E=\sum _{i=1}^r\frac{n_i E\left( v_i \right)}{n} $.
+* **Fisher Score** - progettato per misurare il **rapporto tra separazione media inter-classe e intra-classe di attributi numerici**. **Più è alto** il Fisher Score, **più è alto il potere discriminatorio dell'attributo**.
+  Viene definito come $ F=\frac{\sum_{j=1}^k p_j \left( \mu_j-\mu \right)^2 }{\sum_{j=1}^k p_j \sigma_j^2 } $, dove $\mu_j$ e $\sigma_j$ sono, rispettivamente, la media e la deviazione standard dei punti appartenenti alla classe $j$, e dove $p_j$ è la frazione di punti appartenenti alla classe $j$.
+  Il numeratore della formula rappresenta la separazione inter-classe media, mentre il denominatore la separazione intra-classe media.
 * **Fisher Linear Discriminant** - può essere pensato come una **generalizzazione del Fisher Score per combinazioni lineari di features**. Lavorando in forma supervisionata, è un metodo
-che tende a trovare la direzione massima di variazione delle features e, per contro, l'iperpiano perpendicolare che separa meglio le classi rispetto alle features stesse, in modo da massimizzare il già citato rapporto inter-classe/intra-classe.
+  che tende a trovare la direzione massima di variazione delle features e, per contro, l'iperpiano perpendicolare che separa meglio le classi rispetto alle features stesse, in modo da massimizzare il già citato rapporto inter-classe/intra-classe.
 
 ### Modelli Wrapped
 
 Sono modelli caratterizzati da una **strategia generale**, che consiste nel **perfezionare iterativamente un insieme di features** $F$ aggiungendo una feature per volta.
 
 L'algoritmo viene inizializzato con $F = \emptyset$, e si compone di due passaggi:
+
 1. Si aggiungono una o più features ad $F$;
 2. Si utilizza un algoritmo di classificazione $\mathcal{A}$ per valutare la precisione dell'insieme di features e, in caso negativo, si rigetta l'aggiunta.
 
 Bisogna quindi definire le **possibili strategie** per aggiungere features ad $F$:
+
 * una strategia **greedy** può incrementare l'insieme F ad ogni passo aggiungendo sempre la
-feature più discriminatoria rispetto ad un certo criterio
+  feature più discriminatoria rispetto ad un certo criterio
 * usare **campionamento casuale** per aggiungere una feature ad $F$.
 
 Il secondo passo del processo iterativo evidenzia come il successo del metodo sia **dipendente anche dallo specifico algoritmo** $\mathcal{A}$ che si utilizza.
 
 ## Decision Tree
 
-Si tratta di un metodo di classificazione basato su **decisioni gerarchiche sulle features**, disposte in una struttura ad albero. 
+Si tratta di un metodo di classificazione basato su **decisioni gerarchiche sulle features**, disposte in una struttura ad albero.
 
 È un **algoritmo supervisionato**, in quanto necessita che i dati abbiano a bbiate delle etichette, e fa in modo da suddividere gerarchicamente il dataset in modo che il livello di mescolamento delle features di classe in ogni ramo sia il minore possibile. La suddivisione operata dagli alberi di decisione **ricorda il funzionamento dell'algoritmo di clustering top-down**.
 
@@ -1415,17 +1456,19 @@ Per non incorrere in overfitting, **si può effettuare una potatura dei nodi che
 ## Random Forests
 
 Sono una **generalizzazione degli alberi di decisione** e si tratta di classificatori di tipo ensemble, ossia è composto da più classificatori addestrati sullo stesso dataset che e ettuano ognuno la propria predizione e **il cui risultato è una combinazione** di queste, atta a generare una predizione globale più robusta. Fanno uso della tecnica del **bagging**, ossia:
+
 1. **Si crea un ensemble di $k$ classificatori indipendenti** e distribuiti identicamente, in modo da ridurre la varianza delle stime all'aumentare del numero di stime e ettuate.
 2. **Si generano $k$ dataset con campionamento con rimpiazzo**, così da poter generare dataset quanto più simili possibili.
 3. **Si addestrano i classificatori** e la predizione della foresta è quella che ha ottenuto la maggioranza dei voti o la media delle predizioni espresse da ciascun classificatore su ogni campione.
 
 Data questa cooperazione, la random forest è molto più potente di un singolo albero di decisione.
 Un'altra caratteristica interessante è che **i nodi più elevati della gerarchia sono**, di base, **invarianti**, in quanto la particolarizzazione degli alberi avviene nei nodi più interni, in modo da non ottenere solo copie dello stesso albero. Per ottenere questa diversi cazione, le random forests fanno uso di **specifici algoritmi per lo split casuale** nei diversi alberi dell'ensemble. Tra i criteri di split abbiamo:
+
 * **Forest-RI (Forest - Random Input)**, in cui viene estratto un sottoinsieme casuale di features $q < d$, con $q$ che viene usato come regolatore della casualità introdotta nel criterio di split.
-Lo split in ogni nodo è preceduto dalla selezione casuale di un sottoinsieme di attributi $S$ di dimensione $q$, per cui gli split tengono in considerazione solo $S$. Più è piccolo il valore di $q$, minore sarà la correlazione tra gli alberi, ma minore sarà la precisione dell'albero.
-È stato dimostrato che, per $d$ dimensioni, il miglior compromesso è selezionare $q = \log _2 (d ) + 1$ features.
+  Lo split in ogni nodo è preceduto dalla selezione casuale di un sottoinsieme di attributi $S$ di dimensione $q$, per cui gli split tengono in considerazione solo $S$. Più è piccolo il valore di $q$, minore sarà la correlazione tra gli alberi, ma minore sarà la precisione dell'albero.
+  È stato dimostrato che, per $d$ dimensioni, il miglior compromesso è selezionare $q = \log _2 (d ) + 1$ features.
 * **Forest-RC (Forest - Random Combination)**, in cui viene estratto un sottoinsieme $L$ di features e si creano $q$ combinazioni lineari da usare come features multivariate per lo split.
-Per ogni nodo le $L$ features vengono selezionate casualmente e combinate linearmente con coefficienti generati uniformemente nell'intervallo $[−1,1]$.
+  Per ogni nodo le $L$ features vengono selezionate casualmente e combinate linearmente con coefficienti generati uniformemente nell'intervallo $[−1,1]$.
 
 Usando algoritmi di random forest, non si fa uso di una strategia di potatura esplicita, per cui ogni albero cresce cercando di addestrarlo con dati di addestramento atti a massimizzare la riduzione di varianza. Tuttavia, a causa dei criteri limitati di random split degli alberi, i singoli costituenti potrebbero mostrare un bias maggiore, molto marcato nel momento in cui la frazione di features significative è molto piccola.
 

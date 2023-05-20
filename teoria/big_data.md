@@ -465,9 +465,141 @@ Abbiamo, infine, **operatori di base**, come quelli aritmetici, booleani e di ca
 
 # 13 - Spark
 
+**Apache Spark** è un framework di analisi open-source usato per **l'elaborazione dei dati su larga scala**.
+
+Spesso si fa riferimento a un **ecosistema Spark**, sebbene esso sia uno dei componenti del più ampio Hadoop, in quanto Spark può essere usato in **modalità *standalone*** su una singola macchina.
+
+Le API di Spark consentono di adoperarlo in Python, Java, Scala e altri linguaggi di
+programmazione, sebbene Scala sia il linguaggio nativo del framework. Il supporto a Java è garantito attraverso la JVM, mentre quello a Python attraverso l'uso di driver.
+
 ## Ecosistema Spark
 
+Il framework si compone delle seguenti API:
+* **Spark Core** - Consente di lavorare indistintamente sui vari linguaggi di programmazione
+* **Spark SQL** - Permette l'astrazione dei dati SQL
+* **Spark Streaming** - Permette la manipolazione dei dati
+* **MLlib** - API usata per il machine learning
+* **GraphX** - API che consente la manipolazione dei dati su grafo
+* **PySpark** - API che consente di lavorare in Python
+
+Vediamo, ora ciascuna API in dettaglio.
+
+### Spark Core
+
+È l'API principale con cui opera Spark, di cui ne rappresenta il **motore di esecuzione** vero e proprio. Il flusso di lavoro di Core consiste in una serie di **trasformazioni** sui dati in input per la successiva esecuzione di una o più **azioni**.
+
+Tra le caratteristiche garantite da Core abbiamo la **fault recovery**, ossia la capacità di ridurre al minimo la corruzione dei dati dovute a errori accidentali.
+
+Un'altra caratteristica interessante di Core è che le **operazioni** vengono **eseguite direttamente in memoria**, così da ridurre al minimo le interazioni con il le system. La rappresentazione dei dati usata in memoria prende il nome di **Resilient Distributed Dataset (RDD)**.
+
+Durante il usso di lavoro di Core, possiamo rappresentare i dati sostanzialmente in due livelli di astrazione:
+* ad **alto livello**, su cui viene de nito un **DataFrame** parallelo a SQL
+* a **basso livello**, dove troviamo gli **RDD**, su cui è possibile lavorare tramite un'interfaccia a oggetti.
+
+Per definizione, **un RDD è una collezione immutabile di dati**, pertanto, ad ogni trasformazione, verrà generato un nuovo RDD; discorso diverso per le **partizioni**, ossia la **suddivisione logica dei dati**, dato che sono mutabili e quindi è possibile trasformarle dinamicamente.
+
+Come in altri framework (Pig e Hive), le operazioni vengono formulate attraverso **piani**, ossia DAG: in questo modo, ricordando che dopo ogni operazione viene generato un nuovo RDD, in caso di errore è possibile ripercorrere il DAG all'indietro per recuperare l'ultima RDD "funzionante".
+Definiamo **data lineage** la **sequenza di RDD generati dalle varie trasformazioni**.
+
+Un'altra caratteristica interessante di Core è l'uso della cosiddetta **lazy evaluation**, secondo cui i dati vengono modi cati solo quando bisogna eseguire l'azione. Questa proprietà consente di **massimizzare il throughput** di computazione e di concepire le **operazioni sulle RDD come una pipeline**.
+
+Per quanto concerne le trasformazioni possibili, Spark ne distingue due tipologie:
+* **Narrow** - Trasformazioni che avvengono **internamente alle partizioni**. Possono essere eseguite in pipeline. A questa categoria di trasformazioni appartengono:
+   * **Map**
+   * **FlatMap**
+   * **MapPartition**
+   * **Filter**
+   * **Sample**
+   * **Union**
+* **Wide (shuffle)** - Trasformazioni che possono coinvolgere **più partizioni** e che prevedono operazioni di **shuffle**. A questa categoria di trasformazioni appartengono:
+   * **Intersection**
+   * **Distinct**
+   * **ReduceByKey**
+   * **GroupByKey**
+   * **Join**
+   * **Cartesian**
+   * **Repartition**
+   * **Coalesce**
+
+Le azioni sono operazioni che non producono RDD, ma sono vere e proprie computazioni sui dati.
+Alcune azioni sono:
+* **first()**
+* **take()**
+* **reduce()**
+* **collect()**
+* **count()**
+
+### Spark SQL
+
+È una API orientata ai **dati strutturati**, in quanto utilizza il livello più alto di rappresentazione dei dati. Fornisce una rappresentazione a **DataFrame**, equivalente alla tabella relazionale. Questa rappresentazione ad alto livello astrae quella a più basso livello della RDD. Spark SQL usa un **linguaggio SQL-Like** per eseguire query distribuite. Fornisce un'interfaccia SQL all'ambiente Spark, con connettività JDB/ODBC e, grazie ad Hive, permette di eseguire **processing a batch**.
+ 
+### Spark Streaming
+
+È un'API che permette l'elaborazione di **flussi di dati**, letti da **fonti eterogenee** (es. Kafka e Flume) o direttamente da una socket TCP.
+
+Le caratteristiche principali di Spark Streaming sono:
+* **Gathering** - Ossia la raccolta dei dati da sorgenti semplici ( le system o socket TCP) o complesse
+* **Processing** - Ossia applicazione di trasformazioni e azioni su un modello dei dati specifico, il **DiscretizedStream (DStream)**, banalmente una sequenza di RDD
+* **Data storage** - Ossia la memorizzazione dei dati su le system, strutture di dashboard o database.
+
+### Spark ML
+
+È un'API contenente algoritmi di machine learning. Al suo interno possiamo trovare:
+* Primitive per operazioni di **data preprocessing** (es. cleaning, imputazione)
+* **Algoritmi di apprendimento supervisionato** per classificazione, regressione, decision trees, random forests, Bayes-naive, ecc.
+* **Algoritmi di apprendimento non supervisionato** (es. K-means, misture di gaussiane)
+* **Algoritmi di recommendation**, utili per il mining di pattern frequenti
+* **Algoritmi di analisi dei grafi** per operazioni di ricerca di cammini tra nodi PageRank, ecc.
+* **Algoritmi di deep learning**, in quanto Spark ML ha solo un MLP nativo per reti non profonde, ma offre possibilità di integrazione con motori di deep learning come TensorFlow. \
+Quest'ultima integrazione è possibile grazie a librerie come TensorFrames, che rende i DataFrame di Spark il backend per gestire la computazione e TensorFlow il backend per le operazioni deep, e TensorFlowOnSpark, che distribuisce il job TensorFlow su un cluster Spark.
+
+### Spark GraphX
+
+È un'API dedicata alla **manipolazione di grafi**. Gestisce algoritmi di ricerca propri del machine learning, algoritmi di ricerca di cammini, attraversamento, clustering e classi cazione su grafi.
+
+### SparkR
+
+È un'API per l'**interazione Spark-R**, con quest'ultimo che usa un proprio modello di DataFrame per gestire i dati. Fornisce metodi di connettività a database, machine learning, analisi dei dati, ecc.
+
 ## Architettura di Spark
+
+Un'applicazione Spark ha inizio nel momento in cui **vengono inizializzate una SparkSession** (dall'utente) **e l'interazione con il cluster manager**, che insieme prendono il nome di **processo Driver**.
+
+Il processo Driver **coordina i processi esecutori** distribuiti sul cluster, i quali comunicano con il processo Driver attraverso il **Cluster Manager** (che può essere standalone, YARN o Mesos).
+
+La SparkSession è un processo Java, dunque necessita di una JVM. La gestione della SparkSession di erisce nelle varie versioni di Spark:
+* nelle **versioni 1.x** si utilizzavano SparkContext, SQLContext e HiveContext
+* nelle **versioni 2.x** si utilizza SparkSession, che integra l'oggetto SparkContext, responsabile
+della connessione al cluster.
+
+### Modalità di Esecuzione
+
+Dal punto di vista della distribuzione dei job abbiamo tre modalità:
+* **Cluster mode**, in cui l'utente sottomette il driver al cluster manager, che poi gestisce la distribuzione degli esecutori
+* **Client mode**, in cui il driver rimane presso la macchina dell'utente, fuori dal cluster. In questo caso il client è responsabile del funzionamento degli esecutori
+* **Local mode**, in cui l'esecuzione è standalone su singola macchina e l'unica forma di parallelizzazione è a livello di thread (motivo per cui è spesso usata per scopi didattici, test e debug).
+
+### Ciclo di Vita dell'Applicazione
+
+Il ciclo di vita di un'applicazione Spark può essere suddiviso in più fasi:
+* **Configurazione**: In questa fase, vengono con gurati i parametri dell'applicazione, come ad esempio il numero di processi executor da utilizzare e la quantità di memoria da assegnare a ogni processo.
+* **Creazione del contesto**: In questa fase viene creato il contesto Spark, che rappresenta l'entry point per l'applicazione Spark. Il contesto Spark viene creato dal processo driver.
+* **Creazione dei RDD**: In questa fase, l'applicazione Spark crea i RDD, secondo le speci che viste in precedenza.
+* **Trasformazione dei RDD**: In questa fase, l'applicazione Spark applica le trasformazioni ai RDD.
+* **Azione sui RDD**: In questa fase, l'applicazione Spark esegue le azioni sui RDD, che rappresentano le operazioni che restituiscono un risultato
+* **Chiusura dell'applicazione**: In questa fase, l'applicazione Spark viene chiusa e i processi executor vengono terminati.
+
+Durante le fasi intermedie, vi è uno scambio continuo di informazioni tra i processi in esecuzione sul cluster, ossia Driver ed executors, mappati, almeno su YARN, al livello di application master.
+
+### Uso dell'API di Alto Livello
+
+Per invocare l'API di alto livello, **l'utente deve scrivere del codice** capace di manipolare DataFrame, Dataset o codice SQL. Tale codice viene poi **validato da Spark** per la generazione di un piano logico, reso ottimale grazie a **Catalyst**, che poi viene tradotto in un **piano fisico**. Spark esegue, successivamente, il piano sico, che altro non è che una sequenza di trasformazioni e azioni.
+
+Entrando più nel dettaglio:
+1. Dal codice utente (che non ha informazioni sui Dataframe) **viene generato un piano logico** non risolto e non valido, in termini di sequenze di trasformazioni e azioni.
+2. Il piano viene, quindi, sottoposto a **Catalyst**, che interroga **Catalog**, un repository contenente tutte le informazioni sui Dataframe, **al fine di validare il piano** rispetto ai Dataframe nora generati.
+3. Dopo aver validato il piano logico, **Catalyst lo ottimizza**, anche alterando la sequenza di operazioni pensata dall'utente.
+4. Poiché ad un piano logico possono corrispondere più piani sici di esecuzione, **Spark stabilisce quale sia il migliore**, che sarà poi eseguito tramite pipeline.
 
 ## Introduzione a PySpark
 
@@ -500,11 +632,85 @@ L'apprendimento viene misurato dalla relazione $y=f(x, w, \theta)$.
 
 In base al tipo di apprendimento, gli algoritmi di machine learning devono impiegare $f$ distinte, specifiche per il compito in questione.
 
+Innanzitutto, distinguiamo **compiti con output strutturato e non**. Tra i compiti con output non strutturato abbiamo:
+* **Classificazione**, in cui l'algoritmo deve stimare una funzione che fa corrispondere ogni ingresso a una delle $k$ classi possibili, secondo una relazione $f : \mathbb{R}^n → \{1,⋯, k\}$. Questa rappresentazione è accettata poiché, spesso, i problemi di classi cazione fanno riferimento a classi numeriche.\
+L'utilità della classificazione non si limita soltanto all'attribuzione di una classe, ma può essere usata per stimare delle features mancanti.
+* **Regressione**, in cui, a partire dai dati in input, bisogna predire un valore numerico reale per una data funzione. L'approccio è simile alla classi cazione, ma cambia il codominio della funzione $f$, che diventa $\mathbb{R}$ in quanto deve predire singoli valori reali.
+* **Trascrizione**, in cui si deve estrarre una trascrizione in forma testuale di dati scarsamente strutturati (basti pensare alle OCR o alla speech recognition). Tale compito può essere pensato come una forma di classificazione in cui le etichette non sono numeriche, ma sono piuttosto le parole di un testo.
+* **Traduzione automatica**, con cui si traduce una sequenza discreta di simboli in un'altra.
+
+Per quanto concerne i compiti con output strutturato ricordiamo:
+* **Parsing**, ossia la trasformazione di un testo in una sequenza di simboli che definisce dei ruoli.
+* **Quality Assurance**, che consiste in un processo sistematico che determina se un prodotto o un servizio soddisfano (o meno) dei requisiti specifici.
+* **Segmentazione di immagini**, in cui viene restituito un output di etichette, corrispondente alle classi di segmentazione (o regione dell'immagine).
+
+Tra gli altri compiti abbiamo:
+* **Outlier Detection**, il cui scopo è quello di rilevare anomalie nel comportamento di determinati ingressi. Spesso si associa al clustering/classificazione interpretati in forma duale (ovvero si restituiscono gli elementi con comportamento "non normale").
+* **Sintesi e campionamento**, che consiste nella generazione di campioni strutturalmente simili ai dati di ingresso, in modo da incrementare la popolazione di ingresso con dati "come gli originali" e migliorare forme di apprendimento statistico.
+* **Imputazione di dati mancanti**, con cui si predicono le features mancanti a partire da un input incompleto.
+* **Denoising**, ossia la predizione di campioni non corrotti a partire da input rumorosi.
+* **Stima di una densità di probabilità o di una funzione massa**, con cui bisogna stimare una
+funzione $p_{\mathrm{model}} : \mathbb{R}^n → \mathbb{R}$ da intendersi come funzione di densità di probabilità (per variabili continue) o funzione di massa (per variabili discrete).
+
+Sebbene ne siano stati elencati diversi, sostanzialmente si parlerà sempre di tre tipologie di problemi: **classificazione, regressione e clustering**.
+
 ## Utilizzo dei dati
+
+Distinguiamo tre modalità di uso dei dati in fase di apprendimento:
+• **apprendimento non supervisionato**, in cui gli algoritmi hanno l'obiettivo di apprendere una distribuzione di probabilità che sottende il dataset, o meglio, la **struttura dei dati**. Esempi di apprendimento non supervisionato sono il clustering e il denoising.
+• **apprendimento supervisionato**, in cui gli algoritmi hanno il compito di catalogare un campione $\bold{x}$ in un'etichetta $y$ facendo in modo da **massimizzare la probabilità** $p (y | \bold{x})$. È l'approccio tipico di classificazione e regressione.
+• **apprendimento con rinforzo**, in cui l'algoritmo apprende su un ambiente dinamico attraverso **sensori e attuatori**, secondo un metodo try/error.
 
 ## Capacità e generalizzazione
 
+Perché un algoritmo di apprendimento possa essere considerato valido, è necessario che sia capace di **generalizzare**, ossia di ottenere buone performance su campioni mai visti. Per far ciò è necessario che l'algoritmo sia capace di **minimizzare due misure di errore**: il **training error** e il **test/generalization error**.
+
+La procedura standard prevede che, qualora non sia disponibile un test set, si **suddivida il dataset** di partenza **in due partizioni**, un training set e un test set. A questo punto, la forma funzionale $L$ delle misure di errore, nota come **funzione di perdita**, deve essere la stessa per entrambe le misure di errore e deve essere scelta accuratamente in base al tipo di compito che l'algoritmo deve svolgere.
+
+**La capacità di generalizzare si basa sulla teoria dell'apprendimento statistico**, secondo cui esiste un processo statistico unico capace di descrivere un fenomeno sotto esame e che genera dati sia di addestramento che di test. Questo processo è descritto da un'unica pdf dei dati $p_{\mathrm{data}}$, non nota a priori.\
+Si può stabilire, quindi, un'ipotesi aprioristica secondo cui i dati dei due set sono indipendenti e
+hanno la stessa distribuzione di probabilità, motivo per cui avranno lo stesso valore atteso.
+
+L'ideale allora diventa **cercare i parametri** $\bold{w}$ **tali che i due errori siano uguali**, sebbene ciò sia impossibile a causa di alcune distorsioni dovute al campionamento per la scelta dei dati.
+A causa di questo motivo, allora, si procede in questo modo:
+1. Si cerca di **minimizzare il training error** attraverso l'addestramento.
+2. Si cerca di m**antenere minima la di erenza tra training error e generalization error**.
+
+Se non si rispettano entrambi i principi si possono veri care le situazioni di **overfitting** (scarsa capacità di generalizzazione) o l'**underfitting** (scarsa efficacia dell'algoritmo), due situazioni legate a un eccessivo sbilanciamento verso l'uno o l'altro errore in relazione alla capacità del modello (la possibilità del modello di approssimare la maggiore gamma di forme funzionali possibile).
+
+I **parametri** del modello, invece, **definiscono una classe di funzioni che contribuiscono a selezionare una particolare forma funzionale** interna alla classe. Discorso diverso vale per gli **iperparametri**, che **permettono di spaziare le funzioni che si vogliono stimare**; tra gli iperparametri della rete (che sono impostati a priori) abbiamo: il numero di layer nascosti, lo schema di inizializzazione dei pesi, il learning rate, il learning rate decay, ecc.
+
+### Teorema No Free Lunch
+
+È un teorema che afferma che **la performance di un qualunque algoritmo di apprendimento mediata su qualunque distribuzione di probabilità è la stessa**.
+Ciò equivale a dire che non esistono algoritmi di base migliori di altri, e che la scelta di un algoritmo è solitamente guidata dalla distribuzione di probabilità $p_\mathrm{data}$.
+
+Un'altra considerazione va fatta, poi, in merito al fatto che **il training error e la generalizzazione di un algoritmo dipendono fortemente dalle dimensioni del training set**.
+
 ## Tecniche di addestramento
+
+Sono tecniche che permettono di **personalizzare l'addestramento tradizionale**, al fine di aumentare la capacità e ettiva del modello, che quasi sempre di erisce dalla sua capacità teorica.
+Un tipico **approccio di addestramento sugli iperparametri**, che poi in uenza la capacità di rappresentazione del modello, è quello a **griglia**: si definisce un intervallo di variazione per ogni parametro, si campiona un certo numero di valori in ogni intervallo di variazione e si crea la combinazione (da qui la griglia) di tutti i valori possibili degli iperparametri.
+
+Due esempi di tecniche capaci di migliorare la capacità e ettiva sono la **regolarizzazione** e la **validation set e cross-validation**.
+
+### Regolarizzazione
+
+La **regolarizzazione** è una qualunque **modifica dell'algoritmo di apprendimento mirata a ridurre esplicitamente l'errore di generalizzazione, ma non il training error**. Consiste nell'aggiunta di un termine di regolarizzazione nella funzione $L$ che consente di preferire alcune forme funzionali rispetto ad altre nel rispetto dello spazio delle ipotesi.
+
+Un esempio di regolarizzazione è la **weight decay**, che esprime preferenza per piccoli valori di $\bold{w}$, e che consiste nell'aggiunta di un iperparametro $\lambda$ alla funzione di loss allo scopo di **privilegiare una certa configurazione dei parametri**.
+
+### Validation Set e Cross-Validation
+
+L'uso di un **validation set** costituisce un'altra tecnica di modi ca dell'algoritmo di apprendimento per ovviare al problema dell'apprendimento degli iperparametri. Definiamo validation set una **porzione di training set estratta da quest'ultimo** prima di iniziare l'addestramento vero e proprio. Viene utilizzato per verificare l'andamento del generalization error, modi cando gli
+iperparametri per minimizzarlo.
+
+Si può a ermare che **l'errore commesso in fase di validazione approssimi il generalization error meglio di quanto non faccia il training error**.
+
+Un'altra tecnica di addestramento è la $k-$**fold cross-validation**, con cui si suddivide il dataset in $k$ partizioni (fold) non sovrapposte e, per ogni partizione, si usa una strategia in cui **quest'ultima funziona da test set e le restanti $k-1$ fungono da training set**.
+Con questa tecnica, ad ogni fold, **non cambia l'insieme dei parametri e degli iperparametri**, ma si passa semplicemente da uno all'altro fold. Poiché con questa tecnica ogni test set viene incontrato $k-1$ volte come training set, **non si calcola un singolo errore di generalizzazione, ma ne viene calcolata una media su tutte le partizioni**.
+
+**N.B.**: Tipicamente, prima di applicare la $k$-fold cross-validation si e ettua uno shuffle del dataset, spesso anche all'interno delle varie epoche di addestramento, in modo da evitare possibili bias legate all'ordine di presentazione dei campioni
 
 # 15 - Clustering
 
@@ -1129,11 +1335,97 @@ $$
 
 ## Generalità
 
+La **classificazione** è uno dei tipici problemi del Machine Learning, come detto in precedenza, e consiste, dato un dataset in input, in cui ogni occorrenza è etichettata come appartenente a una classe, nel **saper predire un'etichetta di classe ad ogni occorrenza dei dati di test**, mai visti dall'algoritmo di apprendimento.
+
+Gli algoritmi di classificazione rientrano tra quelli di **apprendimento supervisionato**, in quanto l'apprendimento della struttura dei gruppi avviene per esempi (e non attraverso la loro tendenza al clustering).
+
+Si tratta, forse, della tipologia di algoritmo di machine learning più comune, e si compone tipicamente di due fasi:
+* **Fase di addestramento**, in cui viene costruito un modello addestrato a partire da esempi di addestramento.
+* **Fase di test**, in cui il modello addestrato viene utilizzato per predire l'etichetta di classe di dati mai visti prima.
+
+Grazie all'eterogeneità di fonti di dati che possono fungere da insieme di addestramento, gli algoritmi di classificazione sono **molto versatili** in termini di contesto applicativo.
+In generale, dati n punti nello spazio $\mathbb{R}^d$ appartenenti al dataset $\mathbb{D}$, questi vengono associati ad un
+insieme di etichette $\{1,⋯, k\}$ (da notare che, per $k = 2$, si parla di classificazione binaria e le etichette vengono indicate con $\{−1,1\}$ o $\{0,1\}$) tramite un algoritmo di classificazione.
+
+L'algoritmo può essere di **predizione esplicita dell'etichetta** o di **probabilità di appartenenza del punto ad una classe**, che può comunque essere riportato alla prima tipologia usando come etichetta esplicita quella la cui probabilità è massima.
+
+Per un compito di classificazione, esistono diversi modelli (alberi di decisione, support vector machines, ecc.), ognuno con le proprie caratteristiche, ma un problema più importante della scelta del modello avviene a monte, e riguarda la scelta delle caratteristiche più informative per la classificazione.
+
 ## Selezione delle feature
+
+È la **prima fase** del processo di classificazione e consiste nella **scelta delle features** nel dataset **con un certo contenuto informativo**, dato che quelle che danno poca informazione ai fini della classificazione rischiano di essere fuorvianti per il modello e rappresentano un peso inutile in termini di computazioni. Per la selezione delle features esistono tre principali metodologie:
+* **Modelli basati su filtro**, che sfruttano un **criterio matematico** per valutare la qualità di una feature o di un sottoinsieme di esse.
+* **Modelli wrapped**, che sfruttano un **algoritmo di classificazione** per valutare le performance del vero e proprio algoritmo di classificazione per uno specifico insieme di features, **per poi stabilire quale sia il sottoinsieme di features più utile** ai fini della vera e propria classificazione.
+* **Modelli embedded**, che utilizza la **soluzione di un algoritmo di classificazione** per ricavare suggerimenti utili sulle features più rilevanti, che, una volta isolate, possono essere utilizzate per un nuovo addestramento del modello.
+
+### Modelli Basati su Filtro
+
+Come detto, questo tipo di modelli valuta le features in base a un criterio matematico e ha il vantaggio di **tener conto delle ridondanze tra di esse**.
+L'uso di tali metodi ha, però, un problema riguardo ai costi computazionali, dato che, per un problema $d$-dimensionale, esistono $2^d$ possibili sottoinsiemi di features di cui valutare la bontà.
+Nella pratica, pertanto, **si tende ad analizzare le features in modo indipendente**, per poi selezionare quelle più discriminanti.
+
+Tra i modelli basati su ltro ricordiamo:
+* **Gini Index** - usato per **attributi categorici** (adattabile anche per attributi numerici discreti). Supposti $v_1, ⋯, v_r$ gli $r$ possibili valori di un attributo categorico e $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,⋯, k\}$, l'indice di
+Gini per il valore $v_i$ dell'attributo è definito come $G(v_i) = 1 −\sum_{j=1}^k p_j ^2. $
+Come visto con il clustering, **valori piccoli** dell'indice di Gini indicano una **maggiore capacità discriminatoria** dell'attributo, dato che punti appartenenti alla stessa classe per lo stesso valore $v_i$ dell'attributo restituiscono $G (v_i) = 0$.
+È possibile ricavare un indice di Gini complessivo per tutti i valori dell'attributo attraverso la relazione $ G=\sum _{i=1}^r\frac{n_i G\left( v_i \right)}{n}$, dove $n_i$ è il numero di punti che assumono il valore $v_i$ dell'attributo, da cui l'insieme dei punti $n = \sum _{i=1}^r n_i$
+* **Entropia** - utile in quanto sfrutta la **correlazione tra variazioni di entropia e contenuto informativo** tipici della teoria dell'informazione. Posta $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,⋯, k\}$, l'entropia $E (v_i)$ è uguale a $ E(v_i)=-\sum_{j=1}^k p_j \log _2 \left( p_j \right) $
+**Valori elevati** dell'entropia implicano **alta mescolanza tra classi diverse**, mentre **un'entropia a 0 indica la perfetta separazione tra classi**, dunque un alto potere discriminatorio della feature.
+Come per l'indice di Gini, è possibile de nire un'entropia complessiva per l'attributo usando le supposizioni viste in precedenza, ed è pari a $ E=\sum _{i=1}^r\frac{n_i E\left( v_i \right)}{n} $.
+* **Fisher Score** - progettato per misurare il **rapporto tra separazione media inter-classe e intra-classe di attributi numerici**. **Più è alto** il Fisher Score, **più è alto il potere discriminatorio dell'attributo**. 
+Viene definito come $ F=\frac{\sum_{j=1}^k p_j \left( \mu_j-\mu \right)^2 }{\sum_{j=1}^k p_j \sigma_j^2 } $, dove $\mu_j$ e $\sigma_j$ sono, rispettivamente, la media e la deviazione standard dei punti appartenenti alla classe $j$, e dove $p_j$ è la frazione di punti appartenenti alla classe $j$.
+Il numeratore della formula rappresenta la separazione inter-classe media, mentre il denominatore la separazione intra-classe media.
+* **Fisher Linear Discriminant** - può essere pensato come una **generalizzazione del Fisher Score per combinazioni lineari di features**. Lavorando in forma supervisionata, è un metodo
+che tende a trovare la direzione massima di variazione delle features e, per contro, l'iperpiano perpendicolare che separa meglio le classi rispetto alle features stesse, in modo da massimizzare il già citato rapporto inter-classe/intra-classe.
+
+### Modelli Wrapped
+
+Sono modelli caratterizzati da una **strategia generale**, che consiste nel **perfezionare iterativamente un insieme di features** $F$ aggiungendo una feature per volta.
+
+L'algoritmo viene inizializzato con $F = \emptyset$, e si compone di due passaggi:
+1. Si aggiungono una o più features ad $F$;
+2. Si utilizza un algoritmo di classificazione $\mathcal{A}$ per valutare la precisione dell'insieme di features e, in caso negativo, si rigetta l'aggiunta.
+
+Bisogna quindi definire le **possibili strategie** per aggiungere features ad $F$:
+* una strategia **greedy** può incrementare l'insieme F ad ogni passo aggiungendo sempre la
+feature più discriminatoria rispetto ad un certo criterio
+* usare **campionamento casuale** per aggiungere una feature ad $F$.
+
+Il secondo passo del processo iterativo evidenzia come il successo del metodo sia **dipendente anche dallo specifico algoritmo** $\mathcal{A}$ che si utilizza.
 
 ## Decision Tree
 
+Si tratta di un metodo di classificazione basato su **decisioni gerarchiche sulle features**, disposte in una struttura ad albero. 
+
+È un **algoritmo supervisionato**, in quanto necessita che i dati abbiano a bbiate delle etichette, e fa in modo da suddividere gerarchicamente il dataset in modo che il livello di mescolamento delle features di classe in ogni ramo sia il minore possibile. La suddivisione operata dagli alberi di decisione **ricorda il funzionamento dell'algoritmo di clustering top-down**.
+
+Gli alberi di decisione possono e ettuare delle discriminazioni sia su singole features, per cui si parla di **split univariato del nodo**, o su un insieme di attributi, nel qual caso si parla di **split multivariato del nodo**.
+L'uso di **split multivariati** è più potente e porta ad alberi meno profondi.
+
+Un algoritmo di induzione ha due tipi di nodo, i **nodi interni** e i **nodi foglia**. **Ogni nodo foglia è etichettato con la classe predominante nel nodo**, mentre un nodo interno speciale e la radice,
+che corrisponde all'intero spazio delle features.
+Durante la creazione dell'albero, **è possibile separare solo quei nodi che sono combinazione di due o più classi**, mentre essa giunge alla fine nel momento in cui l'algoritmo incontra un criterio di arresto (il più semplice è quello in cui tutti gli esempi in una foglia appartengono alla
+stessa classe).
+
+La costruzione dell'albero, se troppo dettagliata, può portare ad una situazione di **overfitting**, in cui il modello aderisce esattamente agli esempi di addestramento ed è incapace di generalizzare.
+Per non incorrere in overfitting, **si può effettuare una potatura dei nodi che sono andati in overfitting** secondo un qualche criterio (es. si valida l'incremento di precisione su un insieme di validazione estratto dal training set).
+
 ## Random Forests
+
+Sono una **generalizzazione degli alberi di decisione** e si tratta di classificatori di tipo ensemble, ossia è composto da più classificatori addestrati sullo stesso dataset che e ettuano ognuno la propria predizione e **il cui risultato è una combinazione** di queste, atta a generare una predizione globale più robusta. Fanno uso della tecnica del **bagging**, ossia:
+1. **Si crea un ensemble di $k$ classificatori indipendenti** e distribuiti identicamente, in modo da ridurre la varianza delle stime all'aumentare del numero di stime e ettuate.
+2. **Si generano $k$ dataset con campionamento con rimpiazzo**, così da poter generare dataset quanto più simili possibili.
+3. **Si addestrano i classificatori** e la predizione della foresta è quella che ha ottenuto la maggioranza dei voti o la media delle predizioni espresse da ciascun classificatore su ogni campione.
+
+Data questa cooperazione, la random forest è molto più potente di un singolo albero di decisione.
+Un'altra caratteristica interessante è che **i nodi più elevati della gerarchia sono**, di base, **invarianti**, in quanto la particolarizzazione degli alberi avviene nei nodi più interni, in modo da non ottenere solo copie dello stesso albero. Per ottenere questa diversi cazione, le random forests fanno uso di **specifici algoritmi per lo split casuale** nei diversi alberi dell'ensemble. Tra i criteri di split abbiamo:
+* **Forest-RI (Forest - Random Input)**, in cui viene estratto un sottoinsieme casuale di features $q < d$, con $q$ che viene usato come regolatore della casualità introdotta nel criterio di split.
+Lo split in ogni nodo è preceduto dalla selezione casuale di un sottoinsieme di attributi $S$ di dimensione $q$, per cui gli split tengono in considerazione solo $S$. Più è piccolo il valore di $q$, minore sarà la correlazione tra gli alberi, ma minore sarà la precisione dell'albero.
+È stato dimostrato che, per $d$ dimensioni, il miglior compromesso è selezionare $q = \log _2 (d ) + 1$ features.
+* **Forest-RC (Forest - Random Combination)**, in cui viene estratto un sottoinsieme $L$ di features e si creano $q$ combinazioni lineari da usare come features multivariate per lo split.
+Per ogni nodo le $L$ features vengono selezionate casualmente e combinate linearmente con coefficienti generati uniformemente nell'intervallo $[−1,1]$.
+
+Usando algoritmi di random forest, non si fa uso di una strategia di potatura esplicita, per cui ogni albero cresce cercando di addestrarlo con dati di addestramento atti a massimizzare la riduzione di varianza. Tuttavia, a causa dei criteri limitati di random split degli alberi, i singoli costituenti potrebbero mostrare un bias maggiore, molto marcato nel momento in cui la frazione di features significative è molto piccola.
 
 ## Classificatori probabilistici
 

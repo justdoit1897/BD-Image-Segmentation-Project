@@ -1,3 +1,6 @@
+
+<link rel="stylesheet" type="text/css" href="stili.css">
+
 # 4 - Distanze e Similarità
 
 ## Distanza e similarità
@@ -210,7 +213,6 @@ La distanza coseno calcola quindi l'**angolo tra due documenti** $\bar X = (x_1,
 
 ## Domande Frequenti
 
-
 # 5 - Stimatori, Stima e Campionamento
 
 ## Definizione di stimatore
@@ -222,7 +224,6 @@ La distanza coseno calcola quindi l'**angolo tra due documenti** $\bar X = (x_1,
 ## Stima MLE e MAP
 
 ## Domande Frequenti
-
 
 # 6 - Mining di Pattern Frequenti
 
@@ -237,7 +238,6 @@ La distanza coseno calcola quindi l'**angolo tra due documenti** $\bar X = (x_1,
 ## Gestione di grandi database
 
 ## Domande Frequenti
-
 
 # 7 - Data Warehousing e Data Lake
 
@@ -340,7 +340,6 @@ applicazioni distribuite, pertanto soffre di problemi come:
 ## Modellazione del database
 
 ## Domande Frequenti
-
 
 # 11 - Cassandra
 
@@ -484,7 +483,7 @@ Dopo aver eseguito l'accesso alla SparkSession, è possibile accedere alle varie
 
 ## Generalità
 
-Il **machine learning** si riferisce allo sviluppo di programmi per computer capaci di **apprendere dai dati**. 
+Il **machine learning** si riferisce allo sviluppo di programmi per computer capaci di **apprendere dai dati**.
 
 Più in generale, una macchina avrà a disposizione un'esperienza E rispetto a una classe di task T da svolgere e dovrà misurare unacerta performance P, secondo la logica che P deve migliorare sui compiti T usando l'esperienza E.
 
@@ -500,7 +499,6 @@ L'apprendimento viene misurato dalla relazione $y=f(x, w, \theta)$.
 ## Tipologie dei compiti di apprendimento
 
 In base al tipo di apprendimento, gli algoritmi di machine learning devono impiegare $f$ distinte, specifiche per il compito in questione.
-
 
 ## Utilizzo dei dati
 
@@ -676,7 +674,7 @@ $$
 
 La covarianza locale $\Sigma_j$, calcolata sui punti del cluster $\mathcal C_j$, fornisce una misura implicita di **densità** del cluster e consente di gestire cluster a densità variabile.
 
-    ![1684251954738](image/big_data/1684251954738.png)
+![1684251954738](image/big_data/1684251954738.png)
 
 $\rightarrow$ Il **k-means** è adatto per **cluster di forma sferica**.
 
@@ -838,7 +836,7 @@ La scelta del nodo $L$ può essere dettata da diversi criteri, ma in genere si p
 >
 > Una **funzione di probabilità** $p(x)$ è, invece, una legge matematica con cui vengono espresse le **distruzioni di probabilità discrete**.
 >
->     ![1684427653388](image/big_data/1684427653388.png)
+> ![1684427653388](image/big_data/1684427653388.png)
 
 Gli algoritmi di clustering basati su modelli probabilistici sono algoritmi flessibili in quanto ogni dato può avere una probabilità di assegnazione diversa da 0 a molti cluster.
 
@@ -923,7 +921,7 @@ Nella pratica i cluster possono essere difficili da modellare con una forma impo
 
 > L'idea di base è che un cluster è una regione densa di punti, separata dagli altri cluster da regioni a bassa densità. Questo tipo di clustering viene usato quando i cluster hanno forma irregolare o intrecciata e inoltre sono presenti rumore e outlier.
 >
->     ![1684427891552](image/big_data/1684427891552.png)
+> ![1684427891552](image/big_data/1684427891552.png)
 
 In questi approcci si cerca di creare i cluster come componenti connesse di un grafo costituito da elementi strutturali che sono caratterizzati dal possedere un parametro di densità sopra una certa soglia. In particolare distinguiamo:
 
@@ -936,30 +934,72 @@ In questi approcci si cerca di creare i cluster come componenti connesse di un g
 
 Negli algoritmi grid-based i dati vengono discretizzati in $p$ intervalli (tipicamente) ad ampiezza costante. Per un dataset $d$-dimensionale, ciò porta ad un totale di $p^d$ ipercubi nei dati.
 
-Per determinare il sottoinsieme dei $p^d$ ipercubi densi viene utilizzata una soglia di densità $\tau$. 
+Per determinare il sottoinsieme degli ipercubi **densi** viene utilizzata una **soglia di densità** $\tau$. 
+
+Il cluster risultante sarà dato da diversi ipercubi densi adiacenti, ovvero aventi tra di loro un lato (o un angolo) comune.
 
 ![1684366938578](image/big_data/1684366938578.png)
 
 Ricevuti in **input**: un data-set $\mathcal D$, il numero $p$ degli intervalli e una soglia di densità $\tau$, l'algoritmo si compone dei seguenti passi:
 
 1. Viene discretizzata ogni dimensione del data-set $\mathcal D$ in $p$ intervalli (tipicamente) ad ampiezza costante. Per un dataset $d$-dimensionale, ciò porta ad un totale di $p^d$ ipercubi nei dati.
-2. Di questi $p^d$ ipercubi vengono selezionati solo quelli **densi** usando la soglia di densità $\tau$.
-3. Viene creato un **grafo** in cui gli ipercubi densi **adiacenti** vengono collegati da archi. Nel nostro caso, due ipercubi connessi della griglia $d$-dimensionale si dicono adiacenti se condividono un lato in comune
-4. aaa
-5. Vengono restituiti in **output**
+2. Di questi $p^d$ ipercubi vengono selezionati solo quelli **densi** usando la **soglia di densità** $\tau$.
+3. Viene creato un **grafo** in cui gli ipercubi (griglie) densi (**nodi**) vengono connessi da archi se sono **adiacenti**. Nel nostro caso, due ipercubi connessi della griglia $d$-dimensionale si dicono adiacenti se hanno un lato comune.
+4. Vengono determinate le componenti connesse del grafo, ovvero vengono generati i **cluster**. Nell'esempio sottostante vi sono 2 componenti connesse.
+5. Vengono restituiti in **output** i punti di ogni componente connessa come **cluster**.
 
 ![1684366824980](image/big_data/1684366824980.png)
 
+> Risulta evidente, quindi, come la scelta della dimensione $p$ degli intervalli e della soglia di densità $\tau$ sia di fondamentale importanza, dato che:
+>
+> 1. Celle troppo grandi possono contenere punti di diversi cluster, mentre celle troppo piccole possono generare un numero molto elevato di celle vuote.
+> 2. Una soglia troppo bassa fa collassare più celle in un cluster, mentre una soglia troppo alta tende a spezzare i cluster.
+>
+> L'altro problema di fondo è l'**elevata dimensionalità dei dati**, dato che il numero di celle (ipercubi) della griglia cresce esponenzialmente al variare di $d$.
 
 ### Algoritmi density based - DBSCAN
 
-> Gli algoritmi density-based identificano i cluster come regioni dello spazio dense, separate da zone a piu scarsa densita, che rappresentano quindi il rumore. Questi algoritmi possiedono quindi l'intrinseca capacita di rilevare cluster di forma arbitraria e di filtrare il rumore identificando gli outlier.
+> Gli algoritmi density-based identificano i cluster come regioni dello spazio dense, separate da zone a piu scarsa densità, che rappresentano quindi il rumore. 
+>
+> Questi algoritmi possiedono quindi l'intrinseca capacita di rilevare cluster di forma arbitraria e di filtrare il rumore identificando gli outlier.
 
-L'algoritmo DBSCAN si basa
+Il principale algoritmo basato sulla densità è il DBSCAN (*Density-Based Spatial Clustering of Applications with Noise*).
+
+L'approccio consiste nel classificare i singoli punti in base alla loro **densità** e nell'utilizzarli come **building blocks**.
+
+La densità di un punto nel data-set è definita dal numero di punti che si trovano lungo un raggio $Eps$ di quel punto (incluso il punto stesso). 
+
+In base alla loro densità, l'algoritmo DBSCAN prevede di classificare ciascun punto del data-set $\mathcal D$ in una di 3 categorie:
+
+* **Core point (punto centrale)**: punti che nel loro intorno di dato raggio $Eps$ contengono almeno $\tau$ punti.
+* **Border point (punto di confine)**: punti che nel loro intorno contengono meno di $\tau$ punti, ma che contengono almeno un core point.
+* **Noise point (punto di rumore)**: punti che nel loro intorno contengono meno di $\tau$ punti e non contengono core point.
 
 ![1684367060738](image/big_data/1684367060738.png)
 
 ![1684367098212](image/big_data/1684367098212.png)
+
+Ricevuti in **input**: un data-set $\mathcal D$, il valore $Eps$ del raggio e una soglia di densità $\tau$, l'algoritmo si compone dei seguenti passi:
+
+1. Viene classificato ciascun punto del data-set $\mathcal D$ tenendo conto dei parametri $Eps$ e $\tau$. Avremo quindi 3 sottoinsiemi di $\mathcal D$:
+   1. Insieme dei core points.
+   2. Insieme dei border points.
+   3. Insieme dei noise points.
+2. A partire dall'insieme dei core points, viene creato un grafo (costruito su punti, a differenza di grid-based) in cui ogni nodo corrisponde ad un core point e connette due nodi $n_i$ ed $n_j$ (crea l'arco $\{ n_i, n_j \}$) se e solo se $Dist(n_i, n_j) \leq Eps$.
+3. Vengono determinate le componenti connesse del grafo, ovvero vengono generati i **cluster**.
+4. Vengono assegnati i border points al cluster (componenti connesse) con cui hanno un livello di connettività più elevato.
+5. Vengono restituiti in **output** i gruppi risultanti (punti di ogni componente connessa) come **cluster** e i noise points vengono riportati come **outlier**.
+
+> Il passo di determinazione del grafo dei core points è un approccio single linkage con distanza $Eps$.
+>
+> L'approccio di DBSCAN presenta come problemi:
+>
+> 1. Un costo computazionale di ricerca dei core points potenzialmente elevato di $O(n^2)$, che può essere ridotto a $O \Big( n\cdot \log(n) \Big)$ con apposite strutture di indicizzazione (anche se ciò è valido solo per basse dimensionalità).
+> 2. La scelta di un parametro $\tau$ fissato comporta problemi nella gestione di cluster a densità variabile. In particolare, dopo aver scelto $\tau$, si può utilizzare $Eps$ come valore di cut-off della distanza di ogni punto dai suoi $\tau$ vicini più vicini.
+
+In caso di utilizzo di un approccio grid-based, è possibile legare la dimensione della cella a al valore di $Eps$, a parità di scelta di $MinPts = \tau$, per ottenere forme dei cluster simili a quelle di DBSCAN
+
+Se assumiamo che i dati si trovino all'intero di un ipercubo unitario, si può affermare, per ottenere una adiacenza tra celle dense che raggruppi i punti in modo molto simile agli intorni dei core point, che:
 
 $$
 \cfrac 1 p \propto \cfrac {Eps} {\sqrt{2}}
@@ -967,25 +1007,92 @@ $$
 
 ## Misure di bontà del clustering
 
+> Il clustering è una procedura **non supervisionata** e quindi non ci
+> fornisce, in principio, informazioni utili alla validazione della bontà del task effettuato.
+
+Si determinano due tipologie di criteri per fare **cluster validation**:
+
+1. **Criteri di validazione interni**: sono criteri **basati sui dati** da analizzare e, dunque, indipendenti dall'algoritmo utilizzato
+2. **Criteri di validazione esterni**: sono criteri indipendenti dai dati e vengono applicati principalmente quando il dataset è generato in modo sintetico (cluster noti a priori).
+
+### Criteri di validazione interni
+
+> Si tratta di criteri che sono formulati prendendo in prestito alcuni aspetti della funzione obiettivo da ottimizzare. 
+>
+> Di conseguenza, tendono a favorire algoritmi che usano lo stesso tipo di funzione obiettivo. 
+>
+> La loro utilità risiede soprattutto quando è impossibile usare un criterio esterno.
+
+#### Within Cluster Sum of Squares (WCSS)
+
 $$
 WCSS = \sum_{j=1}^{K} \sum_{\bar X_i \in \mathcal C_j} \big( \bar X_i - \bar Y_j \big)^2
 $$
 
-$$
-Intra = \sum_{\big ( \bar X_i, \bar X_j \big) \in P}  \cfrac {dist \big( \bar X_i, \bar X_j \big) } {|P|}
-$$
+È un criterio che si sposa perfettamente con gli algoritmi che generano **cluster sferici**. Da notare che, all'aumentare del numero $K$ di cluster, $WCSS$ diminuisce a prescindere, dato che i cluster saranno generalmente più piccoli.
+
+#### Rapporto delle distanze Intra-cluster/Inter-cluster
 
 $$
-Inter = \sum_{\big ( \bar X_i, \bar X_j \big) \in Q}  \cfrac {dist \big( \bar X_i, \bar X_j \big) } {|Q|}
+Intra = \sum_{\big ( \bar X_i, \bar X_j \big) \in P}  \cfrac {dist \big( \bar X_i, \bar X_j \big) } {|P|} = \cfrac {1} {|P|} \cdot \sum_{\big ( \bar X_i, \bar X_j \big) \in P} {dist \big( \bar X_i, \bar X_j \big) }
 $$
 
+
 $$
-S_i = \cfrac {D_{min_i^{out}} - D_{avg_i^{in}}} {max \Bigl\{ D_{min_i^{out}}, D_{avg_i^{in}} \Bigr\} }
+Inter = \sum_{\big ( \bar X_i, \bar X_j \big) \in Q}  \cfrac {dist \big( \bar X_i, \bar X_j \big) } {|Q|} = \cfrac {1} {|Q|} \cdot \sum_{\big ( \bar X_i, \bar X_j \big) \in Q} {dist \big( \bar X_i, \bar X_j \big) }
 $$
+
+
+
+L'algoritmo segue i seguenti passi:
+
+1. Sceglie un certo cluster e seleziona le $P$ coppie che appartengono ad esso.
+2. Seleziona le rimanenti $Q$ coppie che non appartengono al cluster scelto.
+3. Calcola il rapporto $\cfrac {Intra} {Inter}$.
+
+Più questo rapporto è piccolo, migliore sarà il clustering.
+
+#### Silhouette Coefficient
+
+Siano:
+
+* $D_{avg_i^{in}}$ la distanza media di un punto $\bar X_i$ rispetto agli altri punti all'interno dello stesso cluster.
+* $D_{min_i^{out}}$ la minima distanza media di un punto $\bar X_i$ dagli altri cluster diversi dal suo.
+
+Il **Silhouette Coefficient** $S_i$ relativo al dato $\bar X_i$ è definito come:
+
+$$
+S_i = \cfrac {D_{min_i^{out}} - D_{avg_i^{in}}} {max \Bigl\{ D_{min_i^{out}}, D_{avg_i^{in}} \Bigr\} } \in \big[ -1, 1 \big]
+$$
+
+Valori di $S_i$ prossimi ad $1$ indicano una buona separazione tra i cluster, ovvero che è stato effettuato un buon clustering.
+
+> $D_{min_i^{out}} < D_{avg_i^{in}} \Longleftrightarrow$ il punto $\bar X_i$ è più vicino ad almeno un altro cluster diverso dal proprio.
+
+Il **Silhouette Coefficient Complessivo** $S$ è pari alla **media** dei **Silhouette Coefficients Specifici** dei punti.
 
 $$
 S = \cfrac {1} {n} \cdot \sum_i S_i
 $$
+
+#### Misure Probabilistiche
+
+Si usa un metodo simile al passo di massimizzazione dell'approccio EM calcolando la log-likelihood di una mistura di distribuzioni che sottenda ipoteticamente i dati. 
+
+Questa misura è utile quando è nota la forma che i cluster dovrebbero avere.
+
+#### Considerazioni Finali
+
+Come detto in precedenza, queste misure **dipendono fortemente dall'algoritmo di clustering**, che tende a favorire specifiche forme di clustering, che potrebbero non essere quelle reali. 
+
+Questa criticità rende difficile valutare un confronto tra i diversi criteri per testare la bontà di un algoritmo.
+
+È comunque utile notare come, nonostante le criticità intrinseche di questi criteri, essi siano utilizzabili come strumento per il **tuning dei parametri dell'algoritmo di clustering**. 
+
+L'idea alla base di questa teoria risiede nel fatto che la variazione delle misure di validazione al crescere dei parametri tende a mostrare un punto di flesso per un dato numero di cluster, oltre il quale si evidenzia un plateau (questo comportamento è particolarmente evidente in $WCSS$ e nel rapporto intra-cluster/inter-cluster).
+
+### Criteri di valutazione esterni
+
 
 $$
 \begin{cases} 

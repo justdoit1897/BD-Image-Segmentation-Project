@@ -1569,6 +1569,10 @@ $$
 
 ## Generalità
 
+> Il problema della **classificazione** è strettamente correlato al problema del **clustering**. 
+>
+> Mentre lo scopo del clustering è quello di determinare gruppi simili di dati, lo scopo della classificazione è quello di saper predire il valore dell'etichetta per dati di **test** mai visti dall'algoritmo.
+
 La **classificazione** è uno dei tipici problemi del Machine Learning, come detto in precedenza, e consiste, dato un dataset in input, in cui ogni occorrenza è etichettata come appartenente a una classe, nel **saper predire un'etichetta di classe ad ogni occorrenza dei dati di test**, mai visti dall'algoritmo di apprendimento.
 
 Gli algoritmi di classificazione rientrano tra quelli di **apprendimento supervisionato**, in quanto l'apprendimento della struttura dei gruppi avviene per esempi (e non attraverso la loro tendenza al clustering).
@@ -1579,64 +1583,143 @@ Si tratta, forse, della tipologia di algoritmo di machine learning più comune, 
 * **Fase di test**, in cui il modello addestrato viene utilizzato per predire l'etichetta di classe di dati mai visti prima.
 
 Grazie all'eterogeneità di fonti di dati che possono fungere da insieme di addestramento, gli algoritmi di classificazione sono **molto versatili** in termini di contesto applicativo.
-In generale, dati n punti nello spazio $\mathbb{R}^d$ appartenenti al dataset $\mathbb{D}$, questi vengono associati ad un
-insieme di etichette $\{1,\dots, k\}$ (da notare che, per $k = 2$, si parla di classificazione binaria e le etichette vengono indicate con $\{−1,1\}$ o $\{0,1\}$) tramite un algoritmo di classificazione.
+In generale, dati $n$ punti nello spazio $\mathbb{R}^d$ appartenenti al dataset $\mathcal{D}$, questi vengono associati ad un insieme di etichette $\{1,\dots, k\}$ (da notare che, per $k = 2$, si parla di classificazione binaria e le etichette vengono indicate con $\{−1,1\}$ o $\{0,1\}$) tramite un algoritmo di classificazione.
 
-L'algoritmo può essere di **predizione esplicita dell'etichetta** o di **probabilità di appartenenza del punto ad una classe**, che può comunque essere riportato alla prima tipologia usando come etichetta esplicita quella la cui probabilità è massima.
+L'**output** di un algoritmo di classificazione può essere di due tipi:
 
-Per un compito di classificazione, esistono diversi modelli (alberi di decisione, support vector machines, ecc.), ognuno con le proprie caratteristiche, ma un problema più importante della scelta del modello avviene a monte, e riguarda la scelta delle caratteristiche più informative per la classificazione.
+1. **Predizione esplicita dell'etichetta**: viene predetta un'etichetta per ogni esempio di test.
+2. **Score numerico**: il modello assegna un punteggio a ciascuna combinazione esempio-etichetta che misura la probabilità di appartenenza del punto ad una particolare classe. Può essere riportato alla prima tipologia usando come etichetta esplicita quella la cui probabilità è massima.
+
+Per un compito di classificazione, esistono diversi modelli (alberi di decisione, Support Vector Machines, ecc.), ognuno con le proprie caratteristiche, ma un problema più importante della scelta del modello avviene a monte, e riguarda la scelta delle caratteristiche (feature) più informative per la classificazione.
 
 ## Selezione delle feature
 
-È la **prima fase** del processo di classificazione e consiste nella **scelta delle features** nel dataset **con un certo contenuto informativo**, dato che quelle che danno poca informazione ai fini della classificazione rischiano di essere fuorvianti per il modello e rappresentano un peso inutile in termini di computazioni. Per la selezione delle features esistono tre principali metodologie:
+> È la prima fase del processo di classificazione e consiste nella scelta delle **feature rilevanti** per la previsione delle etichette di classe all'interno del data-set $\mathcal D$.
 
-* **Modelli basati su filtro**, che sfruttano un **criterio matematico** per valutare la qualità di una feature o di un sottoinsieme di esse.
-* **Modelli wrapped**, che sfruttano un **algoritmo di classificazione** per valutare le performance del vero e proprio algoritmo di classificazione per uno specifico insieme di features, **per poi stabilire quale sia il sottoinsieme di features più utile** ai fini della vera e propria classificazione.
-* **Modelli embedded**, che utilizza la **soluzione di un algoritmo di classificazione** per ricavare suggerimenti utili sulle features più rilevanti, che, una volta isolate, possono essere utilizzate per un nuovo addestramento del modello.
+È la **prima fase** del processo di classificazione e consiste nella **scelta delle features** nel dataset **con un certo contenuto informativo**, dato che quelle che danno poca informazione ai fini della classificazione rischiano di essere fuorvianti per il modello e rappresentano un peso inutile in termini di computazioni. 
+
+Per la selezione delle feature esistono tre principali metodologie:
+
+* **Modelli basati su filtro**: sfruttano un **criterio matematico** per valutare la qualità di una feature o di un sottoinsieme di esse. Tale criterio viene utilizzato con indicatori numerici della rilevanza delle feature per filtrare (eliminare) le feature irrilevanti.
+* **Modelli wrapped**: sfruttano un **algoritmo di classificazione** per valutare le performance del vero e proprio algoritmo di classificazione per uno specifico insieme di features, **per poi stabilire quale sia il sottoinsieme di features più utile** ai fini della vera e propria classificazione.
+* **Modelli embedded**: utilizzano la **soluzione di un algoritmo di classificazione** per ricavare suggerimenti utili sulle features più rilevanti, che, una volta isolate, possono essere utilizzate per **riaddestrare il modello solo su di esse**.
 
 ### Modelli Basati su Filtro
 
-Come detto, questo tipo di modelli valuta le features in base a un criterio matematico e ha il vantaggio di **tener conto delle ridondanze tra di esse**.
-L'uso di tali metodi ha, però, un problema riguardo ai costi computazionali, dato che, per un problema $d$-dimensionale, esistono $2^d$ possibili sottoinsiemi di features di cui valutare la bontà.
+> Come detto, questo tipo di modelli valuta le feature in base a un criterio matematico e ha il vantaggio di **tener conto delle ridondanze tra di esse**.
+
+L'uso di tali metodi ha, però, un problema riguardo ai costi computazionali, dato che, per un problema $d$-dimensionale, esistono $2^d$ possibili sottoinsiemi di feature di cui valutare la bontà.
 Nella pratica, pertanto, **si tende ad analizzare le features in modo indipendente**, per poi selezionare quelle più discriminanti.
 
-Tra i modelli basati su ltro ricordiamo:
+#### Gini Index
 
-* **Gini Index** - usato per **attributi categorici** (adattabile anche per attributi numerici discreti). Supposti $v_1, ⋯, v_r$ gli $r$ possibili valori di un attributo categorico e $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,\dots, k\}$, l'indice di
-  Gini per il valore $v_i$ dell'attributo è definito come $G(v_i) = 1 −\sum_{j=1}^k p_j ^2. $
-  Come visto con il clustering, **valori piccoli** dell'indice di Gini indicano una **maggiore capacità discriminatoria** dell'attributo, dato che punti appartenenti alla stessa classe per lo stesso valore $v_i$ dell'attributo restituiscono $G (v_i) = 0$.
-  È possibile ricavare un indice di Gini complessivo per tutti i valori dell'attributo attraverso la relazione $ G=\sum _{i=1}^r\frac{n_i G\left( v_i \right)}{n}$, dove $n_i$ è il numero di punti che assumono il valore $v_i$ dell'attributo, da cui l'insieme dei punti $n = \sum _{i=1}^r n_i$
-* **Entropia** - utile in quanto sfrutta la **correlazione tra variazioni di entropia e contenuto informativo** tipici della teoria dell'informazione. Posta $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,\dots , k\}$, l'entropia $E (v_i)$ è uguale a $ E(v_i)=-\sum_{j=1}^k p_j \log _2 \left( p_j \right) $
-  **Valori elevati** dell'entropia implicano **alta mescolanza tra classi diverse**, mentre **un'entropia a 0 indica la perfetta separazione tra classi**, dunque un alto potere discriminatorio della feature.
-  Come per l'indice di Gini, è possibile de nire un'entropia complessiva per l'attributo usando le supposizioni viste in precedenza, ed è pari a $ E=\sum _{i=1}^r\frac{n_i E\left( v_i \right)}{n} $.
-* **Fisher Score** - progettato per misurare il **rapporto tra separazione media inter-classe e intra-classe di attributi numerici**. **Più è alto** il Fisher Score, **più è alto il potere discriminatorio dell'attributo**.
-  Viene definito come $ F=\frac{\sum_{j=1}^k p_j \left( \mu_j-\mu \right)^2 }{\sum_{j=1}^k p_j \sigma_j^2 } $, dove $\mu_j$ e $\sigma_j$ sono, rispettivamente, la media e la deviazione standard dei punti appartenenti alla classe $j$, e dove $p_j$ è la frazione di punti appartenenti alla classe $j$.
-  Il numeratore della formula rappresenta la separazione inter-classe media, mentre il denominatore la separazione intra-classe media.
-* **Fisher Linear Discriminant** - può essere pensato come una **generalizzazione del Fisher Score per combinazioni lineari di features**. Lavorando in forma supervisionata, è un metodo
-  che tende a trovare la direzione massima di variazione delle features e, per contro, l'iperpiano perpendicolare che separa meglio le classi rispetto alle features stesse, in modo da massimizzare il già citato rapporto inter-classe/intra-classe.
+> Viene usato per **attributi categorici**, ma può essere generalizzato ad **attributi numerici discreti**, mediante il processo di **discretizzazione**.
+
+Siano $v_1, v_2, \dots, v_r$ gli $r$ possibili valori di un attributo categorico.
+
+Sia $p_j$ l'insieme dei dati contenenti il valore $v_i$ dell'attributo nella classe $j \in \{ 1, 2, \dots, k \}$.
+
+L'indice di Gini per il valore $v_i$ di un attributo categorico è definito come:
+
+$$
+G(v_i) = 1 - \sum_{j=1}^k p_j^2
+$$
+
+> Come visto con il clustering, **valori piccoli** dell'indice di Gini indicano una **maggiore capacità discriminatoria** dell'attributo, dato che punti appartenenti alla stessa classe per lo stesso valore $v_i$ dell'attributo restituiscono $G (v_i) = 0$.
+>
+> $$
+> G(v_i) = \begin{cases} 0 & se \ tutti \ i \ punti \ appartengono \ alla \ stessa \ classe \\ 1 - \cfrac {1} {k} & se \ le \ classi \ sono \ distribuite \ uniformemente \end{cases}
+> $$
+
+Il Gini Index complessivo per tutti gli $r$ valori dell'attributo $v_i$ è definito come la **media pesata** sui diversi valori dell'attributo:
+
+$$
+G = \sum_{i=1}^r n_i \cdot \frac {G(v_i)} {n}
+$$
+
+dove $n_i$ indica il numero di punti che assumono il valore $v_i$ dell'attributo, da cui l'insieme dei punti $n = \sum _{i=1}^r n_i$.
+
+#### Entropia
+
+> La misura dell'**entropia class-based** sfrutta la **correlazione tra variazioni di entropia e contenuto informativo** tipici della teoria dell'informazione.
+
+Sia $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{ 1, 2, \dots, k \}$.
+
+L'entropia class-based $E(v_i)$ relativa al valore $v_i$ è definita come:
+
+$$
+E(v_i) = - \sum_{j=1}^k p_j \cdot \log_2(p_j)
+$$
+
+$$
+E(v_i) \in \bigg[0, \log_2(k) \bigg]
+$$
+
+> **Valori elevati** dell'entropia implicano **alta mescolanza tra classi diverse**, mentre **un'entropia a 0 indica la perfetta separazione tra classi**, dunque un alto potere discriminatorio della feature.
+
+Analogamente a quanto visto con il **Gini Index**, è possibile definire un'entropia class-based complessiva per tutti gli $r$ valori dell'attributo $v_i$:
+
+$$
+E = \sum_{i=1}^r n_i \cdot \frac {E(v_i)} {n}
+$$
+
+dove $n_i$ è la frequenza del valore $v_i$ dell'attributo.
+
+#### Fisher score
+
+> È progettato per misurare il **rapporto tra separazione media inter-classe e intra-classe di attributi numerici**. 
+>
+> **Più è alto** il Fisher Score, **più è alto il potere discriminatorio dell'attributo**.
+
+Siano $\mu_j$ e $\sigma_j$ rispettivamente la **media** e la **deviazione standard** dei punti appartenenti alla classe $j$ per una particolare feature.
+
+Il Fisher Score viene definito come:
+
+$$
+F = \cfrac{\sum_{j=1}^k p_j \left( \mu_j-\mu \right)^2 }{\sum_{j=1}^k p_j \sigma_j^2 }
+$$
+
+Dove, **per ogni feature**:
+
+* $p_j$ è la **frazione** di dati appartenente alla classe $j$
+* $\mu_j$ è la **media** dei dati appartenenti alla classe $j$
+* $\sigma_j$ è la **deviazione standard** dei dati appartenenti alla classe $j$
+
+Il **numeratore** della formula rappresenta la separazione **inter-classe** media, mentre il **denominatore** la separazione **intra-classe** media.
+
+#### **Fisher Linear Discriminant**
+
+> Può essere pensato come una **generalizzazione del Fisher Score per combinazioni lineari di feature**. 
+
+Lavorando in forma supervisionata, è un metodo che tende a trovare la direzione massima di variazione delle features e, per contro, l'iperpiano perpendicolare che separa meglio le classi rispetto alle features stesse, in modo da massimizzare il già citato rapporto **Inter-class/Intra-class**.
 
 ### Modelli Wrapped
 
-Sono modelli caratterizzati da una **strategia generale**, che consiste nel **perfezionare iterativamente un insieme di features** $F$ aggiungendo una feature per volta.
+> Sono modelli caratterizzati da una **strategia generale**, che consiste nel **perfezionare iterativamente un insieme di feature** $F$ aggiungendo una feature per volta.
 
-L'algoritmo viene inizializzato con $F = \emptyset$, e si compone di due passaggi:
+Ricevuto in **input** uno specifico algoritmo di classificazione $\mathcal A$, si procede come segue:
 
-1. Si aggiungono una o più features ad $F$;
-2. Si utilizza un algoritmo di classificazione $\mathcal{A}$ per valutare la precisione dell'insieme di features e, in caso negativo, si rigetta l'aggiunta.
+1. Si inizializza l'insieme delle feature $F = \emptyset$.
+2. Si aggiungono una o più feature ad $F$.
+3. Si utilizza l'algoritmo di classificazione $\mathcal A$ per valutare l'accuratezza dell'insieme $F$.
+   1. Se l'accuratezza diminuisce rispetto all'iterazione precedente, vengono rimosse da $F$ le feature aggiunte al passo 2.
 
-Bisogna quindi definire le **possibili strategie** per aggiungere features ad $F$:
+Bisogna quindi definire le **possibili strategie** per aggiungere feature ad $F$:
 
-* una strategia **greedy** può incrementare l'insieme F ad ogni passo aggiungendo sempre la
-  feature più discriminatoria rispetto ad un certo criterio
-* usare **campionamento casuale** per aggiungere una feature ad $F$.
+* Una strategia **greedy** può incrementare l'insieme $F$ ad ogni passo aggiungendo sempre la feature più discriminatoria rispetto ad un certo criterio.
+* Usare **campionamento casuale** per aggiungere una feature ad $F$.
 
-Il secondo passo del processo iterativo evidenzia come il successo del metodo sia **dipendente anche dallo specifico algoritmo** $\mathcal{A}$ che si utilizza.
+> Il processo iterativo dell'incremento dell'insieme delle feature rilevanti $F$ continua finché non vi saranno più miglioramenti dopo un certo numero di iterazioni.
+>
+> L'insieme finale $F$ **dipende dalla scelta dell'algoritmo di classificazione $\mathcal A$**.
 
 ## Decision Tree
 
-Si tratta di un metodo di classificazione basato su **decisioni gerarchiche sulle features**, disposte in una struttura ad albero.
+> Si tratta di un metodo di classificazione basato su **decisioni gerarchiche sulle feature**, disposte in una struttura ad albero.
 
-È un **algoritmo supervisionato**, in quanto necessita che i dati abbiano a bbiate delle etichette, e fa in modo da suddividere gerarchicamente il dataset in modo che il livello di mescolamento delle features di classe in ogni ramo sia il minore possibile. La suddivisione operata dagli alberi di decisione **ricorda il funzionamento dell'algoritmo di clustering top-down**.
+È un **algoritmo supervisionato**, in quanto necessita che i dati abbiano affibbiate delle etichette, e fa in modo da suddividere gerarchicamente il data-set $\mathcal D$ in modo che il livello di mescolamento delle features di classe in ogni ramo sia il minore possibile. 
+
+La suddivisione operata dagli alberi di decisione **ricorda il funzionamento dell'algoritmo di clustering top-down**.
 
 Gli alberi di decisione possono e ettuare delle discriminazioni sia su singole features, per cui si parla di **split univariato del nodo**, o su un insieme di attributi, nel qual caso si parla di **split multivariato del nodo**.
 L'uso di **split multivariati** è più potente e porta ad alberi meno profondi.

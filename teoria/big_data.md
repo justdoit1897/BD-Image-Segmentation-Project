@@ -216,11 +216,160 @@ La distanza coseno calcola quindi l'**angolo tra due documenti** $\bar X = (x_1,
 
 ## Definizione di stimatore
 
+In statistica, si definisce **stimatore** una ***funzione che associa ad ogni possibile campione (scelto casualmente all'interno di una popolazione) un valore del parametro da stimare***.
+Il valore che viene assunto dallo stimatore in presenza di un campione è detto **stima**. In generale, vale che la stima di una variabile $y$ è una funzione del tipo $y=f(x)+\epsilon$, da cui si evince che:
+* la relazione tra $x$ e $y$ non è espressa totalmente da $f$
+* si desidera una funzione che approssimi $f$
+* $y$ è una stima puntuale nello spazio delle funzioni
+
 ## Stimatori polarizzati e non polarizzati
+
+In statistica sono state proposte delle caratteristiche che un buono stimatore dovrebbe soddisfare, tra cui che **l'errore commesso tra la stima e il valore del parametro dev'essere minimo**. Di solito, si sfrutta proprio questa caratteristica per valutare la bontà di uno stimatore, soltanto che, non potendo valutare l'errore puntualmente, si sfrutta lo **scostamento medio**.
+Più nello specifico, detto $\theta$ il parametro da stimare e $\hat{\theta}_m$ lo stimatore, funzione del campione m, possiamo calcolare il valore atteso dello scostamento tra stimatore e parametro, detto **distorsione** o **bias** 
+
+$$
+\mathrm{bias}\left( \hat{\theta}_m \right) = \mathbb{E}\left[ \hat{\theta}_m \right] - \theta
+$$
+
+Diciamo che lo stimatore è non polarizzato se $\mathrm{bias}\left( \hat{\theta}_m \right)=0$.
+
+Lo stimatore $\hat{\theta}_m$ si dice asintoticamente non polarizzato se vale 
+
+$$
+\lim _{m\rightarrow \infty} \mathbb{E}\left[ \hat{\theta}_m \right] = \theta
+$$
+
+### Stimatori Campionari di Media
+
+Noto che la **media** è data da $\hat{\mu}_m = \frac{1}m \sum_{i=1}^m x^{(i)}$ e, supposto che i campioni siano tratti da distribuzione gaussiana $\forall i,\ x^{(i)} \sim \mathcal{N}\left( x; \mu, \sigma \right) $, risulta che $\mathrm{bias}\left( \hat{\mu}_m \right) = 0$, dunque che **uno stimatore campionario di media è uno stimatore non polarizzato**.
+
+### Stimatori Campionari di Varianza
+
+Noto che la varianza è data da $\hat{\sigma}_m^2 = \frac{1}m \sum_{i=1}^m \left( x^{(i)}-\hat{mu}_m \right) ^2 $ e, supposto che i campioni siano tratti da distribuzione gaussiana $\forall i,\ x^{(i)} \sim \mathcal{N}\left( x; \mu, \sigma \right) $, risulta che **uno stimatore campionario di varianza è uno stimatore polarizzato**, e che il fattore polarizzante è $\frac{m-1}m$.
+Basterà scegliere, infatti, una varianza $\bar{\sigma}_m = \frac{1}{m-1} \sum_{i=1}^m \left( x^{(i)}-\hat{mu}_m \right) ^2 $ per ottenere uno stimatore non polarizzato.
+
+### Varianza di uno stimatore
+
+È la misura ***utilizzata per valutare quanto sia stabile la stima rispetto alla variazione dei campioni utilizzati***. Da questa misura, indicata come $\mathrm{Var}\left( \hat{\theta} _m \right)$, si può ricavare lo **standard error** come 
+
+$$
+\mathrm{SE}\left( \hat{\theta}_m \right) = \sqrt{\mathrm{Var}\left( \hat{\theta} _m \right)}
+$$
+
+Lo standard error è definito come la ***stima della deviazione standard dello stimatore***.
+
+### Errore Quadratico Medio (MSE)
+
+Si usa per giudicare la bontà di uno stimatore a minimo bias e a minima varianza, ossia ideale. Indica la ***discrepanza quadratica media tra i valori dei dati osservati e i valori dei dati stimati***, secondo la relazione
+
+$$
+\mathrm{MSE} = \mathcal{E}\left[ \left( \hat{\theta}_m - \theta \right) ^2 \right] = \mathrm{bias}\left( \hat{\theta}_m \right) + \mathrm{Var}\left( \hat{\theta} _m \right)
+$$
 
 ## Campionamento e stimatori
 
+Gli stimatori visti finora rientrano tra quelli ottenuti coi metodi di ***Monte Carlo***, metodi basati sul campionamento casuale.
+
+Quando si usano i metodi di Monte Carlo, si ottiene una **stima della quantità ricercata con un certo errore**, per cui bisogna fare molta attenzione al processo di **campionamento**, ossia la scelta dei campioni necessari alla stima.
+In genere, si campionano dati da una distribuzione per approssimare un integrale non trattabile numericamente o attraverso una serie finita di somme.
+Se osserviamo tale integrale come il calcolo di un valore atteso, stimato attraverso la corrispondente media
+
+$$
+s = \int p(x)f(x) dx = \mathbb{E}_p \left[ f(x) \right]
+$$
+
+Osserviamo, adesso, alcuni metodi di campionamento.
+
+### Campionamento con Distribuzione Uniforme
+
+È un tipo di campionamento che fornisce gli stimatori visti in precedenza
+
+### Campionamento Stratificato
+
+È un tipo di campionamento che funziona in questo modo:
+1. Si suddivide la popolazione in **strati omogenei** rispetto alla variabile da stimare **usando**, però, **un'altra variabile correlata**.
+2. Si estrae con una procedura di campionamento con rimpiazzo il campione relativo a ciascuno strato.
+3. Si mettono insieme i campioni estratti ottenendo un campione globale.
+
+**La stima della varianza**, con questo metodo, **dipende dal numero di strati** $S$ **e dal numero di campioni per strato** $n_k$
+
+$$
+\hat{\sigma}^2 = \sum_{k=1}^L \left( \frac{S_k}S \right) ^2 \frac{\sigma_k^2}{n_k}
+$$
+
+Da notare che, se gli strati hanno tutti la stessa dimensione, la funzione diventa 
+
+$$
+\hat{\sigma}^2 = \frac{1}L \sum_{k=1}^L \sigma_k^2
+$$
+
+### Campionamento per Importanza
+
+L'idea alla base è quella di **approssimare la distribuzione di probabilità di cui calcolare il valore atteso**. Poiché tale distribuzione di probabilità non è nota, si possono estrarre campioni da una distribuzione nota, detta **funzione importanza**, che, si spera, approssimi la distribuzione originaria. Ne risulta
+
+$$
+s = \int p(x)f(x) dx = \int q(x)\frac{p(x)f(x)}{q(x)} dx
+$$
+
+che, per una distribuzione $x\sim q$, diventa
+
+$$
+s =  \mathbb{E}_{x\sim q} \left[ \frac{p(x)f(x)}{q(x)} \right]
+$$
+
+Osserviamo, adesso, il comportamento degli stimatori:
+
+* **Stimatore di media**
+  $$
+  \hat{s}_q = \frac{1}n \sum_{i=1, x^{(i)}\sim q} ^n \frac{p(x^{(i)})f(x^{(i)})}{q(x^{(i)})}
+  $$
+
+  $$
+  \mathbb{E}_q \left[ \hat{s}_q \right] = \frac{1}n \sum_{i=1, x^{(i)}\sim q} ^n q(x^{(i)})\cdot \frac{p(x^{(i)})f(x^{(i)})}{q(x^{(i)})} = \mathbb{E}_p \left[ \hat{s}_p \right] = s
+  $$
+
+  Da cui si evince che si può ricondurre la stima secondo $q(x)$ alla stima secondo $p(x)$, ossia quella esatta. Ciò ci permette di dire che **lo stimatore di media non è polarizzato**.
+* **Stimatore di varianza**
+  Per la legge dei grandi numeri, vale che
+  $$
+  \mathrm{Var}\left[ \hat{s}_q \right] = \frac{\mathrm{Var}\left[ \frac{p(x)f(x)}{q(x)} \right]}n
+  $$
+
+  Scegliendo una funzione importanza $ q*(x) = \frac{p(x) |f(x)|}{Z} $, si riconduce la varianza di $f$ ad una forma normalizzata rispetto al suo valore assoluto, con una varianza della stima
+
+  $$
+  \mathrm{Var}\left[ \hat{s}_q \right] = 0
+  $$
+
+  Da cui, paradossalmente, possiamo dedurre che basta un solo campione per avere una stima esatta, anche se stiamo lavorando con l'ipotesi di conoscere $p(x)$ e $f(x)$, che non è sempre vera. In ogni caso, **lo stimatore di varianza è non polarizzato**.
+
 ## Stima MLE e MAP
+
+### Maximum Likelihood Estimation
+
+È un procedimento matematico per determinare uno stimatore, e consiste nel massimizzare una funzione di verosimiglianza, definita in base alla probabilità di osservare una determinata realizzazione campionaria condizionatamente ai valori assunti dai parametri statistici da stimare.
+
+La MLE è uno dei principi che possono essere utilizzati per definire se una funzione rappresenta un buono stimatore per una certa classe di modelli di apprendimento. Dato un insieme $\mathbb{X} = \{ x^{(1)}, \cdots, x^{(m)} \}$ di dati osservati e una distribuzione di probabilità $p_{\mathrm{data}}(x)$ non nota, la stima dei parametri della MLE è data da
+
+$$
+\theta _{ML} = \mathrm{argmax}_{\theta} p_{\mathrm{model}} \left( \mathbb{X}; \theta \right) = \mathrm{argmax}_{\theta} \prod _{i=1}^m p_{\mathrm{model}} \left( x^{(i)}; \theta \right)
+$$
+
+Passando ai logaritmi
+
+$$
+\theta _{ML} = \mathrm{argmax}_{\theta} \sum _{i=1}^m \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right) = \mathrm{argmax}_{\theta} \mathbb{E}_{x\sim p_{\mathrm{data}}} \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right)
+$$
+
+Dove abbiamo, però, che $\mathbb{E}_{x\sim p_{\mathrm{data}}}$ è nota dall'osservazione empirica dei dati.
+
+Supponiamo di voler minimizzare la distanza tra la distribuzione empirica e quella del modello in termini della loro $D_{KL}$
+
+$$
+D_{KL} \left( \hat{p}_{\mathrm{data}} | p_{\mathrm{model}} \right) = - \mathbb{E}_{x\sim \hat{p}_{\mathrm{data}}}\left[ \log p_{\mathrm{model}}(x) \right]
+$$
+
+Ovvero la cross-entropia della distribuzione del modello rispetto a quella dei dati.
 
 ## Domande Frequenti
 

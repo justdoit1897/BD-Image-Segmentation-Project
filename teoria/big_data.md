@@ -1331,6 +1331,29 @@ La forma del punto di flesso può variare in base alla natura del parametro da r
 >
 > Tuttavia, i criteri di valutazione esterni sono preferibili ai criteri interni perché possono evitare errori nelle valutazioni, se usati su più data-set.
 
+Uno dei problemi è che **il numero di cluster naturali dei dati potrebbe non riflettere il numero di etichette di classe** (o identificatori di cluster).
+
+Siano $k_t$ il numero di etichette di classe (il numero reale dei cluster) e $k_d$ il numero di cluster determinati dall'algoritmo.
+
+Se $k_t = k_d$, si può utilizzare una **matrice di confusione** (che metta in relazione il mapping tra cluster reali e cluster predetti dall'algoritmo) che fornisce un metodo intuitivo per valutare **visivamente** la bontà del clustering.
+
+Ogni riga $i$ di questa matrice corrisponde all'etichetta di classe (valori reali), mentre ogni colonna $j$ corrisponde ai valori predetti dall'algoritmo.
+
+L'elemento $(i,j$) è uguale al numero di punti nel cluster reale $i$ mappati nel cluster predetto $j$.
+
+Se il clustering è di **alta qualità** è possibile permutare gli elementi della matrice di confusione in modo che solo gli elementi diagonali siano grandi (matrice 1).
+
+Se il clustering è di **bassa qualità** gli elementi nella matrice saranno distribuiti in modo più **uniforme** (matrice 2).
+
+![1684613813014](image/big_data/1684613813014.png)
+
+La costruzione di una matrice di confusione all'aumentare del numero dei cluster (o quando $k_t \neq k_d$) potrebbe non essere una soluzione pratica.
+
+Ha più senso progettare misure rigorose per valutare la **qualità complessiva** della matrice di confusione.
+
+Sia $m_{ij}$ il numero di punti della classe (reale) $i\in [1, k_t]$ mappati nel cluster (predetto) $j\in [1, k_d]$, ovvero l'elemento $(i,j)$ della matrice di confusione.
+
+Il numero di punti in diversi cluster può essere ottenuto come segue:
 
 $$
 \begin{cases} 
@@ -1339,19 +1362,35 @@ $$
 \end{cases}
 $$
 
+Due misure di bontà comunemente usate sono la **cluster purity** e il **Gini Index Class-Based**.
+
 #### Purity
 
-Dato $P_j = \underset i {max} \ \{m_{ij} \}$
+> Si assume che un **un cluster $j$ di alta qualità dovrebbe contenere quanti più punti possibili tutti appartenenti alla stessa classe**.
+
+Dato $P_j = \underset i {max} \ \{m_{ij} \}$, ovvero il numero di punti nella classe dominante, possiamo calcolare la **Purity** come segue:
 
 $$
 Purity = \cfrac {\sum_{j=1}^{k_d} P_j} {\sum_{j=1}^{k_d} M_j}
 $$
 
+La **Purity** tende a $1$ per un buon clustering.
+
+> Tale misura ha un solo problema: considera come indice di purezza solo le classi dominanti, **ignorando la distribuzione su tutte le altre classi**.
+
 #### Gini Index
+
+> Considera il contributo anche delle altre classi presenti nel cluster.
+>
+> È un buon cluster quello in cui i punti sono concentrati in poche classi.
 
 $$
 G_j = 1- \sum_{i=1}^{k_t} \bigg( \cfrac {m_{ij}} {M_j} \bigg)
 $$
+
+Se il clustering è buono, ovvero quando gli elementi in una colonna della matrice di confusione sono molto variabili, il valore di $G_j$ tende a $0$.
+
+Se il clustering non è buono, cioè quando gli elementi della matrice di confusione sono distribuiti uniformemente, $G_j$ tende a $1-\cfrac {1}{k_t}$, che coincide con il limite superiore.
 
 $$
 G_{average} = \cfrac {\sum_{j=1}^{k_d} G_j \cdot M_j} {\sum_{j=1}^{k_d} M_j}
@@ -1359,13 +1398,21 @@ $$
 
 #### Entropia
 
+> L'indice di Gini è strettamente correlato al concetto di **entropia** $E_j$ del cluster $j$, in quanto il rapporto $\cfrac {m_{ij}} {M_j} $ è la probabilità che un punto appartenda al cluster $j$.
+
+L'entropia $E_j$ misura le stesse caratteristiche intuitive dei dati:
+
 $$
 E_j = - \sum_{i=1}^{k_t} \bigg( \cfrac {m_{ij}} {M_j} \bigg) \cdot log \bigg( \cfrac {m_{ij}} {M_j} \bigg)
 $$
 
+Se $E_j$ è **piccolo**, allora il **clustering** è **buono**.
+
 $$
 E_{average} = \cfrac {\sum_{j=1}^{k_d} E_j \cdot M_j} {\sum_{j=1}^{k_d} M_j}
 $$
+
+È possibile infine stabilire una misura di bontà del clustering analizzando la matrice di confusione con le misure tipiche della classificazione: Precision, Recall e F1-score (che vedremo più avanti).
 
 ## Domande frequenti
 
@@ -1384,7 +1431,7 @@ Si tratta, forse, della tipologia di algoritmo di machine learning più comune, 
 
 Grazie all'eterogeneità di fonti di dati che possono fungere da insieme di addestramento, gli algoritmi di classificazione sono **molto versatili** in termini di contesto applicativo.
 In generale, dati n punti nello spazio $\mathbb{R}^d$ appartenenti al dataset $\mathbb{D}$, questi vengono associati ad un
-insieme di etichette $\{1,⋯, k\}$ (da notare che, per $k = 2$, si parla di classificazione binaria e le etichette vengono indicate con $\{−1,1\}$ o $\{0,1\}$) tramite un algoritmo di classificazione.
+insieme di etichette $\{1,\dots, k\}$ (da notare che, per $k = 2$, si parla di classificazione binaria e le etichette vengono indicate con $\{−1,1\}$ o $\{0,1\}$) tramite un algoritmo di classificazione.
 
 L'algoritmo può essere di **predizione esplicita dell'etichetta** o di **probabilità di appartenenza del punto ad una classe**, che può comunque essere riportato alla prima tipologia usando come etichetta esplicita quella la cui probabilità è massima.
 
@@ -1406,11 +1453,11 @@ Nella pratica, pertanto, **si tende ad analizzare le features in modo indipenden
 
 Tra i modelli basati su ltro ricordiamo:
 
-* **Gini Index** - usato per **attributi categorici** (adattabile anche per attributi numerici discreti). Supposti $v_1, ⋯, v_r$ gli $r$ possibili valori di un attributo categorico e $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,⋯, k\}$, l'indice di
+* **Gini Index** - usato per **attributi categorici** (adattabile anche per attributi numerici discreti). Supposti $v_1, ⋯, v_r$ gli $r$ possibili valori di un attributo categorico e $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,\dots, k\}$, l'indice di
   Gini per il valore $v_i$ dell'attributo è definito come $G(v_i) = 1 −\sum_{j=1}^k p_j ^2. $
   Come visto con il clustering, **valori piccoli** dell'indice di Gini indicano una **maggiore capacità discriminatoria** dell'attributo, dato che punti appartenenti alla stessa classe per lo stesso valore $v_i$ dell'attributo restituiscono $G (v_i) = 0$.
   È possibile ricavare un indice di Gini complessivo per tutti i valori dell'attributo attraverso la relazione $ G=\sum _{i=1}^r\frac{n_i G\left( v_i \right)}{n}$, dove $n_i$ è il numero di punti che assumono il valore $v_i$ dell'attributo, da cui l'insieme dei punti $n = \sum _{i=1}^r n_i$
-* **Entropia** - utile in quanto sfrutta la **correlazione tra variazioni di entropia e contenuto informativo** tipici della teoria dell'informazione. Posta $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,⋯, k\}$, l'entropia $E (v_i)$ è uguale a $ E(v_i)=-\sum_{j=1}^k p_j \log _2 \left( p_j \right) $
+* **Entropia** - utile in quanto sfrutta la **correlazione tra variazioni di entropia e contenuto informativo** tipici della teoria dell'informazione. Posta $p_j$ la frazione di punti contenente il valore $v_i$ dell'attributo e che appartengono alla classe $j \in \{1,\dots , k\}$, l'entropia $E (v_i)$ è uguale a $ E(v_i)=-\sum_{j=1}^k p_j \log _2 \left( p_j \right) $
   **Valori elevati** dell'entropia implicano **alta mescolanza tra classi diverse**, mentre **un'entropia a 0 indica la perfetta separazione tra classi**, dunque un alto potere discriminatorio della feature.
   Come per l'indice di Gini, è possibile de nire un'entropia complessiva per l'attributo usando le supposizioni viste in precedenza, ed è pari a $ E=\sum _{i=1}^r\frac{n_i E\left( v_i \right)}{n} $.
 * **Fisher Score** - progettato per misurare il **rapporto tra separazione media inter-classe e intra-classe di attributi numerici**. **Più è alto** il Fisher Score, **più è alto il potere discriminatorio dell'attributo**.

@@ -1569,7 +1569,7 @@ $$
 
 ## Generalità
 
-> Il problema della **classificazione** è strettamente correlato al problema del **clustering**. 
+> Il problema della **classificazione** è strettamente correlato al problema del **clustering**.
 >
 > Mentre lo scopo del clustering è quello di determinare gruppi simili di dati, lo scopo della classificazione è quello di saper predire il valore dell'etichetta per dati di **test** mai visti dall'algoritmo.
 
@@ -1596,7 +1596,7 @@ Per un compito di classificazione, esistono diversi modelli (alberi di decisione
 
 > È la prima fase del processo di classificazione e consiste nella scelta delle **feature rilevanti** per la previsione delle etichette di classe all'interno del data-set $\mathcal D$.
 
-È la **prima fase** del processo di classificazione e consiste nella **scelta delle features** nel dataset **con un certo contenuto informativo**, dato che quelle che danno poca informazione ai fini della classificazione rischiano di essere fuorvianti per il modello e rappresentano un peso inutile in termini di computazioni. 
+È la **prima fase** del processo di classificazione e consiste nella **scelta delle features** nel dataset **con un certo contenuto informativo**, dato che quelle che danno poca informazione ai fini della classificazione rischiano di essere fuorvianti per il modello e rappresentano un peso inutile in termini di computazioni.
 
 Per la selezione delle feature esistono tre principali metodologie:
 
@@ -1667,7 +1667,7 @@ dove $n_i$ è la frequenza del valore $v_i$ dell'attributo.
 
 #### Fisher score
 
-> È progettato per misurare il **rapporto tra separazione media inter-classe e intra-classe di attributi numerici**. 
+> È progettato per misurare il **rapporto tra separazione media inter-classe e intra-classe di attributi numerici**.
 >
 > **Più è alto** il Fisher Score, **più è alto il potere discriminatorio dell'attributo**.
 
@@ -1689,7 +1689,7 @@ Il **numeratore** della formula rappresenta la separazione **inter-classe** medi
 
 #### **Fisher Linear Discriminant**
 
-> Può essere pensato come una **generalizzazione del Fisher Score per combinazioni lineari di feature**. 
+> Può essere pensato come una **generalizzazione del Fisher Score per combinazioni lineari di feature**.
 
 Lavorando in forma supervisionata, è un metodo che tende a trovare la direzione massima di variazione delle features e, per contro, l'iperpiano perpendicolare che separa meglio le classi rispetto alle features stesse, in modo da massimizzare il già citato rapporto **Inter-class/Intra-class**.
 
@@ -1716,13 +1716,17 @@ Bisogna quindi definire le **possibili strategie** per aggiungere feature ad $F$
 ## Decision Tree
 
 > Si tratta di un metodo di classificazione basato su **decisioni gerarchiche sulle feature**, disposte in una struttura ad albero.
+>
+> Il data-set $\mathcal D$ viene suddiviso ricorsivamente in parti più piccole sulla base di una **discriminazione sui valori** degli attributi.
 
-È un **algoritmo supervisionato**, in quanto necessita che i dati abbiano affibbiate delle etichette, e fa in modo da suddividere gerarchicamente il data-set $\mathcal D$ in modo che il livello di mescolamento delle features di classe in ogni ramo sia il minore possibile. 
+È un **algoritmo supervisionato**, in quanto necessita che i dati abbiano affibbiate delle etichette, e fa in modo da suddividere gerarchicamente il data-set $\mathcal D$ in modo che il livello di mescolamento delle features di classe in ogni ramo sia il minore possibile.
 
 La suddivisione operata dagli alberi di decisione **ricorda il funzionamento dell'algoritmo di clustering top-down**.
 
-Gli alberi di decisione possono e ettuare delle discriminazioni sia su singole features, per cui si parla di **split univariato del nodo**, o su un insieme di attributi, nel qual caso si parla di **split multivariato del nodo**.
+Gli alberi di decisione possono effettuare delle discriminazioni sia su singole features, per cui si parla di **split univariato del nodo**, o su un insieme di attributi, nel qual caso si parla di **split multivariato del nodo**.
 L'uso di **split multivariati** è più potente e porta ad alberi meno profondi.
+
+![1684679548978](https://file+.vscode-resource.vscode-cdn.net/home/mario/Scrivania/big_data/BD-Image-Segmentation-Comp/teoria/image/big_data/1684679548978.png)
 
 Un algoritmo di induzione ha due tipi di nodo, i **nodi interni** e i **nodi foglia**. **Ogni nodo foglia è etichettato con la classe predominante nel nodo**, mentre un nodo interno speciale e la radice,
 che corrisponde all'intero spazio delle features.
@@ -1731,6 +1735,17 @@ stessa classe).
 
 La costruzione dell'albero, se troppo dettagliata, può portare ad una situazione di **overfitting**, in cui il modello aderisce esattamente agli esempi di addestramento ed è incapace di generalizzare.
 Per non incorrere in overfitting, **si può effettuare una potatura dei nodi che sono andati in overfitting** secondo un qualche criterio (es. si valida l'incremento di precisione su un insieme di validazione estratto dal training set).
+
+![1684679667977](image/big_data/1684679667977.png)
+
+Ricevuto in **input** un data-set $\mathcal D$, l'algoritmo si compone delle seguenti fasi:
+
+1. Viene creato il nodo radice contenente $\mathcal D$.
+2. Finché non ci sono più nodi ammissibili per la divisione:
+   1. Seleziona un nodo ammissibile nell'albero.
+   2. Divide il nodo selezionato in due o più nodi basandosi su un **criterio di split** predefinito.
+3. Effettua il pruning dei nodi foglia che vanno in **overfitting**.
+4. Etichetta ogni nodo foglia con la sua classe dominante.
 
 ## Random Forests
 
@@ -1955,9 +1970,9 @@ in cui le righe rappresentano la classe reale e le colonne fanno riferimento all
 L'ideale sarebbe avere i valori fuori dalla diagonale uguali a $0$, perché sarebbe sintomo di classificazione perfetta, posto che i positivi $P_i = TP_i + FN_i$ e che i negativi $N_i = FP_i + TN_i$. Tra le misure che possiamo utilizzare abbiamo:
 
 * **Precision** - $\mathrm{Precision}_i=\frac{TP_i}{TP_i + FP_i}$
-Misura **quanto l'algoritmo riesce ad individuare una certa classe**.
+  Misura **quanto l'algoritmo riesce ad individuare una certa classe**.
 * **Recall** - $\mathrm{Recall}_i=\frac{TP_i}{TP_i + FN_i}$
-Misura **quanto l'algoritmo riesce a separare una classe dalle altre** (valori alti indicano l'incapacità dell'algoritmo di classi care altre classi in presenza di una certa classe).
+  Misura **quanto l'algoritmo riesce a separare una classe dalle altre** (valori alti indicano l'incapacità dell'algoritmo di classi care altre classi in presenza di una certa classe).
 * **F1-Score** - $\mathrm{F1}_i =2\cdot \frac{\mathrm{Precision}_i \cdot \mathrm{Recall}_i}{\mathrm{Precision}_i + \mathrm{Recall}_i}$
 
 Un'altra misura è l'area sotto la **curva AUC**, ovvero l'**area sottesa dalla curva ROC**, che illustra la **capacità diagnostica di un sistema di classificazione binario al variare della sua soglia di discriminazione**.

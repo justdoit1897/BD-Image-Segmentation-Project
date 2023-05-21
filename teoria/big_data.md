@@ -561,7 +561,7 @@ Le caratteristiche principali di Spark Streaming sono:
 * **Algoritmi di apprendimento non supervisionato** (es. K-means, misture di gaussiane)
 * **Algoritmi di recommendation**, utili per il mining di pattern frequenti
 * **Algoritmi di analisi dei grafi** per operazioni di ricerca di cammini tra nodi PageRank, ecc.
-* **Algoritmi di deep learning**, in quanto Spark ML ha solo un MLP nativo per reti non profonde, ma offre possibilità di integrazione con motori di deep learning come TensorFlow. 
+* **Algoritmi di deep learning**, in quanto Spark ML ha solo un MLP nativo per reti non profonde, ma offre possibilità di integrazione con motori di deep learning come TensorFlow.
   Quest'ultima integrazione è possibile grazie a librerie come TensorFrames, che rende i DataFrame di Spark il backend per gestire la computazione e TensorFlow il backend per le operazioni deep, e TensorFlowOnSpark, che distribuisce il job TensorFlow su un cluster Spark.
 
 ### Spark GraphX
@@ -650,7 +650,7 @@ In base al tipo di apprendimento, gli algoritmi di machine learning devono impie
 Innanzitutto, distinguiamo **compiti con output strutturato e non**. Tra i compiti con output non strutturato abbiamo:
 
 * **Classificazione**, in cui l'algoritmo deve stimare una funzione che fa corrispondere ogni ingresso a una delle $k$ classi possibili, secondo una relazione $f : \mathbb{R}^n → \{1,⋯, k\}$. Questa rappresentazione è accettata poiché, spesso, i problemi di classi cazione fanno riferimento a classi numeriche.L'utilità della classificazione non si limita soltanto all'attribuzione di una classe, ma può essere usata per stimare delle features mancanti.
-* **Regressione**, in cui, a partire dai dati in input, bisogna predire un valore numerico reale per una data funzione. L'approccio è simile alla classi cazione, ma cambia il codominio della funzione $f$, che diventa $\mathbb{R}$ in quanto deve predire singoli valori reali.
+* **Regressione**, in cui, a partire dai dati in input, bisogna predire un valore numerico reale per una data funzione. L'approccio è simile alla classificazione, ma cambia il codominio della funzione $f$, che diventa $\mathbb{R}$ in quanto deve predire singoli valori reali.
 * **Trascrizione**, in cui si deve estrarre una trascrizione in forma testuale di dati scarsamente strutturati (basti pensare alle OCR o alla speech recognition). Tale compito può essere pensato come una forma di classificazione in cui le etichette non sono numeriche, ma sono piuttosto le parole di un testo.
 * **Traduzione automatica**, con cui si traduce una sequenza discreta di simboli in un'altra.
 
@@ -1308,11 +1308,11 @@ Come detto in precedenza, queste misure **dipendono fortemente dall'algoritmo di
 
 Questa criticità rende difficile valutare un confronto tra i diversi criteri per testare la bontà di un algoritmo.
 
-Tutti gli algoritmi di clustering utilizzano una serie di parametri come input, come il numero di cluster o la densità. 
+Tutti gli algoritmi di clustering utilizzano una serie di parametri come input, come il numero di cluster o la densità.
 
 Nonostante i criteri di valutazione interni abbiano criticità intrinseche, possono essere utilizzati come strumento per il **tuning** (regolazione) **dei parametri dell'algoritmo di clustering**.
 
-> L'idea alla base di questa teoria risiede nel fatto che la variazione delle misure di validazione al crescere dei parametri tende a mostrare un punto di flesso (**elbow**) alla scelta corretta del parametro. 
+> L'idea alla base di questa teoria risiede nel fatto che la variazione delle misure di validazione al crescere dei parametri tende a mostrare un punto di flesso (**elbow**) alla scelta corretta del parametro.
 
 La forma del punto di flesso può variare in base alla natura del parametro da regolare e alla misura di validazione utilizzata. Ad esempio, nel caso del clustering k-means, in cui il parametro da regolare è il numero dei cluster $k$, sia utilizzando come criterio $WCSS$ che il rapporto $\cfrac {Intra}{Inter}$, la misura andrà a decrescere fino al punto di flesso e poi potrebbe decrescere leggermente, andando a creare un **plateau**.
 
@@ -1521,13 +1521,216 @@ Usando algoritmi di random forest, non si fa uso di una strategia di potatura es
 
 ## Classificatori probabilistici
 
+Si tratta di un modello che quanti ca la relazione tra le features e la classe obiettivo in termini di probabilità. I due modelli più diffusi sono:
+
+* **Classificatori di Bayes**, in cui si usa la regola di Bayes per modellare la probabilità di ciascun valore della variabile target per features date. In genere, si assume che i punti all'interno di una classe siano generati secondo una specifica distribuzione di probabilità, come Bernoulli o quella multinomiale.
+  Tra questi classificatori, i **Bayes naive** assumono features condizionate dalla classe statisticamente indipendenti, in modo da semplificare la modellazione (anche se ciò non semprecorrisponde alla realtà).
+* **Regressori logistici**, che assumono la variabile target come tratta da una distribuzione di Bernoulli la cui media è de nita da una funzione logit parametrizzata sulle features.
+  Pertanto, la distribuzione di probabilità della variabile target è una funzione parametrizzata delle features.
+
+Il primo tipo di classificatore prende il nome di **classificatore generativo**, mentre il secondo viene definito **classificatore discriminativo**.
+
 ### Regressione logistica
+
+Nella forma più semplice, si assume che la variabile target sia binaria con valori $\{−1,1\}$.
+Sia $\bar{\Theta} = \left( θ_0, ⋯, θ_d\right)$ un vettore di parametri $d + 1$-dimensionale, in cui $θ_0$ è un **parametro di offset** e $θ_i$ il **coefficiente relativo alla i-esima dimensione** nei dati. Per un record $\bar{X} = \left( x_0, ⋯, x_d\right)$ la probabilità che la variabile $C$,rappresentante la classe, abbia valore -1 o 1 è
+modellata dalla funzione logistica
+
+$ P (C = 1 | X̄ ) = \frac{1}{1+e^{-(θ_0 + \sum_{i=1}^d θ_i x_i)}}$ e $ P (C = -1 | X̄ ) = \frac{1}{1+e^{(θ_0 + \sum_{i=1}^d θ_i x_i)}}$
+
+Un regressore logistico **può essere visto come un classificatore lineare** in cui $\bar{\Theta}$ rappresenta il vettore dei coefficienti dell'iperpiano di separazione tra le due classi, laddove i punti $X̄$ che fanno assumere valori positivi all'equazione dell'iperpiano saranno assegnati alla classe positiva, e viceversa.
+
+Per stimare i parametri più adatti del modello di regressione logistica viene utilizzato l'approccio a massima verosimiglianza.
+Siano $\mathcal{D}_+$ e $\mathcal{D}_-$ i segmenti di dati appartenenti alle classi positiva e negativa. Se indichiamo con $X̄_k = (x_k^1, ⋯, x_k^d)$ il k-esimo punto, la funzione di verosimiglianza $\mathcal{L}(\bar{\Theta})$ per il dataset viene definita come
+
+$\mathcal{L}(\bar{\Theta}) = \prod _{X̄_k \in \mathcal{D}_+} \frac{1}{1+e^{-(θ_0 + \sum_{i=1}^d θ_i x_i)}} \cdot \prod _{X̄_k \in \mathcal{D}_-} \frac{1}{1+e^{(θ_0 + \sum_{i=1}^d θ_i x_i)}}$
+
+Poiché l'obiettivo è **massimizzare la funzione di verosimiglianza**, dobbiamo lavorare con le derivate parziali della funzione, che altro non sono che i parametri $\theta _i \in \bar{\Theta}$ ed eseguire un algoritmo di ascesa del gradiente. Per semplificare i costi computazionali, conviene sempre **lavorare con la log-likelihood associata**, per cui abbiamo che, la derivata parziale di $\mathcal{L}$ rispetto al parametro $\theta _i \in \bar{\Theta}$ è data da
+
+$ \frac{\delta \mathcal{L}}{\delta \theta_i} = \sum _{X̄_k \in \mathcal{D}_+} \mathrm{Pr}\left( \bar{X}_k \in \mathcal{D}_- \right) x_k^i - \sum _{X̄_k \in \mathcal{D}_-} \mathrm{Pr}\left( \bar{X}_k \in \mathcal{D}_+ \right) x_k^i$
+
+che altro non sono che le **somme degli errori di classificazione** commessi per le due classi.
+
+La **condizione di aggiornamento** per il parametro $θ_i$ è
+
+$θ_i ← θ_i + α\cdot \left( \sum _{X̄_k \in \mathcal{D}_+} \mathrm{Pr}\left( \bar{X}_k \in \mathcal{D}_- \right) x_k^i - \sum _{X̄_k \in \mathcal{D}_-} \mathrm{Pr}\left( \bar{X}_k \in \mathcal{D}_+ \right) x_k^i \right)$
+
+dove α è il passo di aggiornamento, determinabile usando una ricerca binaria per massimizzare il miglioramento della funzione obiettivo.
 
 ### Naive Bayes
 
+Sia $C$ la variabile aleatoria target che rappresenta la classe di un esempio di test, la cui feature $X̄$ d-dimensionale ha valori $X̄ = \left( a_1, ⋯, a_d\right)$, potendo scrivere i valori sulla singola feature come $X̄ = \left( x_1, ⋯, x_d\right)$; la probabilità condizionata di appartenenza a una classe ($C = c$) dato $X̄$ a valori fissati è, secondo il teorema di Bayes
+
+$\mathrm{Pr} (C = c | x_1 = a_1, ⋯, x_d = a_d) = \frac{\mathrm{Pr} (x_1 = a_1, ⋯, x_d = a_d | C = c) ⋅ \mathrm{Pr} (C = c)}{\mathrm{Pr} (x_1 = a_1, ⋯, x_d = a_d)}$
+
+Per l'assunzione naive di questo classificatore, le componenti della feature sono statisticamente indipendenti, per cui vale
+
+$\mathrm{Pr} (x1 = a1, ⋯, xd = ad | C = c) = \prod _j \mathrm{Pr} \left( x_j = a_j | C = c\right)$
+
+Da cui deriviamo che
+
+$\mathrm{Pr} (C = c | x_1 = a_1, ⋯, x_d = a_d) ∝ \mathrm{Pr} (C = c)⋅\prod_j \mathrm{Pr} (x_j = a_j | C = c)$
+
+In questo modo, si è semplificato il calcolo di una probabilità condizionata e congiunta al calcolo di più probabilità condizionate, che possono essere espresse in termine frequentista come
+
+$\mathrm{Pr} (x_j = a_j | C = c) = \frac{q (a_j, c)}{r(c)}$
+
+Il problema di quest'ultima relazione risiede nel fatto che, per piccole dimensioni del dataset, fa tendere l'intera probabilità del classi catore a 0, dunque bisogna introdurre un fattore di smoothing laplaciano, per cui la relazione diventa
+
+$\mathrm{Pr} (x_j = a_j | C = c) = \frac{q(a_j, c) + α}{ r (c) + α ⋅ m_j} $
+
+$\alpha$ è il parametro di smoothing, mentre $m_j$ è il numero di valori distinti della feature j-esima.
+Questa aggiunta fa in modo che, per valori nulli, il rapporto sia uguale a $\frac{1}{m_j}$, una stima ragionevole in assenza di dati di addestramento sulla classe $c$.
+
 ## Support Vector Machine
 
+Si tratta di classificatori che permettono di **determinare l'iperpiano di separazione ottimale** tra due classi, ossia quello che massimizza il margine tra i due iperpiani paralleli che delimitano le classi, i cosiddetti **support vectors**.
+Nel caso di classi linearmente separabili, è possibile determinare un iperpiano lineare che separi nettamente i dati delle due classi.
+
+### SVM per Dati Linearmente Separabili (Hard SVM)
+
+Di base, per dati linearmente separabili, è possibile individuare in niti iperpiani separatori lineari.
+Lo scopo di una SVM è quello di determinare l'iperpiano **la cui distanza minima da entrambe le classi sia la massima possibile**, in quanto ciò genera un classi catore molto robusto. La distanza minima cui si fa riferimento è modellabile grazie al concetto di **margine** dell'iperpiano.
+
+Consideriamo un iperpiano separatore tra due classi, il margine è definito come la **somma delle sue distanze dai punti più vicini** di ciascuna classe. Supponiamo, allora, di costruire due iperpiani paralleli che passano per i punti di addestramento di entrambe le classi (che, in questo senso, prendono il nome di vettori di supporto) e di definire la distanza tra di loro come margine: di fatto, **l'iperpiano ottimale si troverà esattamente al centro** tra i due iperpiani.
+
+Per determinare l'iperpiano di margine massimo, possiamo massimizzare il margine espresso in termini di coefficienti dell'iperpiano di separazione. Se indichiamo gli $n$ punti del training set $\mathcal{D}$ con $(X̄_1, y_1), ⋯, (X̄_n, y_n)$, dove $X̄_i$ **è un vettore d-dimensionale corrispondente all'i-esimo punto** e $y_i ∈ \{−1,1\}$ **è la classe binaria associata all'i-esimo punto**, possiamo definire l'iperpiano di separazione con la forma $W̄ ⋅ X̄_i + b = 0$, dove $W̄$ è un vettore d-dimensionale rappresentante la **direzione normale** al piano e $b$ uno scalare detto **bias**, con il primo che indica l'orientamento dell'iperpiano e il secondo che indica la sua distanza dall'origine.
+
+I $d + 1$ coefficienti individuati nell'equazione dell'iperpiano devono essere **appresi per addestramento** in modo da **massimizzare il margine**. Se le classi sono linearmente separabili, l'iperpiano di separazione esiste certamente.
+Tutti gli $X̄_i$ associati a $y_i = 1$ soddisferanno l'equazione
+
+$W̄ ⋅ X̄_i + b ≥ 0$
+
+mentre quelli per cui $y_i = − 1$ soddisferanno l'equazione
+
+$W̄ ⋅ X̄_i + b < 0$
+
+Avendo detto che, se esiste, l'iperpiano si trova al centro tra i due vettori di supporto e ha equazione $W̄ ⋅ X̄_i + b = 0$, possiamo esprimere i vettori di supporto in termine di un parametro $c$ che regola la distanza tra di essi, secondo le equazioni
+
+$W̄ ⋅ X̄_i + b = c$  e   $W̄ ⋅ X̄_i + b = − c$
+
+che, con variabili opportunamente scalate, possono essere riscritte come
+
+$W̄ ⋅ X̄_i + b = 1$  e   $W̄ ⋅ X̄_i + b = − 1$
+
+Quelle appena scritte sono le **equazioni dei vincoli di margine** e, avendo detto che le classi sono linearmente separabili, nello spazio tra di esse non vi sono dati con classificazione indecisa. Ciò permette di esprimere le condizioni di appartenenza a una o all'altra classe come
+
+$$
+\begin{cases}
+W̄ ⋅ X̄_i + b ≥ 1 & ∀i | y_i = 1 \\
+W̄ ⋅ X̄_i + b ≤ − 1 & ∀i | y_i = − 1
+\end{cases}
+$$
+
+Queste condizioni possono essere scritte in **forma compatta** come $y_i (W̄ ⋅ X̄_i + b) ≥ 1$.
+Avendo ricavato i vettori di supporto, grazie all'algebra lineare, possiamo affermare che **la distanza tra di essi è** $∥W̄∥_2$ da cui, poiché la differenza tra i termini costanti delle due equazioni è 2, il margine è pari a $\frac{2}{∥W̄∥}$, che altro non è che la funzione da massimizzare.
+
+In realtà, massimizzare la forma $\frac{2}{∥W̄∥}$ equivale a minimizzare la funzione $O = \frac{∥W̄∥^2}2$, una forma quadratica che può essere risolta con **rilassamento lagrangiano**, la cui risoluzione viene omessa, che portano a una definizione dei parametri direttori del piano $W̄ = \sum_{i=1}^n \lambda_i y_i \bar{X}_i $ e a una derivazione di $b$ da cui si ricava che **solo i vettori di supporto sono utilizzati per trovare la soluzione**.
+Il duale lagrangiano può essere ottimizzato attraverso la tecnica di ascesa lungo il gradiente in termini del parametro vettoriale n-dimensionale $\bar{λ}$
+
+$$
+\frac{\delta L_D}{\delta \lambda_i} = 1-y_i\sum_{j=1}^n y_j\lambda_j \bar{X}_i \cdot \bar{X}_j
+$$
+
+In modo analogo alla regressione logistica, l'**equazione di aggiornamento** basata sul gradiente è la seguente
+
+$$
+(λ_1, ⋯, λ_n) ← (λ_1, ⋯, λ_n) + α (\frac{δL_D}{δ \lambda_1}, ⋯, \frac{δL_D}{δ \lambda_n} )
+$$
+
+dove $α$ è il **tasso di apprendimento**. Come soluzione iniziale si può considerare il vettore nullo,
+che rientra nello spazio delle soluzioni.
+
+### SVM per Dati non Linearmente Separabili (Soft SVM)
+
+Nella maggior parte dei casi reali, i dataset contengono dati non linearmente separabili, ma ciò non vieta di poter classificare usando una SVM: è possibile, infatti, costruire un iperpiano di separazione che classifica ottimamente la stragrande maggioranza dei dati, a meno di poche eccezioni.
+
+La costruzione di un iperpiano con SVM per classi non linearmente separabili fa uso di un **sistema di penalità** che compensano la violazione dei vincoli di margine. Solitamente, il livello di violazione di ciascun vincolo da parte del punto $X̄_i$ è dato da una **variabile di rilassamento** $ξ_i ≥ 0$, per cui possiamo definire il nuovo **insieme di soft margin sui vettori di supporto** come
+
+$$
+\begin{cases}
+W̄ ⋅ X̄_i + b ≥ 1 − ξ_i & ∀i | y_i = 1 \\
+W̄ ⋅ X̄_i + b ≤ − 1 + ξ_i & ∀i | y_i = − 1
+\end{cases}
+$$
+
+Indicati con $C$ e $r$ due parametri di rilassamento del modello, possiamo affermare che i punti che violano i vincoli **penalizzano il modello** con un fattore $C ⋅ ξ_i^r$. Tipicamente si pone $r = 1$, per cui possiamo riformulare la funzione obiettivo **hinge loss** come
+
+$$
+O =\frac{∥W̄∥^2}2+C\sum_{i=1}^n ξ_i
+$$
+
+che è, ancora una volta, un problema risolvibile con rilassamento lagrangiano.
+Si dimostra che **le soluzioni al problema** per $W̄$ e $b$ **non risentono dei fattori di penalizzazione** e sono, pertanto, identici al risultato con hard margin, così come il duale lagrangiano, in quanto **i termini lineari che coinvolgono** $ξ_i$ **sono nulli**.
+
 ## Valutazione della bontà della classificazione
+
+Per la classificazione il concetto di precisione si può applicare a diversi indicatori, per cui dobbiamo dare due definizioni preliminari:
+
+* Si definiscono **problemi metodologici** quelli **legati alla divisione dei dati** etichettati in segmenti di dati di addestramento e dati di test, e quindi legati alla metodologia usata per tale divisione, che impatta la valutazione.
+* Si definiscono **problemi di quantificazione** quelli legati alla **scelta di una misura numerica** per valutare la bontà del metodo.
+
+La misura più semplice è la **accuracy**, ossia una misura che esprime **quanto le classi predette sono uguali alle classi corrette** del dataset. Posta $C(x)$ la classe predetta del dato $x$ e detto $C_k$ lo spazio delle classi, la accuracy si esprime come
+
+$$
+\mathrm{ACC} = \frac{1}N \sum_{k=1}^C \sum_{x \in C_k} I\left( C(x)=C_k \right)
+$$
+
+dove
+
+$$
+I=\begin{cases}
+0 & \text{se } C(x)\neq C_k\\
+1 & \text{altrimenti}
+\end{cases}
+$$
+
+Per evitare che le classi risultino sbilanciate nella valutazione della accuracy, si può utilizzare la **versione bilanciata** della stessa, che viene espressa come
+
+$$
+\mathrm{bACC} = \frac{1}C \sum_{k=1}^C \frac{1}{|C_k|} \sum_{x \in C_k} I\left( C(x)=C_k \right)
+$$
+
+La bontà della predizione può essere valutata anche attraverso una **matrice di confusione**, che nel caso binario si configura come una matrice 2 × 2, così fatta
+
+<table>
+   <thead>
+      <tr>
+         <th />
+         <th colspan=2>Classe Prevista</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <th>Classe Reale</th>
+         <th>C<sub>i</sub></th>
+         <th>Altre classi</th>
+      </tr>
+      <tr>
+         <th>C<sub>i</sub></th>
+         <th>TP<sub>i</sub></th>
+         <th>FN<sub>i</sub></th>
+      </tr>
+      <tr>
+         <th>Altre Classi</th>
+         <th>FP<sub>i</sub></th>
+         <th>TN<sub>i</sub></th>
+      </tr>
+   </tbody>
+</table>
+
+in cui le righe rappresentano la classe reale e le colonne fanno riferimento alla classe predetta.
+L'ideale sarebbe avere i valori fuori dalla diagonale uguali a $0$, perché sarebbe sintomo di classificazione perfetta, posto che i positivi $P_i = TP_i + FN_i$ e che i negativi $N_i = FP_i + TN_i$. Tra le misure che possiamo utilizzare abbiamo:
+
+* **Precision** - $\mathrm{Precision}_i=\frac{TP_i}{TP_i + FP_i}$
+Misura **quanto l'algoritmo riesce ad individuare una certa classe**.
+* **Recall** - $\mathrm{Recall}_i=\frac{TP_i}{TP_i + FN_i}$
+Misura **quanto l'algoritmo riesce a separare una classe dalle altre** (valori alti indicano l'incapacità dell'algoritmo di classi care altre classi in presenza di una certa classe).
+* **F1-Score** - $\mathrm{F1}_i =2\cdot \frac{\mathrm{Precision}_i \cdot \mathrm{Recall}_i}{\mathrm{Precision}_i + \mathrm{Recall}_i}$
+
+Un'altra misura è l'area sotto la **curva AUC**, ovvero l'**area sottesa dalla curva ROC**, che illustra la **capacità diagnostica di un sistema di classificazione binario al variare della sua soglia di discriminazione**.
+
+**La ROC mette a confronto i tassi di falsi positivi e positivi reali**, laddove il tasso dei falsi positivi è pari alla differenza tra 1 e precision, mentre il tasso dei positivi reali è la quantità di veri positivi rispetto al totale, e coincide con il recall.
 
 ## Domande frequenti
 

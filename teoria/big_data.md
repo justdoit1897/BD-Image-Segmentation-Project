@@ -218,6 +218,7 @@ La distanza coseno calcola quindi l'**angolo tra due documenti** $\bar X = (x_1,
 
 In statistica, si definisce **stimatore** una ***funzione che associa ad ogni possibile campione (scelto casualmente all'interno di una popolazione) un valore del parametro da stimare***.
 Il valore che viene assunto dallo stimatore in presenza di un campione è detto **stima**. In generale, vale che la stima di una variabile $y$ è una funzione del tipo $y=f(x)+\epsilon$, da cui si evince che:
+
 * la relazione tra $x$ e $y$ non è espressa totalmente da $f$
 * si desidera una funzione che approssimi $f$
 * $y$ è una stima puntuale nello spazio delle funzioni
@@ -225,7 +226,7 @@ Il valore che viene assunto dallo stimatore in presenza di un campione è detto 
 ## Stimatori polarizzati e non polarizzati
 
 In statistica sono state proposte delle caratteristiche che un buono stimatore dovrebbe soddisfare, tra cui che **l'errore commesso tra la stima e il valore del parametro dev'essere minimo**. Di solito, si sfrutta proprio questa caratteristica per valutare la bontà di uno stimatore, soltanto che, non potendo valutare l'errore puntualmente, si sfrutta lo **scostamento medio**.
-Più nello specifico, detto $\theta$ il parametro da stimare e $\hat{\theta}_m$ lo stimatore, funzione del campione m, possiamo calcolare il valore atteso dello scostamento tra stimatore e parametro, detto **distorsione** o **bias** 
+Più nello specifico, detto $\theta$ il parametro da stimare e $\hat{\theta}_m$ lo stimatore, funzione del campione m, possiamo calcolare il valore atteso dello scostamento tra stimatore e parametro, detto **distorsione** o **bias**
 
 $$
 \mathrm{bias}\left( \hat{\theta}_m \right) = \mathbb{E}\left[ \hat{\theta}_m \right] - \theta
@@ -233,7 +234,7 @@ $$
 
 Diciamo che lo stimatore è non polarizzato se $\mathrm{bias}\left( \hat{\theta}_m \right)=0$.
 
-Lo stimatore $\hat{\theta}_m$ si dice asintoticamente non polarizzato se vale 
+Lo stimatore $\hat{\theta}_m$ si dice asintoticamente non polarizzato se vale
 
 $$
 \lim _{m\rightarrow \infty} \mathbb{E}\left[ \hat{\theta}_m \right] = \theta
@@ -250,7 +251,7 @@ Basterà scegliere, infatti, una varianza $\bar{\sigma}_m = \frac{1}{m-1} \sum_{
 
 ### Varianza di uno stimatore
 
-È la misura ***utilizzata per valutare quanto sia stabile la stima rispetto alla variazione dei campioni utilizzati***. Da questa misura, indicata come $\mathrm{Var}\left( \hat{\theta} _m \right)$, si può ricavare lo **standard error** come 
+È la misura ***utilizzata per valutare quanto sia stabile la stima rispetto alla variazione dei campioni utilizzati***. Da questa misura, indicata come $\mathrm{Var}\left( \hat{\theta} _m \right)$, si può ricavare lo **standard error** come
 
 $$
 \mathrm{SE}\left( \hat{\theta}_m \right) = \sqrt{\mathrm{Var}\left( \hat{\theta} _m \right)}
@@ -287,6 +288,7 @@ Osserviamo, adesso, alcuni metodi di campionamento.
 ### Campionamento Stratificato
 
 È un tipo di campionamento che funziona in questo modo:
+
 1. Si suddivide la popolazione in **strati omogenei** rispetto alla variabile da stimare **usando**, però, **un'altra variabile correlata**.
 2. Si estrae con una procedura di campionamento con rimpiazzo il campione relativo a ciascuno strato.
 3. Si mettono insieme i campioni estratti ottenendo un campione globale.
@@ -297,7 +299,7 @@ $$
 \hat{\sigma}^2 = \sum_{k=1}^L \left( \frac{S_k}S \right) ^2 \frac{\sigma_k^2}{n_k}
 $$
 
-Da notare che, se gli strati hanno tutti la stessa dimensione, la funzione diventa 
+Da notare che, se gli strati hanno tutti la stessa dimensione, la funzione diventa
 
 $$
 \hat{\sigma}^2 = \frac{1}L \sum_{k=1}^L \sigma_k^2
@@ -320,6 +322,7 @@ $$
 Osserviamo, adesso, il comportamento degli stimatori:
 
 * **Stimatore di media**
+
   $$
   \hat{s}_q = \frac{1}n \sum_{i=1, x^{(i)}\sim q} ^n \frac{p(x^{(i)})f(x^{(i)})}{q(x^{(i)})}
   $$
@@ -331,6 +334,7 @@ Osserviamo, adesso, il comportamento degli stimatori:
   Da cui si evince che si può ricondurre la stima secondo $q(x)$ alla stima secondo $p(x)$, ossia quella esatta. Ciò ci permette di dire che **lo stimatore di media non è polarizzato**.
 * **Stimatore di varianza**
   Per la legge dei grandi numeri, vale che
+
   $$
   \mathrm{Var}\left[ \hat{s}_q \right] = \frac{\mathrm{Var}\left[ \frac{p(x)f(x)}{q(x)} \right]}n
   $$
@@ -788,7 +792,7 @@ Volendo fornire una rappresentazione più matematica del significato di machine 
 * $x$ un insieme di campioni a disposizione del calcolatore
 * $f$ un modello di apprendimento, ossia una caratterizzazione della famiglia di forme funzionali usate o dell'algoritmo usato
 * $w$ i parametri del modello, ovvero delle quantità direttamente coinvolte nella forma funzionale di $f$ che devono essere apprese
-* $\theta$ gli iperparametri del modello, cioè quantità che influenzano l'evoluzione dell'algoritmo, ma che devono essere fissate in fase di	apprendimento (dovendo essere, il più delle volte, stimati)
+* $\theta$ gli iperparametri del modello, cioè quantità che influenzano l'evoluzione dell'algoritmo, ma che devono essere fissate in fase di apprendimento (dovendo essere, il più delle volte, stimati)
 
 L'apprendimento viene misurato dalla relazione $y=f(x, w, \theta)$.
 
@@ -824,7 +828,7 @@ Sebbene ne siano stati elencati diversi, sostanzialmente si parlerà sempre di t
 
 Distinguiamo tre modalità di uso dei dati in fase di apprendimento:
 • **apprendimento non supervisionato**, in cui gli algoritmi hanno l'obiettivo di apprendere una distribuzione di probabilità che sottende il dataset, o meglio, la **struttura dei dati**. Esempi di apprendimento non supervisionato sono il clustering e il denoising.
-• **apprendimento supervisionato**, in cui gli algoritmi hanno il compito di catalogare un campione $\bold{x}$ in un'etichetta $y$ facendo in modo da **massimizzare la probabilità** $p (y | \bold{x})$. È l'approccio tipico di classificazione e regressione.
+• **apprendimento supervisionato**, in cui gli algoritmi hanno il compito di catalogare un campione $\bold x$ in un'etichetta $y$ facendo in modo da **massimizzare la probabilità** $p (y | \bold x)$. È l'approccio tipico di classificazione e regressione.
 • **apprendimento con rinforzo**, in cui l'algoritmo apprende su un ambiente dinamico attraverso **sensori e attuatori**, secondo un metodo try/error.
 
 ## Capacità e generalizzazione
@@ -865,7 +869,7 @@ Due esempi di tecniche capaci di migliorare la capacità e ettiva sono la **rego
 
 La **regolarizzazione** è una qualunque **modifica dell'algoritmo di apprendimento mirata a ridurre esplicitamente l'errore di generalizzazione, ma non il training error**. Consiste nell'aggiunta di un termine di regolarizzazione nella funzione $L$ che consente di preferire alcune forme funzionali rispetto ad altre nel rispetto dello spazio delle ipotesi.
 
-Un esempio di regolarizzazione è la **weight decay**, che esprime preferenza per piccoli valori di $\bold{w}$, e che consiste nell'aggiunta di un iperparametro $\lambda$ alla funzione di loss allo scopo di **privilegiare una certa configurazione dei parametri**.
+Un esempio di regolarizzazione è la **weight decay**, che esprime preferenza per piccoli valori di $\bold w$, e che consiste nell'aggiunta di un iperparametro $\lambda$ alla funzione di loss allo scopo di **privilegiare una certa configurazione dei parametri**.
 
 ### Validation Set e Cross-Validation
 
@@ -966,7 +970,7 @@ $$
 In particolare:
 
 * $H = 0.5$ per dati distribuiti uniformemente, dato che $\alpha_i$ e $\beta_i$ hanno un comportamento simile
-* $H=1$ per dati clusterizzati, dato che $\alpha_i << \beta_i$.
+* $H=1$ per dati clusterizzati, dato che $\alpha_i \ll \beta_i$.
 
 Più H è prossimo a 1, maggiore sarà la tendenza al clustering dei dati. Questo criterio può essere usato insieme ad un approccio greedy per trovare il sottoinsieme rilevanti di feature, come nel caso dell'entropia.
 
@@ -978,14 +982,14 @@ Questo approccio ha come **principale svantaggio** la sua forte dipendenza dalla
 
 In alternativa, si segue un approccio più semplice, che prevede di:
 
-1. Utilizzare un **algoritmo di clustering** sul sottoinsieme corrente di feature selezionate *F*, al fine di correggere le etichette *L* del cluster per i dati.
-2. Utilizzare un **criterio supervisionato di classificazione** su tali etichette per valutare la bontà del clustering e selezionare le prime *k* feature che hanno una migliore accuratezza sulla base di questo criterio.
+1. Utilizzare un **algoritmo di clustering** sul sottoinsieme corrente di feature selezionate *$F$*, al fine di correggere le etichette *$L$* del cluster per i dati.
+2. Utilizzare un **criterio supervisionato di classificazione** su tali etichette per valutare la bontà del clustering e selezionare le prime $k$ feature che hanno una migliore accuratezza sulla base di questo criterio.
 
 Per raggiungere una maggiore efficienza, di solito vengono creati dei **modelli ibridi**, frutto della combinazione tra i **modelli wrapper** e i **modelli** **basati su filtro**.
 
 ## Clustering basato su prototipi rappresentativi
 
-**PROTOTIPI** = punti rappresentativi o centroidi utilizzati per definire i cluster. Sono dei punti nel dato spazio che rappresentano in qualche modo il "**centro**" del cluster.
+> **PROTOTIPI**: punti rappresentativi o centroidi utilizzati per definire i cluster. Sono dei punti nel dato spazio che rappresentano in qualche modo il "**centro**" del cluster.
 
 Gli algoritmi basati su prototipi rappresentativi sono i più semplici tra gli algoritmi di clustering, perchè **si basano direttamente su nozioni intuitive di distanza/similarità** dei dati del cluster.
 
@@ -995,9 +999,9 @@ La caratteristica di questi metodi è che la scoperta di cluster di alta qualit�
 
 Una volta determinati i prototipi, è possibile usare una funzione di distanza per assegnare i dati ai prototipi vicini.
 
-I *k* cluster sono generalmente determinati dall'utente.
+I $k$ cluster sono generalmente determinati dall'utente.
 
-Assumiamo di avere un dataset $\mathcal D$ contenente *n* dati $\bar {X_1}, \bar{X_2}, \dots , \bar {X_n}$. L'obiettivo è quello di determinare *k* prototipi rappresentativi $\bar {Y_1}, \bar{Y_2}, \dots , \bar {Y_k}$ che minimizzino la seguente funzione obiettivo:
+Assumiamo di avere un dataset $\mathcal D$ contenente *$n$* dati $\bar {X_1}, \bar{X_2}, \dots , \bar {X_n}$. L'obiettivo è quello di determinare *k* prototipi rappresentativi $\bar {Y_1}, \bar{Y_2}, \dots , \bar {Y_k}$ che minimizzino la seguente funzione obiettivo:
 
 $$
 O = \sum_{i=1}^{n} \bigg[ min_j \ Dist(\bar{X_i}, \ \bar{Y_j}) \bigg]
@@ -1149,10 +1153,14 @@ Per il **criterio del calcolo delle distanze**, possiamo scegliere tra:
 
 1. **SINGLE LINKAGE**: Dato l'insieme $m_i \times m_j$ delle distanze tra i cluster $i$ e $j$, viene scelto il **valore minimo** di distanza presente nell'insieme. Particolarmente efficace per scoprire **cluster di forma arbitraria**, ma sensibile a dati rumorosi, in quanto potrebbe fondere in modo inappropriato cluster distinti.
 
-   ![1684428151369](image/big_data/1684428151369.png)              				      	![1684341112706](https://file+.vscode-resource.vscode-cdn.net/home/mario/Scrivania/big_data/teoria/image/big_data/1684341112706.png)
+   ![1684428151369](image/big_data/1684428151369.png)
+
+   ![1684689342722](image/big_data/1684689342722.png)
 2. **COMPLETE LINKAGE**: Viene scelto il **valore massimo** di distanza presente nell'insieme. Meno suscettibile a rumore e outlier, ma tende a spezzare i cluster più grandi e a preferire cluster di forma sferica.
 
-   ![1684428310784](image/big_data/1684428310784.png)								![1684428763004](https://file+.vscode-resource.vscode-cdn.net/home/mario/Scrivania/big_data/teoria/image/big_data/1684428763004.png)
+   ![1684428310784](image/big_data/1684428310784.png)
+
+   ![1684689351508](image/big_data/1684689351508.png)
 3. **GROUP-AVERAGE LINKAGE**: Viene scelta la **media** delle distanze. È il giusto compromesso tra single linkage e complete linkage, dato che è meno suscettibile a rumori e outlier rispetto a single linkage, ma anch'esso tende a preferire cluster sferici.
 
    ![1684428515245](image/big_data/1684428515245.png)
@@ -1985,15 +1993,155 @@ Un'altra misura è l'area sotto la **curva AUC**, ovvero l'**area sottesa dalla 
 
 ## Generalità
 
+Il Deep Learning nasce perchè in alcuni ambiti dell'IA, come la **visione artificiale** o la **speech recognition**, gli algoritmi tradizionali di ML (le reti neurali poco profonde SHALLOW) non hanno buona capacità di generalizzazione.
+
+In particolar modo presentano:
+
+1. Incapacità di rappresentare funzioni ad elevata complessità e non linearità.
+2. Course of dimensionality, ovvero perdita di generalizzazione al crescere delle dimensioni.
+
+Gli algoritmi di ML classici dipendono dai **prior**, ovvero dalle **assunzioni a priori** che si fanno sulla forma del funzionale $f$ per **aumentare la capacità del modello**.
+
+A tal fine, entrano in gioco:
+
+* Termini di regolarizzazione espressi come condizioni di **smoothing** all'interno delle funzioni di loss. Questi agiscono sulle loss per cercare di localizzarle verso il **minimo globale**.
+* Utilizzo di un **prior probabilistico**.
+
+I prior tendono a preferire l'apprendimento si una $f$ che rimane pressoché invariata in un piccolo intorno del punto $\bold x$, ovvero:
+
+$$
+f(\bold x) \approx f(\bold x + \epsilon)
+$$
+
+Questo comportamento è limitante nella capacità di generalizzazione, dato che **servirebbero molti campioni ben distribuiti nelle zone ad elavata variazione di $f$**.
+
+All'aumentare delle dimensioni, anche i prior probabilistici non garantiscono **smoothness** lungo le dimensioni delle loss e si verifica **curse of dimensionality**.
+
+> Servono algoritmi che apprendano **funzioni più complesse da pochi dati**: a tal scopo nasce il Deep Learning.
+
+Il DL gestisce la complessità facendo assunzioni sullo spazio delle ipotesi **più ampie** rispetto alle ipotesi del Machine Learning:
+
+1. Si assume che i dati siano generati dalla composizione di molte feature semplici, che vengono via via aggregate in feature più complesse secondo livelli gerarchici.
+   * ES: Percezione di un volto:
+     * Percezione di una forma ovoidale.
+     * Percezione di feature quali la presenza di occhi, naso, bocca.
+     * $\dots$
+2. Non tutte le configurazioni dei dati in ingresso (spazio delle configurazioni) sono **rilevanti** per il problema: **si tende a prendere un sottospazio di dimensione ridotta**.
+3. $f$ assume valori rilevanti su un **manifold** di dimensione $k$ di $\mathbb R^d$, con $d$ pari alla dimensione dei dati in input: una rete neurale profonda cerca di apprendere sottospazi $(d-k)$-dimensionali.
+
+> **Manifold**: spazio topologico che **localmente** assomiglia ad uno spazio euclideo. È un sottospazio di $\mathbb R^d$ di dimensione $k$ con una propria topologia $(d-k)$-dimensionale.
+
 ## Multi-Layer Perceptron
+
+> È il principio fondamentale su cui si basano le DNN (Deep Neural Networks).
+
+![1684692734434](image/big_data/1684692734434.png)
+
+Un MLP è una rete neurale costituita da:
+
+1. Uno strato di **neuroni** **di input**.
+2. Uno strato di **neuroni nascosti**.
+3. Uno strato di **output**.
+
+> **Neurone**: Unità computazionale che raccoglie gli input (una combinazione lineare di essi + un bias costante) e calcola l'uscita del vettore degli ingressi secondo una propria funzione, detta **funzione di attivazione**.
+
+Le DNN sono delle MLP che hanno più strati nascosti. Inolstre sono **dense** (**fully connected**), ovvero ogni neurone di uno strato $n$ riceve gli input da **tutti** i neuroni dello strato $n-1$.
+
+L'uscita di ogni neurone si propaga negli strati successivi.
+
+I **pesi** della rete sono le **combinazioni lineari dell'output** dello strato $n-1$ che vanno in input ad ogni neurone dello strato $n$.
+
+Un MLP apprende una classificazione sui dati di ingresso:
+
+$$
+y = f^*(\bold x)
+$$
+
+L'architettura della rete è data da una serie di $n$ strati (la rete avrà **profondità** $n$) in cui si trovano numeri diversi di neuroni (la **larghezza** della rete).
+
+Gli strati interni sono detti **strati nascosti** (hidden) le cui attivazioni (funzioni di attivazione) sono indicate con $\bold h$.
+
+Nel complesso la rete approssima $f^*$ come $f(\bold x, \theta)$ e viene addestrata a trovaer i paramerti $\theta$ ottimi per la migliore approssimazione di $f^*$.
+
+$f(\bold x, \theta)$ viene calcolata concatenando gli effetti delle funzioni di attivazione di ognuno degli $n$ strati:
+
+$$
+f(\bold x) = f^{(n)} \Big( \dots f^{(3)} \Big( f^{(2)} \Big( f^{(1)}(\bold x) \Big) \Big) \Big)
+$$
+
+$\longrightarrow$ **MLP**: $y = f(\bold x, \theta)$
+
+$\longrightarrow$ **DNN**: $y = f(\bold x,  \bold\theta, \bold \omega) = \phi (\bold x, \bold \theta)^T \bold \omega$
+
+La forma funzionale di $f$ si definisce come un operatore lineare applicato ad un mapping non lineare $\phi(\bold x)$ degli ingressi. La rete apprende anche la rappresentazione per $\phi$.
 
 ## Aspetti architetturali
 
+![1684694463039](image/big_data/1684694463039.png)
+
+L’architettura di una DNN è molto complessa ed è isomorfa ad un grafo, detto **grafo di computazione**, che viene generato:
+
+* Per il calcolo delle attivazioni **"in avanti"**.
+* Per il calcolo di gradienti ed errori **"all'indietro"** nell'addestramento con **backpropagation**.
+
+I framework di DL si appoggiano esplicitamente a un componente di **graph compiling** per mappare le operazioni su hardware.
+
 ### Funzioni di costo e unità di uscita
 
-### Unità nascoste
+Nella **scelta della funzione di costo** abbiamo le stesse opzioni degli altri modelli di ML.
 
-## Addestramento:
+> La cross-entropia fornisce la stima **MLE** di una distribuzione di probabilità condizionale $p(\bold y | \bold x)$:
+>
+> $$
+> J(\bold \theta) = - \mathbb E_{\bold x, \bold y \sim \hat p_{data} } \cdot \log \big( p_{model} (\bold y | \bold x) \big)
+> $$
+>
+> $$
+> p_{model} (\bold y | \bold x) = \mathcal N \big( \bold y, f(\bold x, \bold \theta), \bold I \big)
+> $$
+>
+> dove $f(\bold x, \bold \theta)$ è lo **stimatore della media della Gaussiana**.
+>
+> $$
+> J(\bold \theta) = \cfrac 1 2 \cdot \mathbb E_{\bold x, \bold y \sim \hat p_{data} } \| \bold y - f(\bold x, \bold \theta) \|^2 + const \ \ \longrightarrow MSE
+> $$
+>
+> Come si può notare, se assumiamo che il modello abbia una distribuzione di probabilità gaussiana, lo stimatore $J(\bold \theta)$ corrisponde alla stima di cross-entropia.
+>
+> Possiamo essere interessati a stimare semplicemente **una statistica** $f^*(\bold x, \bold \theta)$ su $\bold y$, piuttosto che stimare una probabilità $f(\bold x, \bold \theta)$.
+>
+> Il problema di apprendimento diventa quello di stimare la funzione ottima $f^*$ ed il $MSE$ è la **stima della media** di $\bold y$:
+>
+> $$
+> f^* = \underset f { arg \ min} \ \mathbb E_{\bold x, \bold y \sim p_{data}} \| \bold y - f(\bold x) \|^2
+> $$
+>
+> $$
+> f^*(\bold x) = \mathbb E_{\bold y \sim p_{data} (\bold y | \bold x)} \ \big[\bold y \big]
+> $$
+>
+> In questo caso il $MSE$ può essere una ottima **funzione di loss**.
+>
+> In alternativa possiamo utilizzare il $MAE$, che è la **stima della mediana** di $\bold y$:
+>
+> $$
+>
+>
+> $$
+
+La **scelta delle funzioni di attivazione** delle unità di uscita e di quelle nascoste dipende da alcuni fattori:
+
+* Consentire la stima di funzioni non lineari complesse.
+* Soddisfare le forma funzionale di uno stimatore **MLE** o **MAP** riguardo alla distribuzione di probabilità dei valori delle uscite.
+* Avere un gradiente ampio e ben stimabile per supportare gli algoritmi di apprendimento che si basano sulla discesa lungo il gradiente per minimizzare l’errore commesso sulle uscite (loss).
+
+#### Attivazione delle unità di uscita
+
+#### Attivazione delle unità nascoste
+
+### Unità nascoste (?)
+
+## Addestramento
 
 ### Stochastic Gradient Descent
 

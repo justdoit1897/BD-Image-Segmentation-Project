@@ -371,6 +371,12 @@ $$
 
 Ovvero la cross-entropia della distribuzione del modello rispetto a quella dei dati.
 
+È possibile estendere la MLE anche alle stime dei classificatori. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che 
+
+$$
+\theta _{ML} = \mathrm{argmax}_{\theta}
+$$
+
 ## Domande Frequenti
 
 # 6 - Mining di Pattern Frequenti

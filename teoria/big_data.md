@@ -375,11 +375,7 @@ $$
 
 Ovvero la cross-entropia della distribuzione del modello rispetto a quella dei dati.
 
-<<<<<<< HEAD
 **È possibile estendere la MLE anche alle stime dei classificatori**. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che 
-=======
-È possibile estendere la MLE anche alle stime dei classificatori. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che
->>>>>>> 6122844cb64dded7f669fa084c83198c6dbbfa71
 
 $$
 \theta _{ML} = \mathrm{argmax}_{\theta} \mathrm{Pr}\left( Y|\bold{x}; \theta \right) = \mathrm{argmax}_{\theta} \sum _{i=1}^m \log \mathrm{P}\left( y^{(i)}| x^{(i)};\theta \right)

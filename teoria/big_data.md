@@ -351,9 +351,9 @@ Osserviamo, adesso, il comportamento degli stimatori:
 
 ### Maximum Likelihood Estimation
 
-È un procedimento matematico per determinare uno stimatore, e consiste nel massimizzare una funzione di verosimiglianza, definita in base alla probabilità di osservare una determinata realizzazione campionaria condizionatamente ai valori assunti dai parametri statistici da stimare.
+È un **procedimento matematico per determinare uno stimatore**, e consiste nel **massimizzare una funzione di verosimiglianza**, definita in base alla probabilità di osservare una determinata realizzazione campionaria condizionatamente ai valori assunti dai parametri statistici da stimare.
 
-La MLE è uno dei principi che possono essere utilizzati per definire se una funzione rappresenta un buono stimatore per una certa classe di modelli di apprendimento. Dato un insieme $\mathbb{X} = \{ x^{(1)}, \cdots, x^{(m)} \}$ di dati osservati e una distribuzione di probabilità $p_{\mathrm{data}}(x)$ non nota, la stima dei parametri della MLE è data da
+La MLE è uno dei principi che possono essere utilizzati per definire se una funzione rappresenta un buono stimatore per una certa classe di modelli di apprendimento. Dato un **insieme** $\mathbb{X} = \{ x^{(1)}, \cdots, x^{(m)} \}$ **di dati osservati** e una **distribuzione di probabilità** $p_{\mathrm{data}}(x)$ **non nota**, **la stima dei parametri** della MLE è data da
 
 $$
 \theta _{ML} = \mathrm{argmax}_{\theta} p_{\mathrm{model}} \left( \mathbb{X}; \theta \right) = \mathrm{argmax}_{\theta} \prod _{i=1}^m p_{\mathrm{model}} \left( x^{(i)}; \theta \right)
@@ -365,7 +365,7 @@ $$
 \theta _{ML} = \mathrm{argmax}_{\theta} \sum _{i=1}^m \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right) = \mathrm{argmax}_{\theta} \mathbb{E}_{x\sim p_{\mathrm{data}}} \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right)
 $$
 
-Dove abbiamo, però, che $\mathbb{E}_{x\sim p_{\mathrm{data}}}$ è nota dall'osservazione empirica dei dati.
+Dove abbiamo, però, che $\mathbb{E}_{x\sim p_{\mathrm{data}}}$ è n**ota dall'osservazione empirica** dei dati.
 
 Supponiamo di voler minimizzare la distanza tra la distribuzione empirica e quella del modello in termini della loro $D_{KL}$
 
@@ -375,11 +375,48 @@ $$
 
 Ovvero la cross-entropia della distribuzione del modello rispetto a quella dei dati.
 
-È possibile estendere la MLE anche alle stime dei classificatori. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che 
+**È possibile estendere la MLE anche alle stime dei classificatori**. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che 
 
 $$
-\theta _{ML} = \mathrm{argmax}_{\theta}
+\theta _{ML} = \mathrm{argmax}_{\theta} \mathrm{Pr}\left( Y|\bold{x}; \theta \right) = \mathrm{argmax}_{\theta} \sum _{i=1}^m \log \mathrm{P}\left( y^{(i)}| x^{(i)};\theta \right)
 $$
+
+**Sotto l'ipotesi di una distribuzione gaussiana,** si dimostra che **l'errore quadratico medio (MSE) corrisponde alla MLE**.
+
+### Stima Maximum a Posteriori
+
+Mentre la **MLE** opera secondo **statistica frequentista**, la stima **MAP** opera secondo **statistica bayesiana**. La differenza principale tra i due tipi 
+di statistica risiede nel fatto che mentre, per la statistica frequentista, i parametri del modello sono considerati fissi e che i risultati degli esperimenti ripetibili, 
+per la statistica di Bayes i parametri del modello sono considerati come **variabili casuali** e la cui osservazione è condizionata da una **conoscenza precedente imperfetta**, 
+rappresentata da una distribuzione di probabilità **detta prior**.
+
+La stima MAP è una moda della distribuzione a posteriori della formulazione di Bayes, e può essere usata per ottenere una stima puntuale di una quantità inosservata sulla 
+base dei dati empirici.
+
+Il processo di stima avviene a partire dalla regola di Bayes, che stima una **distribuzione di probabilità a posteriori** su una variabile casuale $\theta$
+
+$$
+p\left( \theta | x^{(1)}, \cdots ,x^{(m)} \right) = \frac{p\left( x^{(1)}, \cdots ,x^{(m)} | \theta \right) p(\theta)}{p\left( x^{(1)}, \cdots ,x^{(m)}\right)}
+$$
+
+dove:
+* $p\left( \theta | x^{(1)}, \cdots ,x^{(m)} \right)$ è detta **posterior** (o probabilità a posteriori)
+* $p\left( x^{(1)}, \cdots ,x^{(m)} | \theta \right)$ è la **likelihood** (o verosimiglianza)
+* $p(\theta)$ è il **prior** (o probabilità a priori)
+* $p\left( x^{(1)}, \cdots ,x^{(m)}\right)$ è la **evidence** (o dati noti/evidenza)
+
+In questo contesto, **è importante la scelta del prior**, che:
+* deve riflettere l'incertezza aprioristica sul valore di $\theta$
+* deve avere una **distribuzione uniforme/gaussiana** sul dominio di variazione
+* deve avere **alta entropia**
+
+La stima MAP non è altro che la scelta di un valore puntuale per $\theta$ al posto dell'intera distribuzione
+
+$$
+\theta_{\mathrm{MAP}} = \mathrm{argmax}_{\theta} p\left( \theta | x \right) = \mathrm{argmax}_{\theta} \left[ \log p\left( x | \theta \right) + \log p\left( \theta \right) \right]
+$$
+
+Caratteristica importante della stima MAP è che **riduce la varianza dello stimatore rispetto alla MLE**.
 
 ## Domande Frequenti
 
@@ -401,9 +438,54 @@ $$
 
 ## Introduzione
 
-### Basi di dati integrate, sì, ma ...
+Un **database** è una collezione di dati **persistente** e **condivisa**, gestita in modo **efficace**, **efficiente** e **affidabile** attraverso un **DBMS**, che 
+altro non è che un software progettato per consentire la **creazione**, la **manipolazione** e l'**interrogazione** della base di dati.
+
+Al giorno d'oggi, sarebbe desiderabile che ogni organizzazione abbia un DB, che ciascuna applicazione abbia accesso solo alla porzione 
+di dati di sua competenza, in tempo reale e senza duplicazione, senza dimenticarsi di alte prestazioni nell'esecuzione di tutte le 
+operazioni. Le caratteristiche appena elencate caratterizzano quella che viene definita base di dati **ideale**.
+
+In realtà, vista la realtà mutevole nel tempo, è più facile imbattersi in basi di dati distribuite, eterogenee e autonome.
+
+### Risorse e Processi
+
+Si definisce **risorsa** di un'organizzazione **tutto ciò su cui essa opera** (materiale/immateriale) **per perseguire gli obiettivi aziendali**, mentre si definisce 
+**processo** aziendale **l'insieme di attività** (inteso come sequenza di azioni) che l'organizzazione svolge nel suo complesso **per raggiungere un'obiettivo** aziendale.
+
+Esistono tre categorie di processi:
+1. **Processi Decisionali**, che operano su **dati integrati e fortemente aggregati**, facendo uso di **operazioni non strutturate** (senza criteri precisi)
+2. **Processi Gestionali**, che operano su **dati settoriali e parzialmente aggregati**, facendo uso di **operazioni semi-strutturate** (regole note, ma dipendenti dall'essere umano)
+3. **Processi Operativi**, che operano su **dati dipartimentali e dettagliati**, facendo uso di **operazioni strutturate** (basate su regole ben definite)
+
+Sulla base dei processi aziendali, possiamo distinguere tre tipologie di sistemi informatici:
+1. Processi Decisionali $\longrightarrow$ **Sistemi di Supporto alle Decisioni**
+2. Processi Gestionali $\longrightarrow$ **Sistemi di Gestione delle Informazioni**
+3. Processi Operativi $\longrightarrow$ **Sistemi di Elaborazione delle Transazioni**
 
 ### OLTP e OLAP
+
+Definiamo **sistema di supporto alle decisioni** un qualsiasi sistema informatico che aiuta quanti devono prendere **decisioni strategiche per risolvere problemi non risolvibili con strategie 
+di ricerca operativa**.
+
+Il supporto alle decisioni avviene attraverso l'aggregazione dei dati dei processi gerarchicamente sottostanti. Dal punto di vista dell'elaborazione 
+dei dati, abbiamo due categorie di processing:
+1. **On-Line Transaction Processing (OLTP)** - su basi di dati nei sistemi di **livello operativo**
+2. **On-Line Analytical Processing (OLAP)** - su sistemi di **livello più alto**
+
+#### OLTP
+
+Detti anche **sistemi transazionali**, permettono di registare, modificare e mostrare record in tempo reale. **I dati sono distribuiti su più tabelle**, mentre le 
+informazioni vengono inserite solo una volta, cosa che evita ridondanze. I sistemi OLTP sono caratterizzati da **operazioni elementari estremamente veloci** e, 
+dati il livello di competenza dell'utenza e la sua natura esecutiva, **possibilità di generare errori minima**.
+
+Proprio per l'ultima caratteristica citata, i sitemi OLTP fanno enorme uso di **transazioni**, ossia **insiemi di operazioni atomiche sequenziali**, che quindi ha 
+successo/fallimento in blocco. Per le caratteristiche delle sue transazioni, si dice che i sistemi OLTP possiedono le proprietà di **Atomicità**, **Coerenza**, 
+**Isolamento** e **Durabilità** (**ACID**), rendendo tutte le operazioni rapide e fluide.
+
+Tra le altre caratteristiche ricordiamo:
+* **esigenze di archiviazione ridotte** (i dati storici vengono salvati altrove)
+* **progettazione multi-tabellare e normalizzata**, quindi priva di ridondanze o incoerenze tra le tabelle
+* **gestione sicura e affidabile dei dati correnti**, in modo da garantire la continuità di servizio
 
 ## Data warehouse e data warehousing
 

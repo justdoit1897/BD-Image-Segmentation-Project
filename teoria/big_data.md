@@ -375,7 +375,7 @@ $$
 
 Ovvero la cross-entropia della distribuzione del modello rispetto a quella dei dati.
 
-**È possibile estendere la MLE anche alle stime dei classificatori**. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che 
+**È possibile estendere la MLE anche alle stime dei classificatori**. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che
 
 $$
 \theta _{ML} = \mathrm{argmax}_{\theta} \mathrm{Pr}\left( Y|\bold{x}; \theta \right) = \mathrm{argmax}_{\theta} \sum _{i=1}^m \log \mathrm{P}\left( y^{(i)}| x^{(i)};\theta \right)
@@ -385,12 +385,12 @@ $$
 
 ### Stima Maximum a Posteriori
 
-Mentre la **MLE** opera secondo **statistica frequentista**, la stima **MAP** opera secondo **statistica bayesiana**. La differenza principale tra i due tipi 
-di statistica risiede nel fatto che mentre, per la statistica frequentista, i parametri del modello sono considerati fissi e che i risultati degli esperimenti ripetibili, 
-per la statistica di Bayes i parametri del modello sono considerati come **variabili casuali** e la cui osservazione è condizionata da una **conoscenza precedente imperfetta**, 
+Mentre la **MLE** opera secondo **statistica frequentista**, la stima **MAP** opera secondo **statistica bayesiana**. La differenza principale tra i due tipi
+di statistica risiede nel fatto che mentre, per la statistica frequentista, i parametri del modello sono considerati fissi e che i risultati degli esperimenti ripetibili,
+per la statistica di Bayes i parametri del modello sono considerati come **variabili casuali** e la cui osservazione è condizionata da una **conoscenza precedente imperfetta**,
 rappresentata da una distribuzione di probabilità **detta prior**.
 
-La stima MAP è una moda della distribuzione a posteriori della formulazione di Bayes, e può essere usata per ottenere una stima puntuale di una quantità inosservata sulla 
+La stima MAP è una moda della distribuzione a posteriori della formulazione di Bayes, e può essere usata per ottenere una stima puntuale di una quantità inosservata sulla
 base dei dati empirici.
 
 Il processo di stima avviene a partire dalla regola di Bayes, che stima una **distribuzione di probabilità a posteriori** su una variabile casuale $\theta$
@@ -400,12 +400,14 @@ p\left( \theta | x^{(1)}, \cdots ,x^{(m)} \right) = \frac{p\left( x^{(1)}, \cdot
 $$
 
 dove:
+
 * $p\left( \theta | x^{(1)}, \cdots ,x^{(m)} \right)$ è detta **posterior** (o probabilità a posteriori)
 * $p\left( x^{(1)}, \cdots ,x^{(m)} | \theta \right)$ è la **likelihood** (o verosimiglianza)
 * $p(\theta)$ è il **prior** (o probabilità a priori)
 * $p\left( x^{(1)}, \cdots ,x^{(m)}\right)$ è la **evidence** (o dati noti/evidenza)
 
 In questo contesto, **è importante la scelta del prior**, che:
+
 * deve riflettere l'incertezza aprioristica sul valore di $\theta$
 * deve avere una **distribuzione uniforme/gaussiana** sul dominio di variazione
 * deve avere **alta entropia**
@@ -438,58 +440,232 @@ Caratteristica importante della stima MAP è che **riduce la varianza dello stim
 
 ## Introduzione
 
-Un **database** è una collezione di dati **persistente** e **condivisa**, gestita in modo **efficace**, **efficiente** e **affidabile** attraverso un **DBMS**, che 
+Un **database** è una collezione di dati **persistente** e **condivisa**, gestita in modo **efficace**, **efficiente** e **affidabile** attraverso un **DBMS**, che
 altro non è che un software progettato per consentire la **creazione**, la **manipolazione** e l'**interrogazione** della base di dati.
 
-Al giorno d'oggi, sarebbe desiderabile che ogni organizzazione abbia un DB, che ciascuna applicazione abbia accesso solo alla porzione 
-di dati di sua competenza, in tempo reale e senza duplicazione, senza dimenticarsi di alte prestazioni nell'esecuzione di tutte le 
+Al giorno d'oggi, sarebbe desiderabile che ogni organizzazione abbia un DB, che ciascuna applicazione abbia accesso solo alla porzione
+di dati di sua competenza, in tempo reale e senza duplicazione, senza dimenticarsi di alte prestazioni nell'esecuzione di tutte le
 operazioni. Le caratteristiche appena elencate caratterizzano quella che viene definita base di dati **ideale**.
 
 In realtà, vista la realtà mutevole nel tempo, è più facile imbattersi in basi di dati distribuite, eterogenee e autonome.
 
 ### Risorse e Processi
 
-Si definisce **risorsa** di un'organizzazione **tutto ciò su cui essa opera** (materiale/immateriale) **per perseguire gli obiettivi aziendali**, mentre si definisce 
+Si definisce **risorsa** di un'organizzazione **tutto ciò su cui essa opera** (materiale/immateriale) **per perseguire gli obiettivi aziendali**, mentre si definisce
 **processo** aziendale **l'insieme di attività** (inteso come sequenza di azioni) che l'organizzazione svolge nel suo complesso **per raggiungere un'obiettivo** aziendale.
 
 Esistono tre categorie di processi:
+
 1. **Processi Decisionali**, che operano su **dati integrati e fortemente aggregati**, facendo uso di **operazioni non strutturate** (senza criteri precisi)
 2. **Processi Gestionali**, che operano su **dati settoriali e parzialmente aggregati**, facendo uso di **operazioni semi-strutturate** (regole note, ma dipendenti dall'essere umano)
 3. **Processi Operativi**, che operano su **dati dipartimentali e dettagliati**, facendo uso di **operazioni strutturate** (basate su regole ben definite)
 
 Sulla base dei processi aziendali, possiamo distinguere tre tipologie di sistemi informatici:
+
 1. Processi Decisionali $\longrightarrow$ **Sistemi di Supporto alle Decisioni**
 2. Processi Gestionali $\longrightarrow$ **Sistemi di Gestione delle Informazioni**
 3. Processi Operativi $\longrightarrow$ **Sistemi di Elaborazione delle Transazioni**
 
 ### OLTP e OLAP
 
-Definiamo **sistema di supporto alle decisioni** un qualsiasi sistema informatico che aiuta quanti devono prendere **decisioni strategiche per risolvere problemi non risolvibili con strategie 
+Definiamo **sistema di supporto alle decisioni** un qualsiasi sistema informatico che aiuta quanti devono prendere **decisioni strategiche per risolvere problemi non risolvibili con strategie
 di ricerca operativa**.
 
-Il supporto alle decisioni avviene attraverso l'aggregazione dei dati dei processi gerarchicamente sottostanti. Dal punto di vista dell'elaborazione 
+Il supporto alle decisioni avviene attraverso l'aggregazione dei dati dei processi gerarchicamente sottostanti. Dal punto di vista dell'elaborazione
 dei dati, abbiamo due categorie di processing:
+
 1. **On-Line Transaction Processing (OLTP)** - su basi di dati nei sistemi di **livello operativo**
 2. **On-Line Analytical Processing (OLAP)** - su sistemi di **livello più alto**
 
 #### OLTP
 
-Detti anche **sistemi transazionali**, permettono di registare, modificare e mostrare record in tempo reale. **I dati sono distribuiti su più tabelle**, mentre le 
-informazioni vengono inserite solo una volta, cosa che evita ridondanze. I sistemi OLTP sono caratterizzati da **operazioni elementari estremamente veloci** e, 
+Detti anche **sistemi transazionali**, permettono di registare, modificare e mostrare record in tempo reale. **I dati sono distribuiti su più tabelle**, mentre le
+informazioni vengono inserite solo una volta, cosa che evita ridondanze. I sistemi OLTP sono caratterizzati da **operazioni elementari estremamente veloci** e,
 dati il livello di competenza dell'utenza e la sua natura esecutiva, **possibilità di generare errori minima**.
 
-Proprio per l'ultima caratteristica citata, i sitemi OLTP fanno enorme uso di **transazioni**, ossia **insiemi di operazioni atomiche sequenziali**, che quindi ha 
-successo/fallimento in blocco. Per le caratteristiche delle sue transazioni, si dice che i sistemi OLTP possiedono le proprietà di **Atomicità**, **Coerenza**, 
-**Isolamento** e **Durabilità** (**ACID**), rendendo tutte le operazioni rapide e fluide.
+Proprio per l'ultima caratteristica citata, i sitemi OLTP fanno enorme uso di **transazioni**, ossia **insiemi di operazioni atomiche sequenziali**, che quindi ha
+successo/fallimento in blocco. Per le caratteristiche delle sue transazioni, si dice che i sistemi OLTP possiedono le proprietà di **Atomicità**, **Coerenza**,
+**Isolamento** e **Durabilitintegratoreà** (**ACID**), rendendo tutte le operazioni rapide e fluide.
 
 Tra le altre caratteristiche ricordiamo:
+
 * **esigenze di archiviazione ridotte** (i dati storici vengono salvati altrove)
 * **progettazione multi-tabellare e normalizzata**, quindi priva di ridondanze o incoerenze tra le tabelle
 * **gestione sicura e affidabile dei dati correnti**, in modo da garantire la continuità di servizio
 
+#### OLAP
+
+Si tratta di sistemi che **non lavorano su dati recenti**, ma su archi temporali piuttosto ampi, motivo per cui il loro **aggiornamento** avviene s**u dati operativi periodici** e la loro dimensione tende a crescere nel tempo.
+
+I sistemi OLAP sono molto utili anche perché consentono di osservare i dati da diverse prospettive o, in termini tecnici, **dimensioni**.
+Ogni **dimensione** dei dati **raccoglie i criteri in base ai quali si potranno utilizzare i dati** e viene rappresentata con una struttura a cubo di $N$ lati, ognuno dei quali indica le misure corrispondenti.
+
+Rispetto ai sistemi OLTP, i sistemi OLAP sono caratterizzati da:
+
+* *grosse esigenze di archiviazione* (per memorizzare i dati storici)
+* **progettazione de-normalizzata con poche tabelle**
+* **gestione della sicurezza poco rilevante**, in quanto non pregiudica la continuità di servizio.
+
+Nella seguente figura, sono schematizzate le caratteristiche dei sistemi OLTP e OLAP, ed è possibile evidenziarne le differenze.
+
+![OLTP vs OLAP](image/big_data/OLTPvsOLAP.png)
+
+Per come sono pensati i due sistemi, **è impossibile implementare tutte le funzionalità in una singola workstation**, dato che, a partire dalla stessa progettazione, entrambi rischiano di danneggiarsi a vicenda.
+
 ## Data warehouse e data warehousing
 
+### Multi-Database e Data Warehouse
+
+Nell'ottica di basi di dati distribuite, eterogenee e autonome, sono le due correnti di pensiero predominanti.
+
+Un sistema **multi-database** (o database federato) è una struttura che consente agli utenti di **accedere a dati distribuiti su più database** attraverso diversi DBMS.
+
+In un sistema del genere, le **transazioni globali** vengono gestite da un **controllore proprio del multi-database**, ma le **transazioni interne** alla singola base di dati vengono gestite dallo **specifico DBMS**.
+I DBMS locali, inoltre, non sono consapevoli degli altri, dunque **non possono prevedere le meccaniche di coordinamento** tradizionali atte a garantire atomicità e coerenza.
+
+In corrispondenza di ogni singolo DBMS troviamo un **mediatore**, utile a **convertire query generiche** provenienti dallo strato **integratore** superiore in **query dedicate** per le varie basi di dati sottostanti
+
+Di converso, un **data warehouse** è una **collezione** (aggregazione) **di dati strutturati provenienti da fonti eterogenee** (interne e esterne al sistema informativo aziendale) **utili per analisi e rapporti informativi**, in uso principalmente nei processi decisionali di impresa.
+
+In generale, può essere visto come una grande banca dati in sola lettura, in quanto **non necessita delle operazione CRUD** (create, read, update e delete). Nell'ambito dell'analisi OLAP, il sottoinsieme del data warehouse viene detto **data mart**.
+
+In un sistema di data warehousing, la creazione di un database non avviene tramite DBMS, ma tramite un **gestore** del data warehouse, che implementerà i processi di tipo OLAP, in modo che i livelli integratore e mediatore possono popolare il data warehouse in modo asincrono rispetto alle interrogazioni fatte al gestore.
+
+### Data Warehouse
+
+Un data warehouse dev'essere:
+* uno **strumento di supporto alle decisioni**
+* **integrato**, in quanto i dati vengono da fonti eterogenee
+* **orientato ai dati** (non alle applicazioni), in quanto **deve servire solo per decisioni strategiche** e non per processi operativi
+* **con dati storici**, raccolti su orizzonti temporali molto ampi, utili a osservare le variazioni sul periodo
+* **con dati aggregati**, utili per stime e valutazioni, in quanto non serve sapere il fenomeno in dettaglio, ma avere indicatori generali su di esso
+* **fuori linea**, nel senso che **il suo aggiornamento non deve avvenire in tempo reale** (spesso si aggiornano i dati in batch quando l'azienda non è operativa)
+* **separata dalle basi di dati operazionali**, in quanto:
+  * non esiste un DB operazionale con tutti i dati di interesse
+  * il data warehouse dev'essere integrato
+  * non è possibile fare l'integrazione in linea (per questioni di reattività del sistema).
+
+#### Architettura
+
+Il **processo di gestione e valutazione dei dati** da parte di un data warehouse si chiama **data warehousing**. Prevede:
+1. **l'acquisizione** e **l'integrazione** dei dati
+2. **l'archiviazione** dei dati
+3. **la valutazione** e **l'analisi** dei dati
+
+Questa suddivisione non è casuale, in quanto la **struttura modulare** dei data warehouse si compone di **tre livelli** omologhi (acquisizione, archiviazione e presentazione).
+
+Come detto in precedenza, il data warehouse presenta anche un componente di controllo centralizzato, ossia il **data warehouse manager**.
+
+#### Data Mart
+
+Sono **sottoinsiemi di un data warehouse** più generale **mirati a specifiche porzioni di dati e processi**. Contengono immagini dei dati al loro interno, utili per formulare strategie in base all'evoluzione storica del fenomeno di interesse.
+
+La differenza fondamentale consiste nel fatto che la creazione di un data warehouse avviene a partire da database operazionali, mentre i data mart vengono generati per venire incontro a un'esigenza specifica predeterminata.
+
+La scelta di utilizzare un data mart come sistema separato è legata a:
+* **necessità di utilizzare un diverso schema di rappresentazione**
+* **migliorare le performance** separando l'hardware dedicato
+* **garantire una maggiore sicurezza** con accessi autorizzati su porzioni minori di dati
+
+![Struttura Data Warehouse - Data Mart](image/big_data/dw_dm_struct.png)
+
+In generale, sono due gli approcci di gestione dell'architettura con data mart:
+* **top-down**, con cui i data mart vengono creati a partire da un data warehouse
+* **bottom-up**, con cui i data mart concorrono a creare un data warehouse
+
+Da un punto di vista logico, sembrerebbe più sensato il secondo approccio, in quanto basta progettare i data mart, per poi allinearli e integrarli per formare un data warehouse. In realtà, per quanto controintuitivo, **la progettazione di buoni data mart non porta sempre alla realizzazione di buoni data warehouse**, in quanto, se ci si dimentica di progettare un data mart per un processo, il data warehouse risultante non lo conterrà mai; al contrario, l'approccio top-down permette di superare questo limite, ma risulta **particolarmente inefficiente**, in quanto lo sforzo computazionale effettuato per progettare e realizzare il data warehouse rende inutile ogni forma di data splitting per la realizzazione dei data mart.
+
+Esiste una soluzione ibrida, che prevede la creazione di data mart che concorrono alla creazione di un **data warehouse tramite un bus**.
+Un'architettura bus è composto da un insieme di **data mart strettamente integrati** caratterizzati da:
+* **dimensioni conformi**, che devono essere definite e implementate solo una volta
+* **tabelle dei fatti**, che sono costituite da misurazioni, metriche o fatti su un dato processo aziendale
+
+![Data Warehouse con Bus](image/big_data/dw_bus.png)
+
+La struttura con bus permette di aggregare i data mart semplicemente pensandoli come un insieme, dato che sono strettamente integrati, e consente di interrogare la struttura globale sapendo già che il data split è stato effettuato e che, quindi, l'interrogazione sarà più efficiente.
+
+#### Elementi di un Data Warehouse
+
+Abbiamo:
+1. sorgenti dei dati eterogenee, da cui vengono estratti i dati
+2. area di preparazione dei dati (data staging), in cui abbiamo:
+  * aree di memorizzazione
+  * processi di preparazione dei dati (pulizia, trasformazione, combinazione, ecc.)
+  solitamente viene distribuita su più calcolatori e gestisce dati con formati di varia natura
+
+Definiamo ETL (extract, transform, load) il complesso di processi che porta i dati dai sistemi operazionali al data warehouse attraverso l'area di staging.
+
+3. server di presentazione del data warehouse, in cui i dati sono organizzati e memorizzati per essere interrogati.
+Fanno uso di dati in forma multidimensionale e possono essere adottate tecnologie caratterizzanti le operazioni OLAP:
+  * con RDBMS si parla di operazioni ROLAP
+  * con operazioni OLAP in cui i concetti di fatto e dimensione sono espliciti si parla di MOLAP
+4. sistemi di visualizzazione dei dati
+
+#### Modello Logico per Data Warehouse
+
+La rappresentazione dei dati in un'analisi OLAP avviene in forma **multidimensionale**. La rappresentazione multidimensionale di concetti di interesse per l'azienda permette di esplodere o aggregare elementi di interesse, così come modificare tale rappresentazione per adattarla ad operazioni aggregate o di rappresentazione.
+
+Elementi fondamentali per la rappresentazione multidimensionale (e per l'analisi) sono:
+* **fatto**, ossia un concetto su cui centrare l'analisi
+* **misura**, ossia una proprietà atomica di un fatto da analizzare
+* **dimensione**, ossia la prospettiva lungo cui effettuare l'analisi
+
+|   Fatti    |           Misure          |     Dimensioni    |
+|   ----     |           ----            |       ----        |
+|  vendita   | quantità venduta, incasso |  prodotto, tempo  |
+| telefonata |           costo           |       durata      |
+
 ## Dati multidimensionali
+
+Le rappresentazioni tridimensionali aiutano i decisori di un'azienda, in quanto permettono di derivare concetti e/o fenomeni in modo intuitivo, semplicemente splittando o aggregando porzioni di questa figura.
+
+Su dati multi-dimensionali, le operazioni possibili sono:
+* **roll-up (drill-up)**, per **aggregare** i dati e mostrarli ad una grana più grossa
+* **drill down**, per **disaggregare** i dati ed esploderli in una grana più fine
+* **slice & dice**, per **selezionare** e **proiettare** porzioni dei dati
+* **pivot**, per **riorientare** i dati nello spazio
+
+Ogni dimensione del dato è organizzata in una gerarchia, che rappresenta i diversi livelli di aggregazione (ad esempio città $\leftrightarrow$ provincia $\leftrightarrow$ regione).
+
+### Implementazioni per Dati Multidimensionali
+
+#### MOLAP
+
+L'**OLAP multidimensionale** è un OLAP in senso classico che utilizza un **cubo multidimensionale**. I dati vengono precalcolati, riepilogati e archiviati in un MOLAP e un utente può utilizzare i dati multidimensionali visualizzandoli sotto diverse sfaccettature. Piuttosto che utilizzare un database relazionale, la cui interrogazione richiederebbe più tabelle, un'implementazione MOLAP **contiene tutte le possibili combinazioni dei dati già archiviate in un array multidimensionale**, permettendo a MOLAP di essere più veloce di ROLAP.
+In un'implementazione MOLAP i dati sono accessibili in modo diretto grazie all'**indicizzazione delle matrici**.
+
+![MOLAP](image/big_data/molap.png)
+
+#### ROLAP
+
+L'OLAP Relazionale è un OLAP che esegue l'analisi multidimensionale dinamica dei dati archiviati un un RDB. L'elaborazione dei dati può avvenire sul client, nel sistema di database o su un server. In un'architettura a due livelli, il client interroga il database e riceve i dati richiesti, in una a tre livelli l'utente invia, invece, una richiesta di analisi multidimensionale e il motore ROLAP la converte in SQL per l'invio al database, con il processo eseguito al contrario per l'invio dei dati.
+Usando database relazionali, ROLAP richiede più tempo di elaborazione e spazio su disco per operazioni tipiche dei database multidimensionali, ma supporta più utenti e maggiori quantità di dati. Lo schema usato da ROLAP è detto a stella e si compone di:
+* tabella dei fatti, che memorizza le misure di un processo in forma molto disaggregata
+* due o più tabelle di dimensione, che rappresentano prospettive di analisi dei dati (ossia fenomeni per cui è utile analizzare i fatti)
+
+### Tabelle di Dimensione
+
+Si tratta di tabelle che **memorizzano gli elementi di una dimensione rispetto a cui è interessante analizzare un processo**. Ciascun loro record descrive esattamente un elemento della rispettiva dimensione.
+In una tabella di dimensione, i record memorizzano gli attributi dei membri, dove per attributi si intendono le proprietà (testuali, discrete, descrittive) dei membri.
+
+Negli schemi dimensionali, le **chiavi** sono **legate all'indicizzazione della dimensione alla grana più fine di interesse**, solitamente sono da preferire chiavi semplici (numeriche) e locali (progressive) per rendere le query più semplici.
+
+Di solito le dimensioni **non sono normalizzate**, per cui potrebbe sembrare lecito eliminare le ridondanze procedendo alla normalizzazione: in realtà, negli schemi dimensionali, **si preferisce avere dimensioni non normalizzate** per non dover eseguire operazioni di aggregazione o esplosione che appesantirebbero l'esecuzione di una query.
+
+È possibile, però, modellare le dimensioni in modo che siano memorizzate in più tabelle di dimensioni correlate, secondo un processo detto **snowflaking**. Lo snowflaking è solitamente svantaggioso, in quanto:
+* causa grande **spreco di memoria**
+* **può peggiorare le prestazioni e complicare la scrittura delle query**
+* **non porta benefici in termini di riduzione delle anomalie**, in quanto le tabelle di dimensione sono, di fatto, delle LUT
+
+### Tabelle dei Fatti
+
+Permettono di memorizzare le **misure numeriche di un processo**. In ogni loro record abbiamo una $n-$pla di fatti relativi a una combinazione degli elementi delle dimensioni con riferimento a una certa granularità (grana).
+
+I campi della tabella dei fatti sono partizionati in due insiemi:
+* **chiave** (composta), in cui vi sono riferimenti alle chiavi primarie delle tabelle di dimensione che **stabiliscono la grana dei fatti**
+* **misure**, ossia valori numerici comparabili e additivi
+
+Un fatto si dice **additivo** se ha senso sommarlo rispetto a **ogni possibile combinazione delle dimensioni** da cui dipende (es. l'incasso monetario è un fatto additivo, in quanto ha senso sommarlo per le dimensioni temporali, locali e per prodotti). La proprietà di additività è importante, in quanto le applicazioni del data warehouse devono spesso combinare fatti descritti da molti record di una tabella dei fatti. I fatti possono essere **semi-additivi** se ha senso aggregarli solo in **alcune dimensioni**, mentre, negli altri casi, i dati si dicono **non additivi**.
 
 ## Data Lake
 

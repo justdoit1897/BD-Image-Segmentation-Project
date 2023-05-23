@@ -375,7 +375,11 @@ $$
 
 Ovvero la cross-entropia della distribuzione del modello rispetto a quella dei dati.
 
+<<<<<<< HEAD
 **È possibile estendere la MLE anche alle stime dei classificatori**. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che 
+=======
+È possibile estendere la MLE anche alle stime dei classificatori. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che
+>>>>>>> 6122844cb64dded7f669fa084c83198c6dbbfa71
 
 $$
 \theta _{ML} = \mathrm{argmax}_{\theta} \mathrm{Pr}\left( Y|\bold{x}; \theta \right) = \mathrm{argmax}_{\theta} \sum _{i=1}^m \log \mathrm{P}\left( y^{(i)}| x^{(i)};\theta \right)
@@ -2110,7 +2114,7 @@ All'aumentare delle dimensioni, anche i prior probabilistici non garantiscono **
 Il DL gestisce la complessità facendo assunzioni sullo spazio delle ipotesi **più ampie** rispetto alle ipotesi del Machine Learning:
 
 1. Si assume che i dati siano generati dalla composizione di molte feature semplici, che vengono via via aggregate in feature più complesse secondo livelli gerarchici.
-   * ES: Percezione di un volto:
+   * **ES**: Percezione di un volto:
      * Percezione di una forma ovoidale.
      * Percezione di feature quali la presenza di occhi, naso, bocca.
      * $\dots$

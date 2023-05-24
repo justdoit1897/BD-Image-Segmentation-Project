@@ -984,7 +984,7 @@ Applicazioni tipiche di Cassandra sono:
       <tr>
          <td>Modello dei Dati</td>
          <td>Basato su tabelle con righe e colonne</td>
-         <td>MOdello ricco ed espressivo object-oriented</td>
+         <td>Modello ricco ed espressivo object-oriented</td>
       </tr>
       <tr>
          <td>Nodo Master</td>

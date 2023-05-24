@@ -212,6 +212,10 @@ La distanza coseno calcola quindi l'**angolo tra due documenti** $\bar X = (x_1,
 
 ## Domande Frequenti
 
+1. Analisi delle serie temporali, come viene fatta? Perché si usa la scala della profondità?
+2. Differenza fra distanza e similarità, caratteristiche fra le misure di distanza e quelle di similarità.
+3. Distanza/similarità fra distribuzioni di probabilità. Quando i dati sono espressi tramite distribuzioni di probabilità, come si fa a vedere se le distribuzioni sono simili o dissimili?
+
 # 5 - Stimatori, Stima e Campionamento
 
 ## Definizione di stimatore
@@ -422,6 +426,11 @@ Caratteristica importante della stima MAP è che **riduce la varianza dello stim
 
 ## Domande Frequenti
 
+1. Cos'è uno stimatore statistico? Cosa si intende per stima? Stima bayesiana (maximum a posteriori)
+2. MLE
+3. MAP
+4. Campionamento. Cos'è una stima? Cosa vuol dire rendere la stima più precisa?
+
 # 6 - Mining di Pattern Frequenti
 
 ## Generalità e definizioni
@@ -435,6 +444,9 @@ Caratteristica importante della stima MAP è che **riduce la varianza dello stim
 ## Gestione di grandi database
 
 ## Domande Frequenti
+
+1. Algoritmo Apriori (cos'è una transazione, cos'è un database di transazioni, cos'è un itemset, proprietà di chiusura)
+2. Descrivere una versione dell'algoritmo Apriori, come funziona l'algoritmo? Come fa a calcolare gli itemset per un dato supporto?
 
 # 7 - Data Warehousing e Data Lake
 
@@ -534,6 +546,7 @@ In un sistema di data warehousing, la creazione di un database non avviene trami
 ### Data Warehouse
 
 Un data warehouse dev'essere:
+
 * uno **strumento di supporto alle decisioni**
 * **integrato**, in quanto i dati vengono da fonti eterogenee
 * **orientato ai dati** (non alle applicazioni), in quanto **deve servire solo per decisioni strategiche** e non per processi operativi
@@ -548,6 +561,7 @@ Un data warehouse dev'essere:
 #### Architettura
 
 Il **processo di gestione e valutazione dei dati** da parte di un data warehouse si chiama **data warehousing**. Prevede:
+
 1. **l'acquisizione** e **l'integrazione** dei dati
 2. **l'archiviazione** dei dati
 3. **la valutazione** e **l'analisi** dei dati
@@ -563,6 +577,7 @@ Sono **sottoinsiemi di un data warehouse** più generale **mirati a specifiche p
 La differenza fondamentale consiste nel fatto che la creazione di un data warehouse avviene a partire da database operazionali, mentre i data mart vengono generati per venire incontro a un'esigenza specifica predeterminata.
 
 La scelta di utilizzare un data mart come sistema separato è legata a:
+
 * **necessità di utilizzare un diverso schema di rappresentazione**
 * **migliorare le performance** separando l'hardware dedicato
 * **garantire una maggiore sicurezza** con accessi autorizzati su porzioni minori di dati
@@ -570,6 +585,7 @@ La scelta di utilizzare un data mart come sistema separato è legata a:
 ![Struttura Data Warehouse - Data Mart](image/big_data/dw_dm_struct.png)
 
 In generale, sono due gli approcci di gestione dell'architettura con data mart:
+
 * **top-down**, con cui i data mart vengono creati a partire da un data warehouse
 * **bottom-up**, con cui i data mart concorrono a creare un data warehouse
 
@@ -577,6 +593,7 @@ Da un punto di vista logico, sembrerebbe più sensato il secondo approccio, in q
 
 Esiste una soluzione ibrida, che prevede la creazione di data mart che concorrono alla creazione di un **data warehouse tramite un bus**.
 Un'architettura bus è composto da un insieme di **data mart strettamente integrati** caratterizzati da:
+
 * **dimensioni conformi**, che devono essere definite e implementate solo una volta
 * **tabelle dei fatti**, che sono costituite da misurazioni, metriche o fatti su un dato processo aziendale
 
@@ -587,18 +604,22 @@ La struttura con bus permette di aggregare i data mart semplicemente pensandoli 
 #### Elementi di un Data Warehouse
 
 Abbiamo:
+
 1. sorgenti dei dati eterogenee, da cui vengono estratti i dati
 2. area di preparazione dei dati (data staging), in cui abbiamo:
-  * aree di memorizzazione
-  * processi di preparazione dei dati (pulizia, trasformazione, combinazione, ecc.)
+
+* aree di memorizzazione
+* processi di preparazione dei dati (pulizia, trasformazione, combinazione, ecc.)
   solitamente viene distribuita su più calcolatori e gestisce dati con formati di varia natura
 
 Definiamo ETL (extract, transform, load) il complesso di processi che porta i dati dai sistemi operazionali al data warehouse attraverso l'area di staging.
 
 3. server di presentazione del data warehouse, in cui i dati sono organizzati e memorizzati per essere interrogati.
-Fanno uso di dati in forma multidimensionale e possono essere adottate tecnologie caratterizzanti le operazioni OLAP:
-  * con RDBMS si parla di operazioni ROLAP
-  * con operazioni OLAP in cui i concetti di fatto e dimensione sono espliciti si parla di MOLAP
+   Fanno uso di dati in forma multidimensionale e possono essere adottate tecnologie caratterizzanti le operazioni OLAP:
+
+* con RDBMS si parla di operazioni ROLAP
+* con operazioni OLAP in cui i concetti di fatto e dimensione sono espliciti si parla di MOLAP
+
 4. sistemi di visualizzazione dei dati
 
 #### Modello Logico per Data Warehouse
@@ -606,20 +627,22 @@ Fanno uso di dati in forma multidimensionale e possono essere adottate tecnologi
 La rappresentazione dei dati in un'analisi OLAP avviene in forma **multidimensionale**. La rappresentazione multidimensionale di concetti di interesse per l'azienda permette di esplodere o aggregare elementi di interesse, così come modificare tale rappresentazione per adattarla ad operazioni aggregate o di rappresentazione.
 
 Elementi fondamentali per la rappresentazione multidimensionale (e per l'analisi) sono:
+
 * **fatto**, ossia un concetto su cui centrare l'analisi
 * **misura**, ossia una proprietà atomica di un fatto da analizzare
 * **dimensione**, ossia la prospettiva lungo cui effettuare l'analisi
 
-|   Fatti    |           Misure          |     Dimensioni    |
-|   ----     |           ----            |       ----        |
-|  vendita   | quantità venduta, incasso |  prodotto, tempo  |
-| telefonata |           costo           |       durata      |
+| Fatti      | Misure                     | Dimensioni      |
+| ---------- | -------------------------- | --------------- |
+| vendita    | quantità venduta, incasso | prodotto, tempo |
+| telefonata | costo                      | durata          |
 
 ## Dati multidimensionali
 
 Le rappresentazioni tridimensionali aiutano i decisori di un'azienda, in quanto permettono di derivare concetti e/o fenomeni in modo intuitivo, semplicemente splittando o aggregando porzioni di questa figura.
 
 Su dati multi-dimensionali, le operazioni possibili sono:
+
 * **roll-up (drill-up)**, per **aggregare** i dati e mostrarli ad una grana più grossa
 * **drill down**, per **disaggregare** i dati ed esploderli in una grana più fine
 * **slice & dice**, per **selezionare** e **proiettare** porzioni dei dati
@@ -640,6 +663,7 @@ In un'implementazione MOLAP i dati sono accessibili in modo diretto grazie all'*
 
 L'OLAP Relazionale è un OLAP che esegue l'analisi multidimensionale dinamica dei dati archiviati un un RDB. L'elaborazione dei dati può avvenire sul client, nel sistema di database o su un server. In un'architettura a due livelli, il client interroga il database e riceve i dati richiesti, in una a tre livelli l'utente invia, invece, una richiesta di analisi multidimensionale e il motore ROLAP la converte in SQL per l'invio al database, con il processo eseguito al contrario per l'invio dei dati.
 Usando database relazionali, ROLAP richiede più tempo di elaborazione e spazio su disco per operazioni tipiche dei database multidimensionali, ma supporta più utenti e maggiori quantità di dati. Lo schema usato da ROLAP è detto a stella e si compone di:
+
 * tabella dei fatti, che memorizza le misure di un processo in forma molto disaggregata
 * due o più tabelle di dimensione, che rappresentano prospettive di analisi dei dati (ossia fenomeni per cui è utile analizzare i fatti)
 
@@ -653,6 +677,7 @@ Negli schemi dimensionali, le **chiavi** sono **legate all'indicizzazione della 
 Di solito le dimensioni **non sono normalizzate**, per cui potrebbe sembrare lecito eliminare le ridondanze procedendo alla normalizzazione: in realtà, negli schemi dimensionali, **si preferisce avere dimensioni non normalizzate** per non dover eseguire operazioni di aggregazione o esplosione che appesantirebbero l'esecuzione di una query.
 
 È possibile, però, modellare le dimensioni in modo che siano memorizzate in più tabelle di dimensioni correlate, secondo un processo detto **snowflaking**. Lo snowflaking è solitamente svantaggioso, in quanto:
+
 * causa grande **spreco di memoria**
 * **può peggiorare le prestazioni e complicare la scrittura delle query**
 * **non porta benefici in termini di riduzione delle anomalie**, in quanto le tabelle di dimensione sono, di fatto, delle LUT
@@ -662,6 +687,7 @@ Di solito le dimensioni **non sono normalizzate**, per cui potrebbe sembrare lec
 Permettono di memorizzare le **misure numeriche di un processo**. In ogni loro record abbiamo una $n-$pla di fatti relativi a una combinazione degli elementi delle dimensioni con riferimento a una certa granularità (grana).
 
 I campi della tabella dei fatti sono partizionati in due insiemi:
+
 * **chiave** (composta), in cui vi sono riferimenti alle chiavi primarie delle tabelle di dimensione che **stabiliscono la grana dei fatti**
 * **misure**, ossia valori numerici comparabili e additivi
 
@@ -669,7 +695,56 @@ Un fatto si dice **additivo** se ha senso sommarlo rispetto a **ogni possibile c
 
 ## Data Lake
 
+Un **data lake** è un **archivio centralizzato che contiene una vasta quantità di dati grezzi e non strutturati provenienti da diverse fonti**. È progettato per immagazzinare dati senza la necessità di una struttura o uno schema predefinito. L'obiettivo principale di un data lake è quello di **consentire l'archiviazione, l'analisi e l'elaborazione di grandi volumi di dati** in modo flessibile e scalabile.
+
+Per quanto riguarda le **tecnologie** per i big data utilizzate nei data lake, ci sono diverse opzioni disponibili. Alcune delle tecnologie comuni includono:
+
+1. **Hadoop**, grazie ad HDFS e MapReduce.
+
+2. **Apache Spark**, che consente l'elaborazione in tempo reale, l'elaborazione di flussi di dati e il supporto per il machine learning.
+
+3. **Database NoSQL**, come Apache Cassandra, MongoDB o HBase, grazie alla loro capacità di gestire grandi volumi di dati non strutturati.
+
+4. **Cloud storage**, come Amazon S3, Google Cloud Storage o Azure Blob Storage, grazie alla loro scalabilità, durabilità e facilità di accesso ai dati.
+
+La struttura logica del data lake suddivide i dati in **diverse aree** in base al loro scopo e livello di elaborazione. Le zone comuni di un data lake includono:
+
+1. **Raw Zone**: È l'area in cui vengono caricati i dati grezzi provenienti da diverse fonti. In questa zona, i dati non subiscono alcuna trasformazione o pulizia.
+
+2. **Staging Zone**: È l'area in cui i dati grezzi vengono trasformati e preparati per l'elaborazione successiva. Qui è possibile applicare regole di pulizia, normalizzazione e strutturazione dei dati.
+
+3. **Curated Zone**: È l'area in cui i dati vengono archiviati per l'analisi e l'elaborazione. In questa zona, i dati sono organizzati in modelli logici e possono essere facilmente accessibili per l'elaborazione analitica.
+
+4. **Sandbox Zone**: È un'area separata in cui gli utenti possono esplorare e sperimentare con nuovi dati o algoritmi senza influire sui dati curati o sulla produzione.
+
+L'integrazione tra un data lake e un data warehouse è un aspetto importante dell'architettura dei dati aziendali. Essa avviene in diversi modi:
+
+1. **Ingestione dei dati**: I dati grezzi provenienti dal data lake possono essere estratti, trasformati e caricati nel data warehouse per essere utilizzati in analisi e reportistica aziendale.
+
+2. **Elaborazione congiunta**: Alcune analisi richiedono sia dati strutturati che dati non strutturati. In questo caso, il data lake e il data warehouse possono essere utilizzati insieme per l'elaborazione dei dati e per generare risultati più approfonditi e significativi.
+
+3. **Archiviazione di backup**: Il data warehouse può utilizzare il data lake come archivio di backup per i dati grezzi o non strutturati, consentendo di recuperare e ripristinare i dati in caso di necessità.
+
+### Architettura lambda
+
+È un approccio per l'integrazione tra un data lake e un data warehouse che consente di **combinare dati in tempo reale e batch per analisi e reportistica aziendale**.
+Questa architettura si basa sulla creazione di due percorsi paralleli per l'elaborazione dei dati:
+
+1. **Batch Layer** (Strato batch): In questo strato, i dati vengono elaborati in modalità batch. 
+   1. I dati grezzi vengono estratti dal data lake e trasformati utilizzando *algoritmi di elaborazione batch*. 
+   2. I risultati di questa elaborazione vengono **memorizzati nel data warehouse**, creando una versione aggiornata e strutturata dei dati.
+
+2. **Speed Layer** (Strato di velocità): Questo strato gestisce l'elaborazione dei dati in tempo reale o quasi. 
+   1. I dati grezzi vengono trasmessi allo speed layer e vengono elaborati utilizzando *algoritmi di elaborazione in tempo reale*. 
+   2. I risultati di questa elaborazione vengono **combinati con i dati presenti nel data warehouse** per fornire analisi in tempo reale o quasi in tempo reale.
+
+La combinazione dei risultati dei due strati avviene attraverso un **servizio di query** o un **layer di unificazione**, che consente di ottenere una visione completa e aggiornata dei dati dal data lake e dal data warehouse. Questo permette di eseguire analisi che combinano dati storici e dati in tempo reale.
+
+L'architettura Lambda offre diversi vantaggi, tuttavia, può essere **complessa da implementare** e richiede una gestione accurata delle trasformazioni e delle sincronizzazioni tra i due strati per mantenere l'integrità e la coerenza dei dati.
+
 ## Domande Frequenti
+
+1. Schema a stella data warehouse
 
 # 8 - Introduzione a HDFS
 
@@ -759,6 +834,10 @@ Un'altra caratteristica saliente di HDFS è la cosiddetta **high availability**,
 
 ## Domande Frequenti
 
+1. MongoDB, come funziona dal punto di vista architetturale? Com'è strutturato dal punto di vista dell'organizzazione dei dati?
+2. Implementazione del framework MapReduce in MongoDB e MongoDB in generale.
+   I nodi del cluster come sono organizzati?
+
 # 11 - Cassandra
 
 ## Caratteristiche Principali
@@ -770,6 +849,9 @@ Un'altra caratteristica saliente di HDFS è la cosiddetta **high availability**,
 ## Modello dei dati
 
 ## Domande Frequenti
+
+1. Come funziona un cluster Cassandra?
+2. Cassandra
 
 # 12 - Hadoop
 
@@ -882,8 +964,10 @@ Abbiamo, infine, **operatori di base**, come quelli aritmetici, booleani e di ca
 
 ## Domande Frequenti
 
-1. Architettura a cluster Hadoop (in generale). Input e output degli step map e reduce.
-2. È possibile eseguire su Hadoop processi non map/reduce?
+1. Map-reduce in Hadoop. Dal punto di vista della creazione dei processi (thread) di mapper e di reducer, i dati si muovono in questo paradigma?
+2. Architettura a cluster Hadoop (in generale). Input e output degli step map e reduce.
+3. È possibile eseguire su Hadoop processi non map/reduce?
+4. Funzionamento di YARN.
 
 # 13 - Spark
 
@@ -1042,6 +1126,8 @@ Entrando più nel dettaglio:
 Dopo aver eseguito l'accesso alla SparkSession, è possibile accedere alle varie proprietà di una sessione, come il contesto, e alle varie API che abbiamo trattato.
 
 ## Domande Frequenti
+
+1. Architettura di Spark in termini di cluster (come vengono suddivisi i thread sui vari nodi)
 
 # 14 - Introduzione al Machine Learning
 
@@ -1837,6 +1923,11 @@ $$
 
 ## Domande frequenti
 
+1. Clustering basato su densità (approcci grid-based, density-based). Cosa esprime il parametro di densità?
+2. Elbow method (come stabilire il numero di cluster ideale), selezione delle feature rilevanti per la clusterizzazione.
+3. Clustering per densità, perchè è meglio il grid-base rispetto a quello dei punti (costo computazionale, uno fa la distanza euclidea, l'altro confronti degli intervalli)
+4. Tipologie di clustering. K-Means
+
 # 16 - Classificatori
 
 ## Generalità
@@ -2253,6 +2344,13 @@ Un'altra misura è l'area sotto la **curva AUC**, ovvero l'**area sottesa dalla 
 
 ## Domande frequenti
 
+1. Algoritmo Random Forest. Come viene usato l'indice di Gini per stabilire se abbiamo una bontà di classificazione.
+2. Capacità di un modello, overfit, underfit, Bayes error.
+3. Teoria dell'apprendimento.
+4. Support Vector Machine. Il margine com'è definito? Come funziona l'algoritmo?
+   Cosa sono le slack variables? Cos'è il kernel trick?
+5. Forme funzionali Sigmoide Softmax
+
 # 17 - Introduzione al Deep Learning
 
 ## Generalità
@@ -2424,3 +2522,11 @@ La **scelta delle funzioni di attivazione** delle unità di uscita e di quelle n
 ## Transformers
 
 ## Domande frequenti
+
+1. Depth Wise Separable Convolution: che operatore è nelle reti convoluzionali profonde? Che cos'è una rete convoluzionale?
+2. Deeplearning.
+3. Reti neurali convoluzionali: come funzionano, a cosa serve la ReLU.
+4. Back propagation nelle reti neurali, come funziona e come viene affrontato a livello computazionale.
+5. Auto-encoder ed auto-encoder variazionali. Definizione e differenze.
+6. Architettura di un transformer.
+7. Architettura delle reti ricorrenti. Architettura delle LSTM.

@@ -700,29 +700,21 @@ Un **data lake** è un **archivio centralizzato che contiene una vasta quantità
 Per quanto riguarda le **tecnologie** per i big data utilizzate nei data lake, ci sono diverse opzioni disponibili. Alcune delle tecnologie comuni includono:
 
 1. **Hadoop**, grazie ad HDFS e MapReduce.
-
 2. **Apache Spark**, che consente l'elaborazione in tempo reale, l'elaborazione di flussi di dati e il supporto per il machine learning.
-
 3. **Database NoSQL**, come Apache Cassandra, MongoDB o HBase, grazie alla loro capacità di gestire grandi volumi di dati non strutturati.
-
 4. **Cloud storage**, come Amazon S3, Google Cloud Storage o Azure Blob Storage, grazie alla loro scalabilità, durabilità e facilità di accesso ai dati.
 
 La struttura logica del data lake suddivide i dati in **diverse aree** in base al loro scopo e livello di elaborazione. Le zone comuni di un data lake includono:
 
 1. **Raw Zone**: È l'area in cui vengono caricati i dati grezzi provenienti da diverse fonti. In questa zona, i dati non subiscono alcuna trasformazione o pulizia.
-
 2. **Staging Zone**: È l'area in cui i dati grezzi vengono trasformati e preparati per l'elaborazione successiva. Qui è possibile applicare regole di pulizia, normalizzazione e strutturazione dei dati.
-
 3. **Curated Zone**: È l'area in cui i dati vengono archiviati per l'analisi e l'elaborazione. In questa zona, i dati sono organizzati in modelli logici e possono essere facilmente accessibili per l'elaborazione analitica.
-
 4. **Sandbox Zone**: È un'area separata in cui gli utenti possono esplorare e sperimentare con nuovi dati o algoritmi senza influire sui dati curati o sulla produzione.
 
 L'integrazione tra un data lake e un data warehouse è un aspetto importante dell'architettura dei dati aziendali. Essa avviene in diversi modi:
 
 1. **Ingestione dei dati**: I dati grezzi provenienti dal data lake possono essere estratti, trasformati e caricati nel data warehouse per essere utilizzati in analisi e reportistica aziendale.
-
 2. **Elaborazione congiunta**: Alcune analisi richiedono sia dati strutturati che dati non strutturati. In questo caso, il data lake e il data warehouse possono essere utilizzati insieme per l'elaborazione dei dati e per generare risultati più approfonditi e significativi.
-
 3. **Archiviazione di backup**: Il data warehouse può utilizzare il data lake come archivio di backup per i dati grezzi o non strutturati, consentendo di recuperare e ripristinare i dati in caso di necessità.
 
 ### Architettura lambda
@@ -730,12 +722,13 @@ L'integrazione tra un data lake e un data warehouse è un aspetto importante del
 È un approccio per l'integrazione tra un data lake e un data warehouse che consente di **combinare dati in tempo reale e batch per analisi e reportistica aziendale**.
 Questa architettura si basa sulla creazione di due percorsi paralleli per l'elaborazione dei dati:
 
-1. **Batch Layer** (Strato batch): In questo strato, i dati vengono elaborati in modalità batch. 
-   1. I dati grezzi vengono estratti dal data lake e trasformati utilizzando *algoritmi di elaborazione batch*. 
-   2. I risultati di questa elaborazione vengono **memorizzati nel data warehouse**, creando una versione aggiornata e strutturata dei dati.
+1. **Batch Layer** (Strato batch): In questo strato, i dati vengono elaborati in modalità batch.
 
-2. **Speed Layer** (Strato di velocità): Questo strato gestisce l'elaborazione dei dati in tempo reale o quasi. 
-   1. I dati grezzi vengono trasmessi allo speed layer e vengono elaborati utilizzando *algoritmi di elaborazione in tempo reale*. 
+   1. I dati grezzi vengono estratti dal data lake e trasformati utilizzando *algoritmi di elaborazione batch*.
+   2. I risultati di questa elaborazione vengono **memorizzati nel data warehouse**, creando una versione aggiornata e strutturata dei dati.
+2. **Speed Layer** (Strato di velocità): Questo strato gestisce l'elaborazione dei dati in tempo reale o quasi.
+
+   1. I dati grezzi vengono trasmessi allo speed layer e vengono elaborati utilizzando *algoritmi di elaborazione in tempo reale*.
    2. I risultati di questa elaborazione vengono **combinati con i dati presenti nel data warehouse** per fornire analisi in tempo reale o quasi in tempo reale.
 
 La combinazione dei risultati dei due strati avviene attraverso un **servizio di query** o un **layer di unificazione**, che consente di ottenere una visione completa e aggiornata dei dati dal data lake e dal data warehouse. Questo permette di eseguire analisi che combinano dati storici e dati in tempo reale.
@@ -803,10 +796,10 @@ Con l'avvento dei big data, si è sentita la necessità di definire architetture
 I modi per scalare un RDBMS sono due:
 
 1. **Scaling verticale**, con cui si concentrano **tutti i dati su una singola macchina**, che deve essere potente abbastanza da gestirli. È fortemente **limitato dalla scalabilità della macchina/cluster**.
-
 2. **Scaling orizzontale**, con cui si distribuiscono i dati su più macchine non necessariamente vicine grazie a **database sharding e/o replication**, con lo svantaggio di un overhead sull'elaborazione dovuto alla comunicazione.
-Il database sharding, nello specifico, presenta un problema di **elaborazione parallela**, poiché i vari blocchi di dati possono essere raggiunti solo accedendo alla macchina che li contiene.
-La data replication, in questo senso, è una soluzione migliore, dato che:
+   Il database sharding, nello specifico, presenta un problema di **elaborazione parallela**, poiché i vari blocchi di dati possono essere raggiunti solo accedendo alla macchina che li contiene.
+   La data replication, in questo senso, è una soluzione migliore, dato che:
+
    * non ci sono colli di bottiglia delle architetture parallele
    * è scalabile
    * non sono previsti più SPoF (Single Points of Failure)
@@ -828,7 +821,6 @@ Il protocollo **2 Phase Commit** è un algoritmo distribuito atto a garantire la
 Esso è costituito da due fasi:
 
 1. **Richiesta di validazione**, in cui il coordinatore del cluster prepara tutti i gruppi e richiede una validazione.
-
 2. **Fase di validazione**, in cui il coordinatore completa la transazione a tutti i gruppi.
 
 Questa procedura a due fasi è necessaria quando gli aggiornamenti sui dati devono avvenire simultaneamente su più database distribuiti, in modo da garantire l'integrità e l'accuratezza dell'informazione.
@@ -836,11 +828,9 @@ Questa procedura a due fasi è necessaria quando gli aggiornamenti sui dati devo
 Entrando più in dettaglio, dati $N$ database che partecipano a una transazione e un **nodo coordinatore**:
 
 1. Nella prima fase, detta di "**voting**", **il coordinatore invia delle richieste di voto al cluster**, ossia di provare la transazione sulle loro copie locali dei dati.
-
 2. Sulla base dei log, **ogni database invia una propria risposta** al coordinatore per accettare o meno la transazione (per esempio, i database potrebbero essere disallineati).
-
 3. Nella seconda fase, detta di "**commit**", se tutti i database hanno accettato di eseguire la transazione, viene loro **inviata dal coordinatore una richiesta di commit globale**.
-Il problema in questa fase è che, a causa della lontananza, alcuni database possano non essere allineati alla transazione $k-$esima, cosa che genererebbe un fault.
+   Il problema in questa fase è che, a causa della lontananza, alcuni database possano non essere allineati alla transazione $k-$esima, cosa che genererebbe un fault.
 
 ## CAP (Consistency, Availability, Partition Tolerance) Theorem
 
@@ -861,9 +851,7 @@ Un database che rispetta i requisiti CAP è detto **ideale**, ma nel mondo reale
 Sono proprietà che ogni database distribuito **può e deve possedere**, e fanno riferimento a un modello di **coerenza lasca**. Di base, dato che i DB aziendali devono garantire le proprietà AP, si accetta che in determinate situazioni possano non essere coerenti in ogni loro sotto-porzione, ma che in generale lo siano. Le proprietà BASE sono:
 
 * **Basically Available**, per cui il sistema dev'essere sempre disponibile.
-
 * **Soft-state**, per cui lo **stato del sistema** (l'elenco delle transazioni fino a un dato momento) è **mutevole** nel tempo.
-
 * **Eventually Consistent**, per cui **l'allineamento del cluster avviene nel tempo**, ossia che, senza modifiche, tutte le repliche del DB si allineano gradualmente.
 
 Quest'ultima proprietà può essere garantita attraverso un modello di coerenza ***read-your-own-writes***, che permette a ogni nodo di poter leggere sempre e solo la propria copia delle transazioni e di rendere disponibili localmente i risultati delle proprie transazioni in modo immediato.
@@ -880,30 +868,20 @@ Detto questo, una minima attività di progettazione dello schema è comunque pre
 Tra le loro caratteristiche ricordiamo:
 
 * **Assenza di schema relazionale**.
-
 * Assenza **di tabelle** con attributi fissati.
-
 * Assenza **di ORM o di normalizzazione dei dati**.
-
 * **Accesso dei dati in forma programmatica** (non esistono query in senso stretto).
-
 * **Assenza di vincoli di integrità e di transazioni ACID**
-
 * **Presenza di interfaccia HTTP REST e protocolli di testo per la comunicazione**.
-
 * Presenza di **interfaccia web**.
-
 * **Ambiente distribuito** che soddisfa Eventual Consistency.
-
 * Progettazione con **architettura *shared nothing***.
 
 Con riferimento a quest'ultima proprietà, distinguiamo tre tipologie di condivisione tra $P$ processi che si appoggiano a $M$ memorie e ad un'infrastruttura di storage:
 
 1. Un'architettura **shared-memory** prevede la **condivisione della memoria principale**, per cui i dati vengono caricati su un'infrastruttura di memoria condivisa e l'accesso ad essi dev'essere sincronizzato per i singoli processi che devono elaborare il dato.
-
 2. Un'architettura **shared-disk** prevede che ogni processo operi separatamente nella propria area di memoria utilizzando una **struttura di storage condivisa**. Questa forma di condivisione rende il sistema adattabile a variazioni dei carichi di lavoro.
-
-3. Un'architettura **shared-nothing** (come quella dei DB NoSQL) prevede che i processi si coordinino attraverso messaggi, mantenendo però il proprio spazio di lavoro e il proprio storage separati. 
+3. Un'architettura **shared-nothing** (come quella dei DB NoSQL) prevede che i processi si coordinino attraverso messaggi, mantenendo però il proprio spazio di lavoro e il proprio storage separati.
 
 ![Architetture di Condivisione](image/big_data/shared_archs.png)
 
@@ -912,50 +890,37 @@ Con riferimento a quest'ultima proprietà, distinguiamo tre tipologie di condivi
 Vi sono diverse filosofie di realizzazione dei database NoSQL. Distinguiamo tra:
 
 * **Coppie Chiave-Valore**
-È il livello minimo di schema, e fa uso di una **struttura dati a coppie chiave-valore**. Le chiavi sono univoche e costituiscono lo schema (implicitamente); i valori possono essere eterogenei (stringhe, numeri, JSON, BLOB).
-
+  È il livello minimo di schema, e fa uso di una **struttura dati a coppie chiave-valore**. Le chiavi sono univoche e costituiscono lo schema (implicitamente); i valori possono essere eterogenei (stringhe, numeri, JSON, BLOB).
 * **Database a Colonne**
-Si tratta di DB NoSQL che **indicizzano i dati per colonna**. Ogni colonna contiene i valori, ciascuno con la propria chiave. In questi DB il concetto di riga è associato a ***gruppi di colonne***, che **non sempre coincidono con i record in senso relazionale**. Sono molto **efficienti per query cumulative sulle colonne**.
-Questi database definiscono implicitamente uno schema, ma solitamente è l'utente a indicare gli insiemi di colonne (equivalenti delle tabelle).
-I database colonnari sono **basati principalmente su Google BigTable**, una struttura dati definita da Google che definisce un meccanismo di read/write sulla BigTable distribuita.
-**Cassandra** e **HBase** fanno uso di database colonnari.
-
+  Si tratta di DB NoSQL che **indicizzano i dati per colonna**. Ogni colonna contiene i valori, ciascuno con la propria chiave. In questi DB il concetto di riga è associato a ***gruppi di colonne***, che **non sempre coincidono con i record in senso relazionale**. Sono molto **efficienti per query cumulative sulle colonne**.
+  Questi database definiscono implicitamente uno schema, ma solitamente è l'utente a indicare gli insiemi di colonne (equivalenti delle tabelle).
+  I database colonnari sono **basati principalmente su Google BigTable**, una struttura dati definita da Google che definisce un meccanismo di read/write sulla BigTable distribuita.
+  **Cassandra** e **HBase** fanno uso di database colonnari.
 * **Database Documentali**
-Si tratta di database in cui **ogni record è un documento in formato testo strutturato** (come XML e JSON). Tali database sono molto utili nei Sistemi di Gestione dei Contenuti Digitali, negli e-commerce, ecc.
-**MongoDB** è un esempio di database documentale.
-
+  Si tratta di database in cui **ogni record è un documento in formato testo strutturato** (come XML e JSON). Tali database sono molto utili nei Sistemi di Gestione dei Contenuti Digitali, negli e-commerce, ecc.
+  **MongoDB** è un esempio di database documentale.
 * **Database a Grafo**
-Si tratta di database in cui **i dati sono rappresentati da nodi e archi etichettati di un grafo**. Qui le entità, ossia i nodi, sono uniti tramite relazioni, ossia gli archi, caratterizzate da un significato e da proprietà proprie. In questo tipo di database le operazioni tra entità diventano operazioni su grafi.
-**Neo4j** è un esempio di database a grafo.
+  Si tratta di database in cui **i dati sono rappresentati da nodi e archi etichettati di un grafo**. Qui le entità, ossia i nodi, sono uniti tramite relazioni, ossia gli archi, caratterizzate da un significato e da proprietà proprie. In questo tipo di database le operazioni tra entità diventano operazioni su grafi.
+  **Neo4j** è un esempio di database a grafo.
 
 ## Vantaggi e svantaggi dei database NoSQL
 
 Tra i vantaggi ricordiamo:
 
 * Possibilità d'uso per analytics o come data lake.
-
 * Big Data-oriented.
-
 * Assenza di single point of failure.
-
 * Buone performance e scalabilità orizzontale.
-
 * Gestione di dati strutturati, semi-strutturati e non.
-
 * Non necessitano di server performanti dedicati.
-
 * Pensati per database distribuiti.
 
 Tra gli svantaggi abbiamo, invece:
 
 * Assenza di standardizzazione.
-
 * Capacità di query limitate.
-
 * Immaturità della tecnologia.
-
 * Mancata garanzia di coerenza in senso stretto.
-
 * Poco utilizzati nelle organizzazioni.
 
 # 10 - MongoDB
@@ -986,13 +951,118 @@ Tra gli svantaggi abbiamo, invece:
 
 # 11 - Cassandra
 
+È un **sistema di gestione database NoSQL** progettato per gestire grandi quantità di dati su molti server comuni, fornendo alta disponibilità senza single points of failure.
+
 ## Caratteristiche Principali
+
+L'architettura del database Cassandra è:
+
+* **Colonnare**, dunque le colonne contengono direttamente i dati (non i nomi dei campi).
+* **Distribuita e altamente scalabile**, in quanto basata sui concetti di nodo, data center e cluster. Può essere scalata facilmente in entrambe le direzioni con comunicazione master-slave o peer-to-peer tra i database.
+* **Tollerante ai guasti**.
+* **Molto performante**, in quanto pensato per la gestione quotidiana di enormi moli di dati.
+* A **Consistenza Variabile**, in quanto può essere configurata per gestire consistenza stretta, *eventual* o mix tra le due.
+* Dotata di **Schema Lasco**, per cui si rileva uno schema non nel senso di un'architettura *schema-on-write*.
+
+Applicazioni tipiche di Cassandra sono:
+
+* Storage di grandi quantità di dati eterogenei.
+* Sviluppo del back-end delle applicazioni.
+* Analisi di serie temporali.
+* Operazioni di monitoraggio.
+* Operazioni di analytics.
 
 ## Cassandra vs MongoDB
 
+<table>
+   <thead>
+      <th>
+      <th>Cassandra</th>
+      <th>MongoDB</th>
+   </thead>
+   <tbody>
+      <tr>
+         <td>Modello dei Dati</td>
+         <td>Basato su tabelle con righe e colonne</td>
+         <td>MOdello ricco ed espressivo object-oriented</td>
+      </tr>
+      <tr>
+         <td>Nodo Master</td>
+         <td>Multipli, se uno va in down un altro può prenderne il posto</td>
+         <td>Singolo, processo di elezione necessario in caso di failure</td>
+      </tr>
+      <tr>
+         <td>Indici Secondari</td>
+         <td>Supporto per indici su singole colonne che gestiscono l'uguaglianza dei valori</td>
+         <td>Ogni proprietà o sub-documento è indicizzabile</td>
+      </tr>
+      <tr>
+         <td>Scalabilità</td>
+         <td>Elevata</td>
+         <td>Limitata</td>
+      </tr>
+      <tr>
+         <td>Linguaggio di Query</td>
+         <td>CQL (simile a SQL)</td>
+         <td>Nessuno, la query è un documento JSON</td>
+      </tr>
+      <tr>
+         <td>Aggregazione</td>
+         <td>Assente</td>
+         <td>Aggregation Framework che include MapReduce</td>
+      </tr>
+      <tr>
+         <td>Schema</td>
+         <td>Tipizzazione statica, l'utente deve fornire il tipo della colonna</td>
+         <td>Schema free</td>
+      </tr>
+   </tbody>
+</table>
+
 ## Architettura
 
+In Cassandra, i nodi sono organizzati in cluster circolari, che possono essere suddivisi fisicamente su più data center dislocati. Ogni nodo del cluster è un server in un rack.
+
+I nodi possono comunicare in modalità P2P usando il Gossip protocol, ossia un processo che garantisce che i dati siano diffusi a tutti i membri di un gruppo.
+Nel caso di Cassandra i nodi possono comunicare randomicamente a coppie per ***diffondere*** le informazioni di appartenenza ai cluster
+
+In questo modo, la struttura di coordinamento è paritaria: il client si connette ad un nodo del cluster (scelta indifferente) e una read/write chiesta dal client elegge il nodo destinatario a coordinatore. Il coordinatore deve individuare i nodi responsabili dell'intervallo di valori di chiavi coinvolto e coordinare la replica. Solitamente, l'ultimo nodo del cluster genera un acknowledgement, da cui segue la risposta al client.
+
+Esistono due strategie per la gestione della replicazione:
+
+* Simple Strategy - replicazione con fattore 3 in senso orario dal coordinatore verso i nodi successivi.
+
+![Simple Strategy](image/big_data/replica_ss.png)
+
+* Network Topology - parte dalla Simple Strategy per aggiungere il supporto a più data center. In questo caso, le operazioni di write sono gestite nel seguente modo:
+  1. Vengono eseguite diverse repliche all'interno dello stesso data center e una in un altro data center.
+  2. Quest'ultima replica arriva ad un coordinatore remoto che comunica con il coordinatore vero e proprio, che innesca la sua tripla di repliche
+
+![Network Topology](image/big_data/replica_nt.png)
+
+Lo storage persistente è nelle cosiddette SST Tables, mentre le tabelle che velocizzano le operazioni di lettura/scrittura sono le MemTables, che di solito sono una copia parziale delle read/write messe in atto dal database.
+Un altro componente importante è il Commit Log, che gestisce esplicitamente il log dei vari commit.
+Sono presenti anche due livelli di cache:
+
+* Row Cache, che opera sulle righe.
+* Key Cache, che opera sulle chiavi
+
+Per individuare le chiavi all'interno dello spazio si utilizza il filtro di Bloom.
+
+La scrittura dei dati avviene fisicamente sulla MemTable, quindi in memoria, e viene annotata nel Commit Log. Successivamente, la MemTable esegue un'operazione di flushing a batch sulla SST Table.
+
+La lettura avviene consultando la Row Cache (se attiva) o la Key Cache.
+
+Se la Row Cache è attiva, ma è stata letta la Key Cache, vuol dire che non vi sono righe (famiglie di colonne) predisposte a soddisfare la query, dunque la Key Cache legge dalle SST Tables, che spostano i dati nelle MemTables. Le MemTables, quindi rispondo al client e spostano i dati in loro possesso all'interno della Row Cache.
+
+Se la Row Cache è disattivata, o non è funzionante, la richiesta di lettura viene filtrata con il filtro di Bloom, che verifica se i dati sono nella Key Partition Cache, la quale consente di accedere aal Partition Summary (una rappresentazione aggregata degli indici di partizione sui dati).
+Il Partition Summary permette l'accesso al Partition Index, in cui vi sono le chiavi rispetto a cui si è deciso di fare ricerche e aggregazioni.
+A quel punto, il filtro di Bloom verifica se i dati sono già in MemTable. In caso di successo, la Partition Key Cache indirizza la Compression Offset Map per individuare i dati sul disco, altrimenti indicizza il Partition Summary, che accede al Partition Index.
+
 ## Modello dei dati
+
+Un cluster contiene più nodi, che possono contenere più spazi delle chiavi. Lo spazio delle chiavi è il concetto equivalente di database. All'interno dello spazio delle chiavi vi sono le famiglie di colonne, che suddividono lo spazio delle chiavi e sono assimilabili a tabelle.
+Per accedere alle colonne (viste come tabelle), si utilizza il linguaggio CQL (Cassandra Query Language).
 
 ## Domande Frequenti
 

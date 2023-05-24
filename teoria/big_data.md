@@ -798,19 +798,165 @@ Un'altra caratteristica saliente di HDFS è la cosiddetta **high availability**,
 
 ## RDBMS per la gestione di grandi moli di dati
 
+Con l'avvento dei big data, si è sentita la necessità di definire architetture RDBMS scalabili per grandi moli di dati, dato che quelle tradizionali sono incapaci di gestire grandi moli di dati.
+
+I modi per scalare un RDBMS sono due:
+
+1. **Scaling verticale**, con cui si concentrano **tutti i dati su una singola macchina**, che deve essere potente abbastanza da gestirli. È fortemente **limitato dalla scalabilità della macchina/cluster**.
+
+2. **Scaling orizzontale**, con cui si distribuiscono i dati su più macchine non necessariamente vicine grazie a **database sharding e/o replication**, con lo svantaggio di un overhead sull'elaborazione dovuto alla comunicazione.
+Il database sharding, nello specifico, presenta un problema di **elaborazione parallela**, poiché i vari blocchi di dati possono essere raggiunti solo accedendo alla macchina che li contiene.
+La data replication, in questo senso, è una soluzione migliore, dato che:
+   * non ci sono colli di bottiglia delle architetture parallele
+   * è scalabile
+   * non sono previsti più SPoF (Single Points of Failure)
+
 ### Legge di Amdhal
+
+È una legge usata per **trovare il miglioramento atteso massimo in un sistema informatico quando viene migliorato parzialmente**. Essa afferma che il tempo $T_p$ di esecuzione di un task su $p$ processori in parallelo è legato al tempo $T_1$ su singolo processore dalla relazione
+
+$$
+\frac{T_1}{T_p} =\frac{T_1}{\left( T_1 \cdot s + T_1 \cdot \frac{1-s}p \right)} = \frac{1}{s+\frac{1-s}p}
+$$
+
+dove $s$ è la porzione di programma necessariamente sequenziale. In situazioni in cui il carico di lavoro è sbilanciato (o vi sono overhead dovuti a comunicazione), il miglioramento atteso diminuisce, motivo per cui è sconsigliabile usare, per esempio, database sharding per gestire moli di dati con RDBMS
 
 ### Protocollo 2PC
 
-## CAP Theorem
+Il protocollo **2 Phase Commit** è un algoritmo distribuito atto a garantire la coerenza dei dati.
+
+Esso è costituito da due fasi:
+
+1. **Richiesta di validazione**, in cui il coordinatore del cluster prepara tutti i gruppi e richiede una validazione.
+
+2. **Fase di validazione**, in cui il coordinatore completa la transazione a tutti i gruppi.
+
+Questa procedura a due fasi è necessaria quando gli aggiornamenti sui dati devono avvenire simultaneamente su più database distribuiti, in modo da garantire l'integrità e l'accuratezza dell'informazione.
+
+Entrando più in dettaglio, dati $N$ database che partecipano a una transazione e un **nodo coordinatore**:
+
+1. Nella prima fase, detta di "**voting**", **il coordinatore invia delle richieste di voto al cluster**, ossia di provare la transazione sulle loro copie locali dei dati.
+
+2. Sulla base dei log, **ogni database invia una propria risposta** al coordinatore per accettare o meno la transazione (per esempio, i database potrebbero essere disallineati).
+
+3. Nella seconda fase, detta di "**commit**", se tutti i database hanno accettato di eseguire la transazione, viene loro **inviata dal coordinatore una richiesta di commit globale**.
+Il problema in questa fase è che, a causa della lontananza, alcuni database possano non essere allineati alla transazione $k-$esima, cosa che genererebbe un fault.
+
+## CAP (Consistency, Availability, Partition Tolerance) Theorem
+
+È un teorema che afferma che **è impossibile, per un sistema informatico distribuito, fornire tutte e tre le caratteristiche**, dove:
+
+* per **Coerenza** si intende che tutti i nodi devono vedere gli stessi dati ed essere allineati alle stesse transazioni.
+* per **Disponibilità** si intende che il sistema resta operativo in ogni suo punto anche se un nodo va giù.
+* per **Tolleranza alle Partizioni** si intende che il sistema continua a funzionare anche con errori di comunicazione.
+
+Un database che rispetta i requisiti CAP è detto **ideale**, ma nel mondo reale un sistema distribuito può garantire al più due di queste proprietà. Abbiamo quindi:
+
+* **Sistemi AP che non consentono Coerenza**, dato che devono garantire la CoS anche al fault di un nodo (cosa che porta disallineamento)
+* **Sistemi CP che non consentono Disponibilità**, dato che, se un nodo va giù, bisogna mandare offline tutto il cluster per garantire la Coerenza.
+* **Sistemi CA che non consentono Tolleranza alle Partizioni**, dato che i nodi del cluster devono essere raggiungibili in ogni momento e fornire coerenza, il sistema risultante non può essere resistente a errori di comunicazione.
 
 ## Proprietà BASE
 
+Sono proprietà che ogni database distribuito **può e deve possedere**, e fanno riferimento a un modello di **coerenza lasca**. Di base, dato che i DB aziendali devono garantire le proprietà AP, si accetta che in determinate situazioni possano non essere coerenti in ogni loro sotto-porzione, ma che in generale lo siano. Le proprietà BASE sono:
+
+* **Basically Available**, per cui il sistema dev'essere sempre disponibile.
+
+* **Soft-state**, per cui lo **stato del sistema** (l'elenco delle transazioni fino a un dato momento) è **mutevole** nel tempo.
+
+* **Eventually Consistent**, per cui **l'allineamento del cluster avviene nel tempo**, ossia che, senza modifiche, tutte le repliche del DB si allineano gradualmente.
+
+Quest'ultima proprietà può essere garantita attraverso un modello di coerenza ***read-your-own-writes***, che permette a ogni nodo di poter leggere sempre e solo la propria copia delle transazioni e di rendere disponibili localmente i risultati delle proprie transazioni in modo immediato.
+
+Quando un nodo deve eseguire una transazione viene eletto a nodo master, e genera un **commit token** che invia alle repliche. Sulla base del token, ogni replica può stabilire se è allineata o meno, dunque il client può sempre scegliere di interrogare la replica più aggiornata, sapendo che le altre tenderanno ad allinearsi nel tempo.
+
 ## Caratteristiche NoSQL
+
+Un **database NoSQL** (Not only SQL) è un database che **non fa uso di relazioni tabellari** e, in base a come vengono implementati gli schemi dei dati, rendono la consistenza ancora più lasca.
+
+Si basano sul paradigma **schema-on-read**, che consiste nel **caricare i dati** man mano che arrivano **senza modifiche**, mantenendo pattern e struttura dei dati originali. Questo paradigma ben si presta ai big data, dati non strutturati e modifiche frequenti allo schema. Il problema di questo paradigma è che, non facendo controlli e modifiche ai dati in ingresso, **potrebbero esserci molte mancanze, ridondanze e altri problemi** che potrebbero inficiare i risultati delle query.
+Detto questo, una minima attività di progettazione dello schema è comunque prevista, solo che la sua struttura non è rigida come negli schemi relazionali
+
+Tra le loro caratteristiche ricordiamo:
+
+* **Assenza di schema relazionale**.
+
+* Assenza **di tabelle** con attributi fissati.
+
+* Assenza **di ORM o di normalizzazione dei dati**.
+
+* **Accesso dei dati in forma programmatica** (non esistono query in senso stretto).
+
+* **Assenza di vincoli di integrità e di transazioni ACID**
+
+* **Presenza di interfaccia HTTP REST e protocolli di testo per la comunicazione**.
+
+* Presenza di **interfaccia web**.
+
+* **Ambiente distribuito** che soddisfa Eventual Consistency.
+
+* Progettazione con **architettura *shared nothing***.
+
+Con riferimento a quest'ultima proprietà, distinguiamo tre tipologie di condivisione tra $P$ processi che si appoggiano a $M$ memorie e ad un'infrastruttura di storage:
+
+1. Un'architettura **shared-memory** prevede la **condivisione della memoria principale**, per cui i dati vengono caricati su un'infrastruttura di memoria condivisa e l'accesso ad essi dev'essere sincronizzato per i singoli processi che devono elaborare il dato.
+
+2. Un'architettura **shared-disk** prevede che ogni processo operi separatamente nella propria area di memoria utilizzando una **struttura di storage condivisa**. Questa forma di condivisione rende il sistema adattabile a variazioni dei carichi di lavoro.
+
+3. Un'architettura **shared-nothing** (come quella dei DB NoSQL) prevede che i processi si coordinino attraverso messaggi, mantenendo però il proprio spazio di lavoro e il proprio storage separati. 
+
+![Architetture di Condivisione](image/big_data/shared_archs.png)
 
 ## Tipologie principali dei database NoSQL
 
+Vi sono diverse filosofie di realizzazione dei database NoSQL. Distinguiamo tra:
+
+* **Coppie Chiave-Valore**
+È il livello minimo di schema, e fa uso di una **struttura dati a coppie chiave-valore**. Le chiavi sono univoche e costituiscono lo schema (implicitamente); i valori possono essere eterogenei (stringhe, numeri, JSON, BLOB).
+
+* **Database a Colonne**
+Si tratta di DB NoSQL che **indicizzano i dati per colonna**. Ogni colonna contiene i valori, ciascuno con la propria chiave. In questi DB il concetto di riga è associato a ***gruppi di colonne***, che **non sempre coincidono con i record in senso relazionale**. Sono molto **efficienti per query cumulative sulle colonne**.
+Questi database definiscono implicitamente uno schema, ma solitamente è l'utente a indicare gli insiemi di colonne (equivalenti delle tabelle).
+I database colonnari sono **basati principalmente su Google BigTable**, una struttura dati definita da Google che definisce un meccanismo di read/write sulla BigTable distribuita.
+**Cassandra** e **HBase** fanno uso di database colonnari.
+
+* **Database Documentali**
+Si tratta di database in cui **ogni record è un documento in formato testo strutturato** (come XML e JSON). Tali database sono molto utili nei Sistemi di Gestione dei Contenuti Digitali, negli e-commerce, ecc.
+**MongoDB** è un esempio di database documentale.
+
+* **Database a Grafo**
+Si tratta di database in cui **i dati sono rappresentati da nodi e archi etichettati di un grafo**. Qui le entità, ossia i nodi, sono uniti tramite relazioni, ossia gli archi, caratterizzate da un significato e da proprietà proprie. In questo tipo di database le operazioni tra entità diventano operazioni su grafi.
+**Neo4j** è un esempio di database a grafo.
+
 ## Vantaggi e svantaggi dei database NoSQL
+
+Tra i vantaggi ricordiamo:
+
+* Possibilità d'uso per analytics o come data lake.
+
+* Big Data-oriented.
+
+* Assenza di single point of failure.
+
+* Buone performance e scalabilità orizzontale.
+
+* Gestione di dati strutturati, semi-strutturati e non.
+
+* Non necessitano di server performanti dedicati.
+
+* Pensati per database distribuiti.
+
+Tra gli svantaggi abbiamo, invece:
+
+* Assenza di standardizzazione.
+
+* Capacità di query limitate.
+
+* Immaturità della tecnologia.
+
+* Mancata garanzia di coerenza in senso stretto.
+
+* Poco utilizzati nelle organizzazioni.
 
 # 10 - MongoDB
 

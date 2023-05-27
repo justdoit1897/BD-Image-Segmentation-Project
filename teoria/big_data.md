@@ -250,8 +250,8 @@ Noto che la **media** è data da $\hat{\mu}_m = \frac{1}m \sum_{i=1}^m x^{(i)}$ 
 
 ### Stimatori Campionari di Varianza
 
-Noto che la varianza è data da $\hat{\sigma}_m^2 = \frac{1}m \sum_{i=1}^m \left( x^{(i)}-\hat{mu}_m \right) ^2 $ e, supposto che i campioni siano tratti da distribuzione gaussiana $\forall i,\ x^{(i)} \sim \mathcal{N}\left( x; \mu, \sigma \right) $, risulta che **uno stimatore campionario di varianza è uno stimatore polarizzato**, e che il fattore polarizzante è $\frac{m-1}m$.
-Basterà scegliere, infatti, una varianza $\bar{\sigma}_m = \frac{1}{m-1} \sum_{i=1}^m \left( x^{(i)}-\hat{mu}_m \right) ^2 $ per ottenere uno stimatore non polarizzato.
+Noto che la varianza è data da $\hat{\sigma}_m^2 = \frac{1}m \sum_{i=1}^m \left( x^{(i)}-\hat{\mu}_m \right) ^2 $ e, supposto che i campioni siano tratti da distribuzione gaussiana $\forall i,\ x^{(i)} \sim \mathcal{N}\left( x; \mu, \sigma \right) $, risulta che **uno stimatore campionario di varianza è uno stimatore polarizzato**, e che il fattore polarizzante è $\frac{m-1}m$.
+Basterà scegliere, infatti, una varianza $\hat{\sigma}^2_m = \frac{1}{m-1} \sum_{i=1}^m \left( x^{(i)}-\hat{\mu}_m \right) ^2 $ per ottenere uno stimatore non polarizzato.
 
 ### Varianza di uno stimatore
 
@@ -268,7 +268,7 @@ Lo standard error è definito come la ***stima della deviazione standard dello s
 Si usa per giudicare la bontà di uno stimatore a minimo bias e a minima varianza, ossia ideale. Indica la ***discrepanza quadratica media tra i valori dei dati osservati e i valori dei dati stimati***, secondo la relazione
 
 $$
-\mathrm{MSE} = \mathcal{E}\left[ \left( \hat{\theta}_m - \theta \right) ^2 \right] = \mathrm{bias}\left( \hat{\theta}_m \right) + \mathrm{Var}\left( \hat{\theta} _m \right)
+\mathrm{MSE} = \mathbb{E}\left[ \left( \hat{\theta}_m - \theta \right) ^2 \right] = \mathrm{bias}\left( \hat{\theta}_m \right) + \mathrm{Var}\left( \hat{\theta} _m \right)
 $$
 
 ## Campionamento e stimatori
@@ -303,7 +303,7 @@ $$
 \hat{\sigma}^2 = \sum_{k=1}^L \left( \frac{S_k}S \right) ^2 \frac{\sigma_k^2}{n_k}
 $$
 
-Da notare che, se gli strati hanno tutti la stessa dimensione, la funzione diventa
+Da notare che, se gli strati hanno tutti la stessa dimensione e viene prelevato un campione per strato ($n_k=1$), la funzione diventa
 
 $$
 \hat{\sigma}^2 = \frac{1}L \sum_{k=1}^L \sigma_k^2
@@ -390,12 +390,9 @@ $$
 ### Stima Maximum a Posteriori
 
 Mentre la **MLE** opera secondo **statistica frequentista**, la stima **MAP** opera secondo **statistica bayesiana**. La differenza principale tra i due tipi
-di statistica risiede nel fatto che mentre, per la statistica frequentista, i parametri del modello sono considerati fissi e che i risultati degli esperimenti ripetibili,
-per la statistica di Bayes i parametri del modello sono considerati come **variabili casuali** e la cui osservazione è condizionata da una **conoscenza precedente imperfetta**,
-rappresentata da una distribuzione di probabilità **detta prior**.
+di statistica risiede nel fatto che mentre, per la statistica frequentista, i parametri del modello sono considerati fissi e che i risultati degli esperimenti ripetibili, per la statistica di Bayes i parametri del modello sono considerati come **variabili casuali** e la cui osservazione è condizionata da una **conoscenza precedente imperfetta**, rappresentata da una distribuzione di probabilità **detta prior**.
 
-La stima MAP è una moda della distribuzione a posteriori della formulazione di Bayes, e può essere usata per ottenere una stima puntuale di una quantità inosservata sulla
-base dei dati empirici.
+La stima MAP è una moda della distribuzione a posteriori della formulazione di Bayes, e può essere usata per ottenere una stima puntuale di una quantità inosservata sulla base dei dati empirici.
 
 Il processo di stima avviene a partire dalla regola di Bayes, che stima una **distribuzione di probabilità a posteriori** su una variabile casuale $\theta$
 
@@ -2655,7 +2652,7 @@ La forma funzionale di $f$ si definisce come un operatore lineare applicato ad u
 
 ## Aspetti architetturali
 
-![1684694463039](image/big_data/1684694463039.png)
+P![1684694463039](image/big_data/1684694463039.png)
 
 L’architettura di una DNN è molto complessa ed è isomorfa ad un grafo, detto **grafo di computazione**, che viene generato:
 

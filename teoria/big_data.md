@@ -343,7 +343,7 @@ Osserviamo, adesso, il comportamento degli stimatori:
   \mathrm{Var}\left[ \hat{s}_q \right] = \frac{\mathrm{Var}\left[ \frac{p(x)f(x)}{q(x)} \right]}n
   $$
 
-  Scegliendo una funzione importanza $ q*(x) = \frac{p(x) |f(x)|}{Z} $, si riconduce la varianza di $f$ ad una forma normalizzata rispetto al suo valore assoluto, con una varianza della stima
+  Scegliendo una funzione importanza $ q^*(x) = \frac{p(x) |f(x)|}{Z} $, si riconduce la varianza di $f$ ad una forma normalizzata rispetto al suo valore assoluto, con una varianza della stima
 
   $$
   \mathrm{Var}\left[ \hat{s}_q \right] = 0
@@ -432,11 +432,68 @@ Caratteristica importante della stima MAP è che **riduce la varianza dello stim
 
 ## Generalità e definizioni
 
+Il problema del mining di pattern frequenti nasce nel contesto dei dati transazionali, con particolare riferimento a dati non ordinati.
+Dato un database di transazioni $\mathcal{T} = \{ T_1, T_2,\cdots , T_n \}$ di $n$ transazioni relative a un universo $U$ di item, ogni transazione $T_i$ è una lista di item rappresentata come un record multidimensionale di dati binari di lunghezza $|U|$, in cui un elemento pari a 1 indica la presenza dell'item nella transazione.
+
+Un itemset (un insieme di elementi) è detto di cardinalità $k$ se contiene esattamente $k$ item all'interno della transazione. È possibile che uno stesso itemset si rilevi in più transazioni, per cui è opportuno definire il concetto di supporto.
+Si definisce supporto di un itemset $I$ la frazione delle transazioni del database $\mathcal{T} = \{ T_1, T_2,\cdots , T_n \}$ che contiene $I$ come sottoinsieme, secondo la relazione 
+
+$$
+\mathrm{supp}(I) = \frac{|\{ T_i : T_i \supset I  \}|}{\mathcal{T}}
+$$
+
+All'interno di un database transazionale, è probabile che un certo itemset sia presente con una certa frequenza, data dal supporto, cosa che evince che gli elementi all'interno dell'itemset sono, in qualche modo, correlati. Per rilevare le correlazioni tra item nasce il problema del mining di pattern frequenti, il cui obiettivo è quello di rilevare gli itemset che presentano un supporto superiore a una certa soglia di interesse.
+Volendo dare una definizione più rigorosa, si definisce mining di pattern frequenti il problema per cui, dato un set di transazioni $\mathcal{T}=\{ T_i \}$ tratte da un insieme $U$, si determinano gli itemset $I$ che occorrono come sottoinsiemi di almeno una data frazione $\mathrm{minsup}$ in $\mathcal{T}$.
+
+Bisogna attenzionare, però, il valore di $\mathrm{minsup}$ della definizione. Esso può essere sia un valore frazionario che un numero intero, nel cui caso ci si riferisce al numero grezzo di transazioni in cui un itemset compare, e può essere utilizzato per scremare più o meno pattern frequenti (una soglia più bassa ne rileva di più).
+
 ## Proprietà di Itemset e Regole
+
+Una proprietà interessante degli itemset è che, se un itemset $I$ è contenuto in una transazione, anche tutti i suoi sottoinsiemi sono contenuti nella transazione, ma potrebbero essere presenti in altre. Pertanto, il supporto di un sottoinsieme $J \subset I$ sarà sempre tale che $\mathrm{supp}(J)\geq \mathrm{supp}(I)$, secondo la proprietà di monotonicità del supporto.
+Tale proprietà afferma che il supporto di un qualunque sottoinsieme $J \subset I$ è almeno uguale al supporto di $I$, secondo la relazione 
+
+$$
+\mathrm{supp}(J)\geq \mathrm{supp}(I) \qquad \forall J\subset I
+$$
+
+Dalla proprietà di monotonicità ne discende un'altra, quella di chiusura verso il basso, per cui ogni sottoinsieme di un itemset frequente è anch'esso frequente. Bisogna prestare attenzione al fatto che tale proprietà fornisca una condizione solo necessaria affinchè un itemset sia un pattern frequente.
+
+Un'altra proprietà è quella del massimo itemset frequente, per cui un itemset frequente $J$ ad un dato supporto minimo $\mathrm{minsup}$ si dice massimo se non esistono altri itemset frequenti che lo contengono.
+
+Poiché la rappresentazione basata sul solo supporto non fornisce indicazioni sui supporti di tutti i sottoinsiemi di un itemset frequente, spesso si preferisce una rappresentazione tramite rete di itemset, una rete costituita da $2^{|U|}$ (uno per ogni itemset) in cui gli archi connettono i nodi solo se differiscono esattamente di un elemento.
+Con una rappresentazione del genere, si possono separare gli itemset in frequenti e rari grazie ad un confine, la cui caratteristica interessante è che è prossimo a tutti i massimi itemset frequenti.
+
+Gli itemset frequenti possono essere utilizzati, inoltre, per definire delle regole di associazione, sfruttando una misura nota come confidenza. Innanzitutto, definiamo una regola di associazione $X\implies Y$, per due itemset $X$ e $Y$, se vi è una co-occorrenza dei due itemset nella stessa transazione (intesa, intermini insiemistici, come $X\cup Y$). 
+Dopo di ché, dati due itemset $X$ e $Y$, definiamo la confidenza $\mathrm{conf}\left( X\cup Y \right)$ della regola $X \cup Y$ come la probabilità condizionata che si verifichi $X\cup Y$ in una transazione, data la transazione $X$, secondo la relazione
+
+$$
+\mathrm{conf}\left( X\cup Y \right) = \frac{\mathrm{supp}\left( X\cup Y \right)}{\mathrm{supp}(X)}
+$$
+
+Banalmente, la probabilità dell'occorrenza di un itemset è il suo supporto.
+
+Dati due itemset $X$ e $Y$, una regola di associazione $X \implies Y$ si dice a supporto minimo $\mathrm{minsup}$ e a confidenza minima $\mathrm{minconf}$ se 
+1. $\mathrm{supp}\left( X\cup Y \right) \geq \mathrm{minsup}$
+2. $\mathrm{conf}\left( X\implies Y \right) \geq \mathrm{minconf}$
+
+La prima condizione ci assicura che un numero sufficiente di transazioni sia rilevante per la regola, la seconda, invece, ci assicura che la regola sia robusta rispetto alle probabilità condizionate.
+
+Detto ciò, è possibile suddividere il processo di generazione di regole di associazione in due fasi, ognuna corrispondente ai due criteri perché sia a supporto minimo:
+1. Nella prima fase si generano tutti gli itemset frequenti con supporto minimo $ \mathrm{minsup} $. In questa fase viene sostenuta la maggior parte del costo computazionale, divenendo, quindi, la parte più interessante del processo.
+2. Nella seconda fase vengono generate le regole di associazione a partire dagli itemset frequenti con livello di confidenza minimo $ \mathrm{minconf} $. Questa fase è relativamente semplice: per ogni itemset $I \in \mathcal{F}$, si partiziona $I$ in tutte le possibili combinazioni di $X$ e $Y = I - X$ e si verificano quali coppie generino regole di associazione a confidenza minima.
+
+Un'ulteriore proprietà interessante delle regole di associazione è quella di monotonicità della confidenza, per cui, dati gli itemset $X_1$, $X_2$ e $I$, tali che $X_1 \subset X_2 \subset I$, la confidenza della regola $X_2 \implies I-X_2$ è almeno pari a quella della regola $X_1 \implies I-X_1$
 
 ## Algoritmo Apriori e sue varianti
 
-## Mining di pattern interessant
+Dato che un approccio a forza bruta per il mining di pattern frequenti richiede uno sforzo computazionale molto elevato (tra numero di nodi del grafo e calcolo dei supporti), si preferisce adottare algoritmi che riducano lo spazio di ricerca (potando nodi del grafo grazie alle proprietà degli itemset), che permettano di contare il supporto di un itemset in modo più efficiente (eliminando le transazioni irrilevanti per il calcolo degli itemset candidati) e che utilizzino una struttura dati compatta per gestire gli itemset frequenti candidati.
+
+Un algoritmo che possiede queste caratteristiche è l'algoritmo Apriori. Innanzitutto, quest'algoritmo riduce lo spazio di ricerca usando la proprietà di chiusura verso il basso (che permette di escludere tutti i candidati a super-insieme di un itemset che, di suo, è raro); l'elgoritmo, infatti, genera candidati di lunghezza $k$ su cui calcola il supporto, prima di generare gli itemset di lunghezza $k+1$, in modo da non calcolare supporti che possono essere solo più rari (questo approccio permette di mantenere più basso il numero di candidati).
+
+Per comprendere come procede l'algoritmo, supponiamo che il nostro universo $U$ sia ordinato in ordine lessicografico, in modo che un itemset (es. $\{ a,b,c,d \}$)possa essere interpretato come una stringa di item.
+Inizialmente, si calcolano i supporti dei singoli item, per generare gli 1-itemset frequenti. Si combinano, quindi, gli 1-itemset frequenti per generare 2-itemset candidati. Dopo aver calcolato i supporti dei 2-itemset candidati, si mantengono gli itemset il cui supporto è almeno $\mathrm{minsup}$
+
+## Mining di pattern interessanti
 
 ## Gestione di grandi database
 

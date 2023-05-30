@@ -436,7 +436,7 @@ Il problema del mining di pattern frequenti nasce nel contesto dei dati transazi
 Dato un database di transazioni $\mathcal{T} = \{ T_1, T_2,\cdots , T_n \}$ di $n$ transazioni relative a un universo $U$ di item, ogni transazione $T_i$ è una lista di item rappresentata come un record multidimensionale di dati binari di lunghezza $|U|$, in cui un elemento pari a 1 indica la presenza dell'item nella transazione.
 
 Un itemset (un insieme di elementi) è detto di cardinalità $k$ se contiene esattamente $k$ item all'interno della transazione. È possibile che uno stesso itemset si rilevi in più transazioni, per cui è opportuno definire il concetto di supporto.
-Si definisce supporto di un itemset $I$ la frazione delle transazioni del database $\mathcal{T} = \{ T_1, T_2,\cdots , T_n \}$ che contiene $I$ come sottoinsieme, secondo la relazione 
+Si definisce supporto di un itemset $I$ la frazione delle transazioni del database $\mathcal{T} = \{ T_1, T_2,\cdots , T_n \}$ che contiene $I$ come sottoinsieme, secondo la relazione
 
 $$
 \mathrm{supp}(I) = \frac{|\{ T_i : T_i \supset I  \}|}{\mathcal{T}}
@@ -450,7 +450,7 @@ Bisogna attenzionare, però, il valore di $\mathrm{minsup}$ della definizione. E
 ## Proprietà di Itemset e Regole
 
 Una proprietà interessante degli itemset è che, se un itemset $I$ è contenuto in una transazione, anche tutti i suoi sottoinsiemi sono contenuti nella transazione, ma potrebbero essere presenti in altre. Pertanto, il supporto di un sottoinsieme $J \subset I$ sarà sempre tale che $\mathrm{supp}(J)\geq \mathrm{supp}(I)$, secondo la proprietà di monotonicità del supporto.
-Tale proprietà afferma che il supporto di un qualunque sottoinsieme $J \subset I$ è almeno uguale al supporto di $I$, secondo la relazione 
+Tale proprietà afferma che il supporto di un qualunque sottoinsieme $J \subset I$ è almeno uguale al supporto di $I$, secondo la relazione
 
 $$
 \mathrm{supp}(J)\geq \mathrm{supp}(I) \qquad \forall J\subset I
@@ -463,7 +463,7 @@ Un'altra proprietà è quella del massimo itemset frequente, per cui un itemset 
 Poiché la rappresentazione basata sul solo supporto non fornisce indicazioni sui supporti di tutti i sottoinsiemi di un itemset frequente, spesso si preferisce una rappresentazione tramite rete di itemset, una rete costituita da $2^{|U|}$ (uno per ogni itemset) in cui gli archi connettono i nodi solo se differiscono esattamente di un elemento.
 Con una rappresentazione del genere, si possono separare gli itemset in frequenti e rari grazie ad un confine, la cui caratteristica interessante è che è prossimo a tutti i massimi itemset frequenti.
 
-Gli itemset frequenti possono essere utilizzati, inoltre, per definire delle regole di associazione, sfruttando una misura nota come confidenza. Innanzitutto, definiamo una regola di associazione $X\implies Y$, per due itemset $X$ e $Y$, se vi è una co-occorrenza dei due itemset nella stessa transazione (intesa, intermini insiemistici, come $X\cup Y$). 
+Gli itemset frequenti possono essere utilizzati, inoltre, per definire delle regole di associazione, sfruttando una misura nota come confidenza. Innanzitutto, definiamo una regola di associazione $X\implies Y$, per due itemset $X$ e $Y$, se vi è una co-occorrenza dei due itemset nella stessa transazione (intesa, intermini insiemistici, come $X\cup Y$).
 Dopo di ché, dati due itemset $X$ e $Y$, definiamo la confidenza $\mathrm{conf}\left( X\cup Y \right)$ della regola $X \cup Y$ come la probabilità condizionata che si verifichi $X\cup Y$ in una transazione, data la transazione $X$, secondo la relazione
 
 $$
@@ -472,13 +472,15 @@ $$
 
 Banalmente, la probabilità dell'occorrenza di un itemset è il suo supporto.
 
-Dati due itemset $X$ e $Y$, una regola di associazione $X \implies Y$ si dice a supporto minimo $\mathrm{minsup}$ e a confidenza minima $\mathrm{minconf}$ se 
+Dati due itemset $X$ e $Y$, una regola di associazione $X \implies Y$ si dice a supporto minimo $\mathrm{minsup}$ e a confidenza minima $\mathrm{minconf}$ se
+
 1. $\mathrm{supp}\left( X\cup Y \right) \geq \mathrm{minsup}$
 2. $\mathrm{conf}\left( X\implies Y \right) \geq \mathrm{minconf}$
 
 La prima condizione ci assicura che un numero sufficiente di transazioni sia rilevante per la regola, la seconda, invece, ci assicura che la regola sia robusta rispetto alle probabilità condizionate.
 
 Detto ciò, è possibile suddividere il processo di generazione di regole di associazione in due fasi, ognuna corrispondente ai due criteri perché sia a supporto minimo:
+
 1. Nella prima fase si generano tutti gli itemset frequenti con supporto minimo $ \mathrm{minsup} $. In questa fase viene sostenuta la maggior parte del costo computazionale, divenendo, quindi, la parte più interessante del processo.
 2. Nella seconda fase vengono generate le regole di associazione a partire dagli itemset frequenti con livello di confidenza minimo $ \mathrm{minconf} $. Questa fase è relativamente semplice: per ogni itemset $I \in \mathcal{F}$, si partiziona $I$ in tutte le possibili combinazioni di $X$ e $Y = I - X$ e si verificano quali coppie generino regole di associazione a confidenza minima.
 
@@ -2792,6 +2794,20 @@ dove l'uscita della rete $\bold {\hat y}$ è la **media** e siamo nelle ipotesi 
 
 Nei **casi reali**, non sempre possiamo ricorrere ad unità lineari.
 
+> "Non lineare" significa che non puoi prevedere con precisione un'etichetta. In altre parole, la "superficie decisionale" non è una linea. Ecco un esempio di problema di classificazione non lineare:
+>
+> <img src=https://developers.google.com/machine-learning/crash-course/images/FeatureCrosses1.png>
+>
+> Per modellare un problema non lineare, possiamo introdurre direttamente una non linearità. Possiamo pipelinere ogni nodo del livello nascosto tramite una funzione non lineare.
+>
+> Nel modello rappresentato dal grafico seguente, il valore di ogni nodo nel livello nascosto 1 viene trasformato da una funzione non lineare prima di essere passato alle somme ponderate del livello successivo. Questa funzione non lineare è chiamata funzione di attivazione.
+>
+> <img src=https://developers.google.com/static/machine-learning/crash-course/images/activation.svg>
+>
+> Ora che abbiamo aggiunto una funzione di attivazione, l'aggiunta di livelli ha un impatto maggiore. L'accumulo di non linearità su non linearità ci consente di modellare relazioni molto complicate tra gli input e gli output previsti. In breve, ogni livello apprende in modo efficace una funzione più complessa e di livello superiore sugli input non elaborati.
+
+---
+
 > Non linearità significa che l’output non può essere generato da una combinazione lineare di input.
 >
 > La non linearità è importante nelle reti neurali perché le funzioni di attivazione lineare non sono sufficienti per formare un approssimatore di funzione universale.
@@ -2805,6 +2821,8 @@ Nei **casi reali**, non sempre possiamo ricorrere ad unità lineari.
 > La rete neurale senza funzioni di attivazione non lineare sarà solo un semplice modello di regressione lineare.
 >
 > Tuttavia, nello strato finale della rete neurale, possiamo scegliere funzioni di attivazione lineare.
+
+---
 
 ###### Classificazione binaria
 
@@ -2844,7 +2862,7 @@ $$
 \sigma (x) = \cfrac {1} {1 + e^{-x}} \equiv \cfrac {e^x} {e^x + 1}
 $$
 
-![1684918849751](image/big_data/1684918849751.png)
+<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Logistic-curve.svg/1200px-Logistic-curve.svg.png width="50%">
 
 > L'unità sigmoidale si presta bene a questo problema:
 >
@@ -2889,7 +2907,7 @@ $$
 \zeta(x) = \ln \Big(\sigma (x) \Big) = \ln \Big(\cfrac {e^x} {e^{x} + 1} \Big) = \ln \Big( e^{x} + 1 \Big)
 $$
 
-![img](./image/DL/1684860834428.png)
+<img src=https://pytorch.org/docs/stable/_images/Softplus.png>
 
 $$
 J(\bold \theta) = - \log \Big( P(y|\bold x) \Big) = - \log \Big( \sigma \big( 2y-1 \big) z \Big) = \zeta \Big( \sigma \big( 1-2y \big) z \Big)
@@ -2906,7 +2924,187 @@ $$
 
 ###### Classificazione multiclasse
 
+<img src=https://developers.google.com/static/machine-learning/crash-course/images/SoftmaxLayer.svg>
+
+In questo caso, andremo a stimare una **distribuzione Multinoulli**: avremo un vettore di stime, dove ogni singola stima (ogni elemento del vettore) corrisponde alla probabilità che $y$ sia la classe $i$-esima.
+
+$$
+\bold {\hat y} = \Big\{ \hat{y_i} = P\big(y = i | \bold x\big) \Big\}
+$$
+
+La somma di queste stime, facendo capo alla Multinoulli, deve essere pari a $1$:
+
+$$
+\sum_i \hat{y_i} = 1
+$$
+
+Sia $z$ l'ingresso:
+
+$$
+z = \bold W^T \bold h + b = \Big\{ z_i = \log \Big( P(y = i | \bold x) \Big) \Big\}
+$$
+
+Estendiamo l'uso della funzione sigmoidale per singola classe con l'applicazione della funzione **softmax**.
+
+La softmax, usando una loss per apprendimento $MLE$, soddisfa i requisiti per avere somma $1$ su tutti i componenti (anche quelli relativi al calcolo del gradiente).
+
+$$
+softmax(z)_i = \cfrac {e^{z_i}} {\sum_j e^{z_j}}
+$$
+
+<img src=./image/big_data/17/1.png>
+
+$$
+\log \Big(softmax(z)_i \Big) = \log \Big( \cfrac {e^{z_i}} {\sum_j e^{z_j}} \Big) = z_i - \log \sum_j e^{z_j} \approx z_i - \underset j {\max} (z_j)
+$$
+
+dove $\sum_j e^{z_j}\approx \underset j {\max} (z_j)$, dato che stimiamo delle probabilità che sono di volta in volta concentrate su una sola classe $i$ e $z_j$ sarebbe molto piccolo se diverso da $\underset j {\max} (z_j)$.
+
+Nel momento in cui $\underset j {\max} (z_j)$ corrisponde all'esempio corretto $z_i$, la log-likelihood negativa per quell'esempio tende a $0$ e quindi non darà contributo alla funzione di costo.
+
+Se definiamo la softmax a meno di una costante $c$ e poniamo $c = \underset i {\max} (z_i)$, avremo una stabilizzazione numerica per evitare problemi nel caso in cui i valori di $\bold z$ sono molto grandi e non appartengono all'intervallo $[-1, 1]$:
+
+$$
+softmax(\bold z) = softmax(\bold z + c) \ \ \overset {c \ = \ \underset i {\max} (z_i)} = \ \ softmax \Big(\bold z - \underset i {\max} (z_i) \Big)
+$$
+
 ##### Attivazione delle unità nascoste
+
+Anche in questo caso la rete applicherà una funzione di attivazione $g(\cdot)$ ad una trasformazione affine sui suoi ingressi:
+
+$$
+\bold h = g(z) = g(\bold W^T \bold x + \bold b)
+$$
+
+In genere il vettore dei bias $\bold b$ viene inizializzato, in ogni layer, con dei valori piccoli (es. $0.1$).
+
+###### ReLU
+
+La Rectified Linear Unit è definita come:
+
+$$
+g(z) = \max \{0, z \} = \begin{cases} 0 & z<0 \\ z & z\ge 0 \end{cases}
+$$
+
+<img src=https://pytorch.org/docs/stable/_images/ReLU.png>
+
+La ReLU è ottima per costruire non linearità attraverso il **meccanismo della composizione strato per strato**, ma non è differenziabile per $z=0$.
+
+Questo punto di non differenziabilità può essere risolto usando la derivata destra o sinistra di $g(\cdot)$, che sono entrambe definite.
+
+C'è sempre un errore molto piccolo di computazione $\epsilon$ nel calcolo esatto di un valore di $z$, per cui si può sempre assumere che $g(0)$ corrisponda in realtà ad un valore $g(0+\epsilon)$.
+
+Tale assunzione ci permette di calcolare il gradiente, in quanto nel punto $z=0+\epsilon$ risulta perfettamente definito.
+
+###### Varianti della ReLU
+
+Possiamo estendere la ReLU ad una forma in cui la funzione $g(\cdot)$ è una composizione di due tratti lineari. Pertanto, per ogni unità nascosta $h_i$ avremo:
+
+$$
+h_i = g(\bold z, \bold \alpha)_i = \max(0, z_i) + \alpha_i \cdot \min(0, z_i) = \begin{cases} z_i & z_i >0 \\ \alpha_i \cdot z_i & otherwise\end{cases}
+$$
+
+In base al valore di $\alpha_i$ avremo:
+
+* $\alpha_i = 1$: unità lineare.
+
+  > $$
+  > h_i = \max(0, z_i) + \min(0, z_i) = \begin{cases} \max(0, z_i) & z_i>0 \\ \min(0, z_i) & z_i < 0\end{cases} = \begin{cases}  z_i & z_i>0 \\ z_i & z_i < 0\end{cases}
+  > $$
+  >
+  > Pertanto, avremo sempre $h_i = z_i$, che è una quantità **lineare**.
+  >
+* $\alpha_i \ll 1$ (es. $0.01$): **Leaky ReLU** (**LReLU**).
+* $\alpha_i$ è un parametro da apprendere: **Parametric ReLU** (**PReLU**). La forma funzionale lineare è sempre la stessa e i gradienti sono sempre dello stesso tipo.
+
+<img src=./image/big_data/17/2.png>
+
+###### Maxout
+
+L'unità **Maxout** permette di creare una **funzione lineare a tratti complessa**.
+
+> È una funzione di attivazione che è a sua volta addestrata dal modello.
+>
+> Una singola unità di Maxout può essere interpretata come un'approssimazione lineare a tratti di una **funzione convessa arbitraria**.
+>
+> Un'unità di Maxout implementa la seguente funzione:
+>
+> $$
+> h(z) = \max \Big( Z_1, Z_2, \dots, Z_k \Big)
+> $$
+
+> L'idea consiste nel suddividere lo spazio degli ingressi in $k$ regioni di $k$ elementi.
+>
+> Viene poi generata una **permutazione** di indici sui valori delle unità $z_i$ per ogni partizione, con la regione $i$-esima $\mathbb G^{(i)}$ definita come:
+>
+> $$
+> \mathbb G^{(i)} = \Big\{ (i-1)k + 1, (i-1)k + 2, \dots, (i-1)k + k \Big\} = \Big\{ (i-1)k + 1, \dots,ik \Big\}
+> $$
+>
+> dove $i$ è il valore dell'indice sul valore dell'attivazione $z_i$.
+
+L'attivazione è definita come:
+
+$$
+g(\bold z)_i = \max
+$$
+
+###### Altre funzioni di attivazione per le unità nascoste
+
+Per le unità nascoste vengono usate anche:
+
+* Sigmoide.
+* Tangente iperbolica.
+* Softplu (ReLU senza la non linearità).
+* Radial Basis Function (RBF), in cui ogni attivazione di unità nascosta $h_i$ è una gaussiana con media $1$ e varianza $\sigma_i$ dello scostamento tra l'input rispetto all'$i$-esima colonna del vettore dei pesi:
+  $$
+  h_i = e^{- \cfrac {1} {\sigma_i^2} \cdot \| W_{:, i} - \bold x \|^2}
+  $$
+
+##### Altre considerazioni sulla struttura dei layer
+
+###### Residual Networks
+
+> Il **vanishing gradient** è un fenomeno che si presenta durante il training di reti profonde ed come effetto quello di annullare o rallentare l’aggiornamento dei pesi per alcuni layers della nostra rete.
+>
+> Durante la fase di backpropagation i pesi degli strati in prossimità dell’input restano costanti o si aggiornano molto lentamente al contrario di quanto accade per gli strati vicini all’output.
+>
+> Un contributo importante per il training di reti profonde ci fu con l’introduzione delle **skip connections**.
+>
+> Obiettivo delle **skip connections** è quello di creare un percorso alternativo per il passaggio del gradiente durante la fase di retropropagazione dell’errore.
+
+Siano:
+
+* $\bold x$: identità, ovvero l'input di ingresso.
+* $\mathcal F(\bold x)$: trasformazioni non lineari $\mathcal F$ effettuate sull'input $\bold x$ dai layers intermedi (es. convoluzione+attivazione(ReLU)).
+
+<img src=./image/big_data/17/3.png>
+
+Le **residual networks** (**ResNets**)
+
+$$
+\bold W = \Big ( \bold V \cdot diag(\bold \lambda) \cdot \bold V^{-1}\Big)
+$$
+
+$$
+\bold W^t = \Big ( \bold V \cdot diag(\bold \lambda) \cdot \bold V^{-1}\Big)^t = \bold V \cdot diag(\bold \lambda)^t \cdot \bold V^{-1}
+$$
+
+$$
+\lambda_j \gg 1 \longrightarrow \bold {exploding \ gradients}
+$$
+
+$$
+\lambda_j \ll 1 \longrightarrow \bold {vanishing \ gradients}
+$$
+
+Le **residual networks** (**ResNets**) i
+
+Spesso si usano le cosiddette **skip connections** in quelle che
+
+> **Skip Connections**: un layer è connesso "in avanti" a un layer non successivo.
+>
+> Aiutano a gestire il problema del **vanishing gradient**
 
 ## Addestramento
 
@@ -2971,7 +3169,7 @@ L'algoritmo prevede una serie di passaggi:
 
 #### Forward Propagation
 
-![1685029123545](image/DL/1685029123545.png)
+<img src=./image/big_data/17/4.png>
 
 Una volta scelti i pesi iniziali della rete, procediamo al calcolo delle attivazioni per una funzione di loss con termine di regolarizzazione:
 
@@ -2995,13 +3193,13 @@ Una volta scelti i pesi iniziali della rete, procediamo al calcolo delle attivaz
 
 #### Backpropagation
 
-![1685029161784](image/DL/1685029161784.png)
+<img src=./image/big_data/17/5.png>
 
 Dopo aver calcolato tutte le attivazioni in avanti, bisogna effettuare il calcolo del gradiente all'indietro. Ricordiamo che per calcolare il gradiente, dobbiamo calcolare le derivate parziali e questa operazione può essere computazionalmente onerosa.
 
 Un approccio efficiente utilizza un **grafo computazionale** delle derivate per il calcolo delle derivate composte:
 
-![1685092737154](image/DL/1685092737154.png)
+<img src=./image/big_data/17/6.png>
 
 $$
 \cfrac {\partial z} {\partial w} = \cfrac {\partial z} {\partial y} \cdot \cfrac {\partial y} {\partial x} \cdot \cfrac {\partial x} {\partial w} = f'(y) \cdot f'(x) \cdot f'(w) = f'\bigg( f\Big(f(w)\Big) \bigg) \cdot f'\Big( f(w) \Big) \cdot f'(w)
@@ -3067,7 +3265,289 @@ Il costo dell'algoritmo sarà adesso $O(m'$) e quindi la **dimensione del batch*
 
 Questo approccio converge perché oltre un certo numero di campioni, la bontà della stima diventa numericamente poco rilevante.
 
-## Regolarizzazione e Ottimizzazione
+## Regolarizzazione
+
+> **Regolarizzare**: scegliere una **nuova configurazione dei parametri** in modo tale da finire in un altro punto vicino al minimo della funzione di costo $J$, tale che quando si debba generalizzare, ci si trovi ad **avere un buon comportamento di generalizzazione**.
+
+Le tecniche di regolarizzazione sono mirate a **ridurre l’errore di generalizzazione** a spese di quello di addestramento. Di seguito abbiamo le tecniche di regolarizzazione più diffuse.
+
+### Uso della norma $L^2$
+
+Il termine di regolarizzazione non interessa i bias, ma solo i pesi, in quanto **la regolarizzazione sui bias porta a underfitting**.
+
+Nel caso della norma $L^2$, la regolarizzazione è un termine quadratico (per esempio il weight decay):
+
+$$
+\tilde J(\bold w; \bold X, \bold y) = \cfrac \alpha 2 \bold w^T\bold w + J(\bold w; \bold X, \bold y)
+$$
+
+$$
+\bold w \longleftarrow \bold w - \epsilon \cdot \big( \alpha \bold w + \nabla_\bold w J(\bold w; \bold X, \bold y) \big)
+$$
+
+Oltre al learning rate $\epsilon$ interviene anche un coefficiente $\alpha$ a pesare i pesi. Pertanto, il coefficiente complessivo è $\epsilon \alpha$.
+
+Questa tecnica usa l'opposto della direzione del gradiente, aggiungendo una costante di pruning sul valore dei pesi.
+
+Assumendo $J$ sempre quadratica in un piccolo intorno del suo minimo $\bold {w^*}$:
+
+$$
+\hat J (\bold \theta) = J (\bold {w^*}) + \cfrac 1 2 \cdot (\bold w - \bold {w^*})^T \cdot \bold H \cdot (\bold w - \bold {w^*})
+$$
+
+dove $\bold H$ è la matrice Hessiana di $J$.
+
+> **Matrice Hessiana**: la matrice Hessiana di una funzione reale $J$ di più variabili reali è una matrice quadrata i cui elementi sono le **derivate parziali seconde** della funzione $J$.
+
+Si dimostra che il termine di regolarizzazione individua un punto di minimo $\hat {\bold w}$ che è una versione scalata di $\bold{w^*}$ lungo gli autovalori di $\bold H$ secondo dei coefficienti dati da:
+
+$$
+\cfrac {\lambda_i} {\lambda_i + \alpha}
+$$
+
+Pertanto, possiamo dire che:
+
+$$
+\hat {\bold w} = \cfrac {\lambda_i} {\lambda_i + \alpha} \cdot \bold {w^*} = \begin{cases} \bold {w^*} & \lambda_i \gg \alpha \\ 0 & \lambda_i \ll \alpha \end{cases}
+$$
+
+<img src=./image/big_data/17/7.png>
+
+> La norma $L^2$ tende a sostituire, garantendo una maggiore capacità di generalizzazione, il valore di minimo assoluto con uno nuovo, tenendo conto che la funzione di costo $J$ ha una certa variabilità lungo le dimensioni.
+>
+> Pertanto, tende a **mantenere prevalenti** le dimensioni in cui la funzione originale $J$ ha una **maggiore variabilità** e **penalizza** le dimensioni in cui $J$ ha una **minore variabilità**.
+
+### Data Augmentation
+
+> Le tecniche di **data augmentation** consistono nell'**aumentare artificiosamente** il numero dei **campioni** per consentire una migliore generalizzazione della rete.
+>
+> Una rete **generalizza** quando, dato un punto ignoto (da predire), essa ha visto un numero sufficiente di campioni nell'intorno di quel punto (casi simili) che è tale da farle stimare la predizione sul punto ignoto.
+
+Si possono usare **trasformazioni dei dati** che possono essere indotte dal dominio di applicazione (ad es. trasformazioni affini su immagini).
+
+Si può **iniettare rumore nei dati** di ingresso (ha l’effetto di una regolarizzazione $L^2$) o anche **nei pesi degli strati nascosti**.
+
+### Multi-task Learning
+
+> Anche conosciuto come **Transfer Learning**, esso consiste nella costruzione di una rete che condivida la struttura dei pesi dei layer nascosti e che venga addestrata in base ai diversi task.
+
+In particolare i layer più vicini alle uscite sono specifici per ogni task, mentre nei layer di ingresso i parametri sono condivisi.
+
+Avremo una miglior generalizzazione del modello, perché questa tecnica si basa sul riutilizzo dei pesi di un modello precedentemente addestrato per un certo task: questo permette di addestrare su una rete in cui la cui configurazione dei pesi è più vicina alla soluzione del task di interesse rispetto ad una configurazione casuale della rete inizializzata per l'addestramento.
+
+<img src=./image/big_data/17/8.png>
+
+### Early Stopping
+
+> Un addestramento che si protrae per un numero eccessivo di epoche porta a **overfitting** e riduce la capacità di generalizzare il modello.
+>
+> L'**early stopping** è un algoritmo per fermare l’addestramento quando si osserva che la loss, valutata su un apposito validation set, comincia a risalire.
+
+L'early stopping dà luogo ad un iperparametro di **pazienza** $p$ che indica il numero di epoche che l'algoritmo attende per osservare un definitivo incremento dell’errore commesso sul set di validazione: a quel punto l'algoritmo arresta l'addestramento.
+
+<img src=./image/big_data/17/9.png>
+
+Abbiamo due possibili strategie di addestramento:
+
+#### Strategia 1
+
+<img src=./image/big_data/17/11.png>
+
+Dopo aver ottenuto il miglior numero di passi di addestramento $i^*$ dall'algoritmo di early stopping, si riparte da $0$ e si riaddestra su tutto il training-set (per ottenere $i^*$ è stato infatti necessario dividere il training-set in sub-training-set e validation-set). Non è garantito il raggiungimento della loss ottenuta dall’early stopping.
+
+#### Strategia 2
+
+<img src=./image/big_data/17/12.png>
+
+Si riaddestra via via su tutto il training-set a partire dai parametri $\bold \theta^*$ ottenuti dall'early stopping, controllando che la loss calcolata sui parametri via via aggiornati scenda al di sotto di quella ottenuta con l’early stopping.
+
+I parametri verranno aggiornati fino a quando sul validation-set non si scenderà al di sotto dell'errore ottimale ottenuto quando è stato eseguito l'algoritmo di early stopping.
+
+Questa strategia ha maggiori possibilità di convergere.
+
+#### Considerazioni finali
+
+Anche con l'uso dell'early stopping si ottiene un effetto di regolarizzazione analogo all’uso di una norma $L^2$.
+
+Si può dimostrare che il troncamento dell'addestramento a $\tau$ epoche (che non sono quelle che permettono di raggiungere il minimo $\bold {w^*}$\), mentre la soluzione procede verso il minimo $\bold {w^*}$ di $J$, ha un effetto inversamente proporzionale al coefficiente di regolarizzazione:
+
+$$
+\alpha \approx \cfrac 1 {\tau \epsilon}
+$$
+
+> Queste considerazioni sono corrette poiché viene assunto di essere nell'intorno del minimo $\bold {w^*}$, in cui si assume che $J$ sia quadratica.
+>
+> Gli **algoritmi di minimizzazione del gradiente** sono esatti se **il funzionale $J$ è localmente quadratico**.
+
+### Dropout
+
+> È noto che i metodi di **ensemble di modelli**, come il bagging, hanno una performance più accurata perchè ogni modello ha una performance lievemente diversa dagli altri sullo stesso test-set, per cui la media/maggioranza delle predizioni risulta essere più accurata della singola predizione.
+
+Il **dropout** è una tecnica statistica per fare pruning delle connessioni tra le unità (di input e hidden layers) generando di fatto un ensemble di modelli che vengono addestrati contemporaneamente.
+
+<img src=https://d2l.ai/_images/dropout2.svg>
+
+Rimuovendo via via le diverse connessioni, si ottengono le sotto-reti della rete di partenza:
+
+<img src=./image/big_data/17/13.png>
+
+Ad ogni run l'insieme delle connessioni effettivamente attive cambia dinamicamente (alcune vengono spente ed altre riattivate) e questo porta ad addestrare ad ogni run una rete diversa da quella di partenza.
+
+Assumiamo di avere la possibilità di mascherare ogni unità $h_i$ con un coefficiente $\mu_i$ che vale $1$ (se l'unità è attiva) o $0$ (altrimenti) con una certa probabilità.
+
+> Avremo quindi ad ogni strato un vettore delle unità nascoste $\bold h$ e un vettore binario $\bold \mu$ che maschera le attivazioni delle unità.
+>
+> Ogni unità si attiverà come $\mu_ih_i$.
+
+Abbiamo un nuovo iperparametro, detto **iperparametro di dropout**, che corrisponde alla **probabilità che ogni unità sarà inclusa nella rete**.
+
+> In genere si sceglie un dropout di $0.8$ per le unità di ingresso e di **almeno** $0.5$ per le unità nascoste.
+
+Ad ogni minibatch viene campionata casualmente una maschera $\bold \mu$ diversa nel rispetto del valore di dropout con una distribuzione $p(\bold \mu)$
+
+> L'addestramento avviene in ogni minibatch su una sottorete **differente**.
+
+<img src=./image/big_data/17/14.png>
+
+Siamo in presenza di un ensemble di modelli (al variare di $\bold \mu$), per cui dovremo minimizzare **globalmente** una funzione di costo che corrisponde al **valore atteso** di $J$ rispetto a $\bold \mu$:
+
+$$
+\mathbb E_\bold \mu \Big[ J(\bold x; \bold \theta, \bold \mu) \Big]
+$$
+
+> Solitamente non si crea un numero elevato di sottoreti, ma si fa una **stima** con poche decine di campioni per **$\bold \mu$** ed **ogni modello** viene addestrato con **campionamento con rimpiazzo** dal data-set.
+
+La predizione di ogni singolo modello $p(y|\bold x, \bold \mu)$ viene inserita nel modello di ensemble con la **media pesata**:
+
+$$
+\sum_\mu p(\bold \mu) \cdot p(y|\bold x, \bold \mu)
+$$
+
+## Ottimizzazione
+
+> L’**ottimizzazione** per le DNN riguarda tutto l’insieme di algoritmi e di tecniche per accelerare la convergenza della procedura di minimizzazione del funzionale di costo.
+
+In linea teorica si vuole minimizzare il **rischio empirico**, ovvero il **valore atteso della loss** posto che traiamo i nostri campioni di addestramento da una **distribuzione empirica** di dati $\hat p_{data} (\bold x, y)$ e non da quella vera (che non ci è nota).
+
+$$
+\mathbb E_{\bold x, y \sim \hat p_{data}} \bigg[ L\Big(f\big(\bold x; \bold \theta\big), y \Big) \bigg] = \cfrac 1 m \cdot \sum_{i=1}^m L\Big(f\big(\bold x^{(i)}; \bold \theta\big), y^{(i)} \Big)
+$$
+
+Gli approcci alla minimizzazione più diffusi ed efficienti assumono che la funzione obiettivo sia **localmente approssimabile con una funzione quadratica**. I due approcci più diffusi sono:
+
+### Gradient Descent (GD)
+
+È ottimo esattamente sotto l'assunzione quadratica e fa una serie di passi iterativi verso la convergenza nella direzione negativa del gradiente. La lunghezza di ogni passo è determinata dal parametro di **learning rate** $\epsilon$.
+
+### Metodo di Newton
+
+Calcola esplicitamente la matrice hessiana $H$ della funzione obiettivo per effettuare la minimizzazione **ad un passo** e ha la medesima assunzione di funzione quadratica:
+
+$$
+f(x) \approx h(x) := f(\bar x) + \nabla f(\bar x)^T \cdot (x- \bar x) - \cfrac 1 2(x- \bar x)^T \cdot H(\bar x) \cdot (x-\bar x)
+$$
+
+$$
+0 = \nabla h(x) = \nabla f(\bar x) + H(\bar x) \cdot (x-\bar x)
+$$
+
+$$
+x= \bar x - H(\bar x)^-1 \cdot \nabla f(\bar x)
+$$
+
+> Il metodo di Newton rappresenza l'errore commesso sulla funzione come espansione in serie di Taylor fino al secondo ordine più il termine di errore.
+>
+> Quindi stima l'errore e lo corregge in termini della jacobiana $\nabla$ (matrice delle derivate parziali prime) e dell'hessiana $H$ (matrice delle derivate parziali seconde) della funzione e lo risolve direttamente.
+
+### Considerazioni finali
+
+Queste metodologie esulano dal campo del Deep Learning in quanto esistono già per problemi di ottimizzazione in generale.
+
+Soffrono di problemi di mal condizionamento numerico della matrice hessiana $H$ e di presenza di plateau, minimi locali o punti sella nella funzione di costo.
+
+La **scelta dell'ottimizzatore** è un **iperparametro** che dipende dal **campo di applicazione**.
+
+La minimizzazione diretta del rischio empirico porta in genere ad overfitting, in quanto il calcolo di **tutti** i gradienti è molto oneroso e la rete si addestrerà per valori di elevata capacità e tenderà a minimizzare solo il training error.
+
+Si minimizzerà una funzione diversa selezionando un minibatch di campioni per volta e utilizzando l'algoritmo di **Stochastic Gradient Descent** (SGD) e le sue varianti.
+
+### SGD
+
+<img src="./image/big_data/17/15.png" width="65%">
+
+Il learning rate non è costante. Tipicamente si rende costante solo il learning rate iniziale e viene via via ridotto in modo che la velocità della soluzione rallenti, permettendole di fermarsi nei pressi del **minimo globale**.
+
+Caratteristiche di questo algoritmo sono:
+
+1. $\bold {\hat g}$ calcolato sul minibatch consente all'algoritmo di convergere bene risparmiando molto onere computazionale.
+2. In genere il learning rate $\epsilon$ viene fatto **decrescere linearmente**.
+3. Il minibatch serve da regolarizzazione.
+4. Si presta ad essere eseguito in parallelo su architetture multi-core, poichè permettono di utilizzare i minibatch separatamente.
+5. Spesso si usano valori potenza di $2$ da $2^5 = 32$ a $2^8 = 256$ come dimensione del minibatch per una migliore organizzazione dell'hardware.
+
+### SGD con momentum
+
+Una variante dell'algoritmo **SGD** è l'algoritmo **SDG con momentum**.
+
+In questa variante si usa un termine di momento che accumula una media mobile delle stime dei passati gradienti in un termine di memoria:
+
+$$
+\bold v \longleftarrow \alpha \bold v - \epsilon \nabla_\bold \theta \bigg( \cfrac 1 m \sum_{i=1}^m L \Big( \bold f (\bold x^{(i)}; \bold \theta), \bold y^{(i)} \Big) \bigg)
+$$
+
+$$
+\bold \theta \longleftarrow \bold \theta + \bold v
+$$
+
+dove $\alpha$ è il parametro di velocità dell'aggiornamento che pesa gli aggiornamenti precedenti $\bold v$.
+
+$\bold \theta$ viene aggiornato in termini di $\bold v$ e non di $\epsilon$ per il gradiente: questo imposta una **velocità** di variazione dei parametri **variabile e controllata** dalla storia precedente, consentendo di controllare l'evoluzione della soluzione.
+
+Il **momento di Nesterov** interessa anche l’aggiornamento di $\bold \theta$:
+
+$$
+\bold v \longleftarrow \alpha \bold v - \epsilon \nabla_\bold \theta \bigg[ \cfrac 1 m \sum_{i=1}^m L \Big( \bold f (\bold x^{(i)}; \bold \theta + \alpha \bold v), \bold y^{(i)} \Big) \bigg]
+$$
+
+$$
+\bold \theta \longleftarrow \bold \theta + \bold v
+$$
+
+In questa variante il parametro di velocità dell'aggiornamento $\alpha$ viene utilizzato anche nel calcolo del gradiente, che non sarà solo in funzione di $\bold \theta$, ma anche in funzione del termine di momento $\bold v$ opportunamente pesato ($\alpha \bold v$).
+
+Il momentum fa tendere la soluzione verso **direzioni a minore curvatura** per evitare che la soluzione **diverga**:
+
+<img src="./image/big_data/17/16.png" >
+
+La velocità della soluzione è:
+
+$$
+\cfrac {\epsilon \cdot \| \bold g \|} {1-\alpha}
+$$
+
+dove, in genere, $\alpha$ vale $0.5, \ 0.9, \ 0.99$.
+
+### Algoritmi con learning rate variabile
+
+Gli **algoritmi con learning rate variabile** adattano il LR scalandolo con un termine legato all'accumulazione dei quadrati dei gradienti lungo l'addestramento (momento statistico del secondo ordine di $\bold g$). Differiscono in base a come guardano la storia dei gradienti.
+
+#### AdaGrad
+
+**Adaptive Gradient**: usa l'intera storia dei gradienti.
+
+<img src="./image/big_data/17/17.png" >
+
+#### RMSProp
+
+**Root Mean Square Propagation**: usa una media mobile su una finestra di osservazione con termine di **decay** (considera i termini più recenti) ed usa il momento di Nesterov.
+
+<img src="./image/big_data/17/18.png" >
+
+#### Adam
+
+**Adaptive momentum**: usa una regolarizzazione con i momenti del primo e del secondo ordine di $\bold g$ e li mette insieme in una formula di aggiornamento.
+
+<img src="./image/big_data/17/19.png" >
 
 ## Reti Convoluzionali
 
@@ -3407,7 +3887,7 @@ Questo processo porta ad apprendere la distribuzione sui dati.
 
 Il generatore è una rete **non supervisionata**, mentre il discriminatore è una rete **supervisionata**.
 
-<img src=./image/DL/10.png width="50%">
+<img src=./image/big_data/17/20.png width="50%">
 
 Il **generatore** $G(\bold z, \bold \theta_g)$ è non supervisionato e apprende la probabilità congiunta $p(\bold x, y)$ di ingressi e uscite. Viene addestrato a partire da campioni di rumore gaussiano a produrre esempi realistici.
 
@@ -3525,11 +4005,63 @@ Spesso si utilizzano **varianti bidirezionali** delle LSTM o GRU, cioè varianti
 
 Nel **Natural Language Processing** consentono di catturare il **contesto sinistro e destro** di una parola che è una informazione più ricca al fine di classificarla in termini di task linguistici.
 
-## Generative Adversarial Networks
+## Traduzione automatica
 
-## Reti Ricorrenti
+Nel campo della **traduzione automatica** si sono sviluppate reti dedicate a trasformare sequenze di simboli (frase nella lingua sorgente) in nuove sequenze di simboli (frase nella lingua target).
 
-## Transformers
+> Queste reti prendono il nome di **transformer**.
+
+Queste architetture si basano su **coppie encoder-decoder** che hanno struttura ricorrente.
+
+Ecco, di seguito una implemetazione tradizionale di encoder-decoder di RNN:
+
+<img src=https://miro.medium.com/v2/resize:fit:640/format:webp/1*o5G3ul7aI0qvuua78tmlhA.png width="60%" style="margin-bottom:30px">
+
+Poiché è necessario, in questi casi, focalizzarsi su parti rilevanti della frase che siano punti chiave per la traduzione e comunque comprendere le **dipendenze** tra le parti del discorso è nato il meccanismo dell’**attenzione**.
+
+Per comprendere il meccanismo dell'attenzione consideriamo l'esempio: "la cagnetta si rifiutava di attraversare la strada perché era impaurita".
+
+«era impaurita» **dipende** da «la cagnetta» cioè è necessario ricordare la sotto-sequenza «la cagnetta» quando si processa «era impaurita».
+
+### Attenzione - Prima Implementazione
+
+In una prima implementazione, gli encoder RNN passano **tutti i loro stati nascosti** ai decoder RNN e non solamente quello generato dall'ultimo encoder.
+
+<img src=https://miro.medium.com/v2/resize:fit:640/format:webp/1*QjeapCLX9WE9_Vlrwe40pg.png width="60%" style="margin-bottom:30px">
+
+### Attenzione – Context Vector Dinamico
+
+> Anziché limitarsi a codificare la sequenza di input in un singolo vettore di contesto fisso da trasmettere ulteriormente, il modello di attenzione tenta un approccio diverso. Questo modello cerca di sviluppare un **vettore di contesto** che viene **filtrato selettivamente** in modo specifico per ogni fase temporale di uscita, in modo da potersi concentrare e generare punteggi specifici per quelle parole filtrate rilevanti e, di conseguenza, addestrare il nostro modello di decodifica con le sequenze complete e in particolare con quelle parole filtrate per ottenere previsioni.
+
+Un **attention score** attribuito token per token consente di generare un context vector pesato.
+
+<img src=https://miro.medium.com/v2/resize:fit:640/format:webp/1*KrCUK30Y1R7TV7xE-ltcpg.png width="70%" style="margin-bottom:30px">
+
+## Self-attention
+
+La **self-attention** confronta tutti i membri della sequenza di ingresso tra loro e modifica le posizioni corrispondenti della sequenza di uscita.
+
+In altre parole, il livello di self-attention ricerca in modo differenziato i valori-chiave nella sequenza di ingresso per ogni ingresso e aggiunge i risultati alla sequenza di uscita.
+
+La multi-head attention è addestrata su diverse combinazioni in parallelo di $Q$, $K$ e $V$.
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*ETe4WrKJ1lS1MKDgBPIM0g.png width="70%" style="margin-bottom:30px">
+
+* $Q$: vettore delle query (rappresentazione delle singole parole).
+* $K$: vettore delle chiavi (rappresentazione di tutte le parole della frase).
+* $V$: vettore dei valori (di nuovo tutte le parole della frase).
+
+$$
+Attention(Q,K,V) = softmax \Bigg( \cfrac {QK^T} {\sqrt{d_k})} \Bigg) V
+$$
+
+> La $softmax$ è un termine di **attenzione** che modula una query con tutte le chiavi.
+
+Lo strato multi-head attention crea una pesatura dei termini della frase con l'attivazione $softmax$.
+
+## Transformer
+
+<img src=https://vaclavkosar.com/images/transformer-full-model.png width="60%" style="margin-bottom:30px">
 
 ## Domande frequenti
 

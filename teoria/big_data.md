@@ -2320,7 +2320,7 @@ Dove, **per ogni feature**:
 
 Il **numeratore** della formula rappresenta la separazione **inter-classe** media, mentre il **denominatore** la separazione **intra-classe** media.
 
-#### **Fisher Linear Discriminant**
+#### Fisher Linear Discriminant
 
 > Può essere pensato come una **generalizzazione del Fisher Score per combinazioni lineari di feature**.
 
@@ -2693,7 +2693,7 @@ L'architettura della rete è data da una serie di $n$ strati (la rete avrà **pr
 
 Gli strati interni sono detti **strati nascosti** (hidden) le cui attivazioni (funzioni di attivazione) sono indicate con $\bold h$.
 
-Nel complesso la rete approssima $f^*$ come $f(\bold x, \theta)$ e viene addestrata a trovaer i paramerti $\theta$ ottimi per la migliore approssimazione di $f^*$.
+Nel complesso la rete approssima $f^*$ come $f(\bold x; \theta)$ e viene addestrata a trovaer i paramerti $\theta$ ottimi per la migliore approssimazione di $f^*$.
 
 $f(\bold x, \theta)$ viene calcolata concatenando gli effetti delle funzioni di attivazione di ognuno degli $n$ strati:
 
@@ -2701,9 +2701,9 @@ $$
 f(\bold x) = f^{(n)} \Big( \dots f^{(3)} \Big( f^{(2)} \Big( f^{(1)}(\bold x) \Big) \Big) \Big)
 $$
 
-$\longrightarrow$ **MLP**: $y = f(\bold x, \theta)$
+$\longrightarrow$ **MLP**: $y = f(\bold x; \theta)$
 
-$\longrightarrow$ **DNN**: $y = f(\bold x,  \bold\theta, \bold \omega) = \phi (\bold x, \bold \theta)^T \bold \omega$
+$\longrightarrow$ **DNN**: $y = f(\bold x;  \bold\theta, \bold w) = \phi (\bold x; \bold \theta)^T \bold w$
 
 La forma funzionale di $f$ si definisce come un operatore lineare applicato ad un mapping non lineare $\phi(\bold x)$ degli ingressi. La rete apprende anche la rappresentazione per $\phi$.
 
@@ -2720,70 +2720,810 @@ I framework di DL si appoggiano esplicitamente a un componente di **graph compil
 
 ### Funzioni di costo e unità di uscita
 
-Nella **scelta della funzione di costo** abbiamo le stesse opzioni degli altri modelli di ML.
+> **loss function** e **cost function** sono concetti differenti. In breve, senza scendere troppo nel tecnico, la **loss function** è relativa alle singole previsioni, quindi calcolata su ciascuna osservazione del dataset; la **cost function** è definita globalmente.
 
-> La cross-entropia fornisce la stima **MLE** di una distribuzione di probabilità condizionale $p(\bold y | \bold x)$:
+#### Scelta della funzione di costo
+
+> Nella **scelta della funzione di costo** abbiamo le stesse opzioni degli altri modelli di ML.
+
+La cross-entropia fornisce la stima **MLE** di una distribuzione di probabilità condizionale $p(\bold y | \bold x)$:
+
+$$
+J(\bold \theta) = - \mathbb E_{\bold x, \bold y \sim \hat p_{data} } \cdot \log \big( p_{model} (\bold y | \bold x) \big)
+$$
+
+$$
+p_{model} (\bold y | \bold x) = \mathcal N \big( \bold y; f(\bold x, \bold \theta), \bold I \big)
+$$
+
+dove $f(\bold x, \bold \theta)$ è lo **stimatore della media della Gaussiana**.
+
+$$
+J(\bold \theta) = \cfrac 1 2 \cdot \mathbb E_{\bold x, \bold y \sim \hat p_{data} } \| \bold y - f(\bold x, \bold \theta) \|^2 + const \ \ \longrightarrow MSE
+$$
+
+Come si può notare, se assumiamo che il modello abbia una distribuzione di probabilità gaussiana, lo stimatore $J(\bold \theta)$ corrisponde alla stima di cross-entropia.
+
+Possiamo essere interessati a stimare semplicemente **una statistica** $f^*(\bold x, \bold \theta)$ su $\bold y$, piuttosto che stimare una probabilità $f(\bold x, \bold \theta)$.
+
+Il problema di apprendimento diventa quello di stimare la funzione ottima $f^*$ ed il $MSE$ è la **stima della media** di $\bold y$:
+
+$$
+f^* = \underset f { arg \ min} \ \mathbb E_{\bold x, \bold y \sim p_{data}} \| \bold y - f(\bold x) \|^2
+$$
+
+$$
+f^*(\bold x) = \mathbb E_{\bold y \sim p_{data} (\bold y | \bold x)} \ \big[\bold y \big]
+$$
+
+In questo caso il $MSE$ può essere una ottima **funzione di loss**.
+
+In alternativa possiamo utilizzare come funzione di loss il $MAE$, che è la **stima della mediana** di $\bold y$:
+
+$$
+f^* = \underset f { arg \ min} \ \mathbb E_{\bold x, \bold y \sim p_{data}} \| \bold y - f(\bold x) \|_1
+$$
+
+dove la norma $1$ non è altro che la differenza tra i valori assoluti di $\bold y$ e di $f(\bold x)$.
+
+#### Scelta delle funzioni di attivazione
+
+> La **scelta delle funzioni di attivazione** delle unità di uscita e di quelle nascoste dipende da alcuni fattori:
+>
+> * Consentire la stima di funzioni non lineari complesse.
+> * Soddisfare le forma funzionale di uno stimatore **MLE** o **MAP** riguardo alla distribuzione di probabilità dei valori delle uscite.
+> * Avere un gradiente ampio e ben stimabile per supportare gli algoritmi di apprendimento che si basano sulla discesa lungo il gradiente per minimizzare l’errore commesso sulle uscite (loss).
+
+##### Attivazione delle unità di uscita
+
+> Assumiamo che la stima sia appresa dagli strati nascosti in termini dei parametri, per cui avremo che $\bold h = f(\bold x;  \theta)$, che rappresenta l'**input** alle unità di uscita.
+
+Le **unità di uscita lineari**, supponendo una distribuzione Gaussiana e usando la $MLE$, possono essere usate per stimare la media di $\bold y$, indicata con $\bold {\hat y}$:
+
+$$
+\bold {\hat y} = \bold W^T \cdot \bold h + \bold b
+$$
+
+$$
+p(\bold y | \bold x) = \mathcal N(\bold y; \bold {\hat y}, I)
+$$
+
+dove l'uscita della rete $\bold {\hat y}$ è la **media** e siamo nelle ipotesi in cui non stiamo stimando alcuna matrice di covarianza $\Sigma$, perchè altrimenti le unità lineari non basterebbero.
+
+Nei **casi reali**, non sempre possiamo ricorrere ad unità lineari.
+
+> Non linearità significa che l’output non può essere generato da una combinazione lineare di input.
+>
+> La non linearità è importante nelle reti neurali perché le funzioni di attivazione lineare non sono sufficienti per formare un approssimatore di funzione universale.
+>
+> Se usiamo le funzioni di attivazione lineare in una rete neurale profonda, indipendentemente dalla profondità della nostra rete, sarà equivalente ad una semplice rete neurale lineare senza strati nascosti perché quelle funzioni di attivazione lineare possono essere combinate per formare un’altra singola funzione lineare.
+>
+> Quindi fondamentalmente tutta la nostra rete sarà ridotta ad un singolo neurone con quella funzione lineare combinata come sua funzione di attivazione e quel singolo neurone non sarà in grado di apprendere relazioni complesse nei dati.
+>
+> Poiché la maggior parte dei problemi del mondo reale sono molto complessi, abbiamo bisogno di funzioni di attivazione non lineari in una rete neurale.
+>
+> La rete neurale senza funzioni di attivazione non lineare sarà solo un semplice modello di regressione lineare.
+>
+> Tuttavia, nello strato finale della rete neurale, possiamo scegliere funzioni di attivazione lineare.
+
+###### Classificazione binaria
+
+> Il classificatore, ricevuto in **input** un dato, restituirà in **output**:
 >
 > $$
-> J(\bold \theta) = - \mathbb E_{\bold x, \bold y \sim \hat p_{data} } \cdot \log \big( p_{model} (\bold y | \bold x) \big)
-> $$
->
-> $$
-> p_{model} (\bold y | \bold x) = \mathcal N \big( \bold y, f(\bold x, \bold \theta), \bold I \big)
-> $$
->
-> dove $f(\bold x, \bold \theta)$ è lo **stimatore della media della Gaussiana**.
->
-> $$
-> J(\bold \theta) = \cfrac 1 2 \cdot \mathbb E_{\bold x, \bold y \sim \hat p_{data} } \| \bold y - f(\bold x, \bold \theta) \|^2 + const \ \ \longrightarrow MSE
-> $$
->
-> Come si può notare, se assumiamo che il modello abbia una distribuzione di probabilità gaussiana, lo stimatore $J(\bold \theta)$ corrisponde alla stima di cross-entropia.
->
-> Possiamo essere interessati a stimare semplicemente **una statistica** $f^*(\bold x, \bold \theta)$ su $\bold y$, piuttosto che stimare una probabilità $f(\bold x, \bold \theta)$.
->
-> Il problema di apprendimento diventa quello di stimare la funzione ottima $f^*$ ed il $MSE$ è la **stima della media** di $\bold y$:
->
-> $$
-> f^* = \underset f { arg \ min} \ \mathbb E_{\bold x, \bold y \sim p_{data}} \| \bold y - f(\bold x) \|^2
-> $$
->
-> $$
-> f^*(\bold x) = \mathbb E_{\bold y \sim p_{data} (\bold y | \bold x)} \ \big[\bold y \big]
-> $$
->
-> In questo caso il $MSE$ può essere una ottima **funzione di loss**.
->
-> In alternativa possiamo utilizzare il $MAE$, che è la **stima della mediana** di $\bold y$:
->
-> $$
->
->
+> \begin{cases} 1 & se \ il \ dato \ \bold {non \ appartiene \ alla \ classe} \\ 0 & se \ il \ dato \ \bold {appartiene \ alla \ classe} \end {cases}
 > $$
 
-La **scelta delle funzioni di attivazione** delle unità di uscita e di quelle nascoste dipende da alcuni fattori:
+Verrà utilizzata una sola uscita, che fornisce la $MLE$ di $P(y=1|\bold x) \in [0, 1]$ che è una **distribuzione di Bernoulli**.
 
-* Consentire la stima di funzioni non lineari complesse.
-* Soddisfare le forma funzionale di uno stimatore **MLE** o **MAP** riguardo alla distribuzione di probabilità dei valori delle uscite.
-* Avere un gradiente ampio e ben stimabile per supportare gli algoritmi di apprendimento che si basano sulla discesa lungo il gradiente per minimizzare l’errore commesso sulle uscite (loss).
+Assumeremo che l'ingresso $z$ all'unità NON LINEARE sia sempre **lineare**:
 
-#### Attivazione delle unità di uscita
+$$
+z = \bold W^T \cdot \bold h + \bold b
+$$
 
-#### Attivazione delle unità nascoste
+dove $z$ non è più l'uscita di un'unità lineare, ma è **l'uscita di un'unità lineare che va in ingresso ad una funzione di attivazione non lineare**.
 
-### Unità nascoste (?)
+> È come se avessimo uno strato di unità lineari che raccolgono gli ingressi $\bold h$ e producono un'uscita $z$ che andrà in input a delle unità puramente non lineari dello strato successivo.
+>
+> Il valore $z$ rappresenta quindi la reale uscita dei layer profondi della rete.
+
+Dato che stiamo parlando di effettuare un addestramento della rete imponendo che venga minimizzato un certo errore sulla base di uno specifico task, possiamo assumere che $z$ fornisca, prima dell'ultimo layer, la stima della log-probabilità non normalizzata di $y$, detta **logit**.
+
+$$
+logit(x) = \ln \Big ( \cfrac x {1-x} \Big)
+$$
+
+In questo caso possiamo vedere come la funzione di attivazione dello strato di uscita debba avere una certa forma.
+
+> Una funzione di attivazione **lineare** con soglia in $0$ e $1$ per ottenere un valore di probabilità valido, non va bene perché il gradiente si annulla non appena $logit(z) \notin [0, 1]$.
+
+Pertanto, dobbiamo utilizzare una funzione di attivazione (**non lineare**) sigmoidale:
+
+$$
+\sigma (x) = \cfrac {1} {1 + e^{-x}} \equiv \cfrac {e^x} {e^x + 1}
+$$
+
+![1684918849751](image/big_data/1684918849751.png)
+
+> L'unità sigmoidale si presta bene a questo problema:
+>
+> * Varia tra $0$ e $1$, in quanto rappresenta una probabilità.
+> * **È sempre differenziabile**, caratteristica fondamentale quando si addestra con un algoritmo di discesa lungo il gradiente.
+
+Assumiamo che la log-likelihood non normalizzata $\tilde P(y)$ sia lineare in $y$ e in $z$, ovvero che:
+
+$$
+log \Big( \tilde P(y) \Big) = y \cdot z
+$$
+
+Elevando a destra e a sinistra per $e$ otteniamo la probabilità non normalizzata:
+
+$$
+\tilde P(y) = e^{yz}
+$$
+
+Adesso possiamo ricavare la $pdf$ della probabilità non normalizzata:
+
+$$
+P(y) = \cfrac {e^{yz}} {\sum_{y'=0}^1 e^{y'z}} = \cfrac {e^{yz}} {1 + e^{z}} = \sigma \Big ( (2y - 1) \cdot z \Big) = \cfrac {e^{(2y - 1) z}} {e^{(2y - 1) z} + 1}
+$$
+
+Pertanto, se vogliamo stimare la probabilità che $y=1$, otteniamo:
+
+$$
+P(y=1) = \cfrac {e^{z}} {1 + e^{z}} = \sigma(z) \ \ \overset {z = \bold W^T \cdot \bold h + \bold b} {=} \ \ \sigma \Big(\bold W^T \cdot \bold h + \bold b \Big)
+$$
+
+Assumiamo che la $logit$ sia lineare in $y$ e $z$:
+
+$$
+z = logit \Big( P(y) \Big) = \ln \Big ( \cfrac {P(y)} {1-P(y)} \Big) = \ln \Big( P(y) \Big) - \ln \Big( 1 - P(y) \Big) \equiv \sigma^{-1} \Big( P(y) \Big)
+$$
+
+> Adesso vogliamo ricavare le **funzione di loss** corrispondente all'apprendimento $MLE$.
+
+Tale funzione prende il nome di **softplus**:
+
+$$
+\zeta(x) = \ln \Big(\sigma (x) \Big) = \ln \Big(\cfrac {e^x} {e^{x} + 1} \Big) = \ln \Big( e^{x} + 1 \Big)
+$$
+
+![img](./image/DL/1684860834428.png)
+
+$$
+J(\bold \theta) = - \log \Big( P(y|\bold x) \Big) = - \log \Big( \sigma \big( 2y-1 \big) z \Big) = \zeta \Big( \sigma \big( 1-2y \big) z \Big)
+$$
+
+> In questo schema di apprendimento di **classificazione binaria** utilizzeremo:
+>
+> * La funzione di loss **softplus**, che consente l'apprendimento di $MLE$ (stimeremo la probabilità che $y=1$).
+> * La **funzione logistica**, che consente di verificare se quello che otteniamo è corretto, data la probabilità non normalizzata in ingresso.
+>
+> Definire le stime, e quindi imporre la minimizzazione dell'errore secondo un certo funzionale di stima, è importante per l'addestramento di una rete, in quanto, dato che tutto dipende a ritroso dall'uscita che si vuole imporre, negli strati precedenti si andranno ad accumulare stime funzionali definite esattamente come sono state pensate.
+>
+> Quindi possiamo assumere che $z$ sia la log-likelihood non normalizzata perché decidiamo di farla apprendere proprio in questo modo alla rete.
+
+###### Classificazione multiclasse
+
+##### Attivazione delle unità nascoste
 
 ## Addestramento
 
-### Stochastic Gradient Descent
+> Una rete neurale profonda (DNN) è composta da:
+>
+> * Un'**uscita** appartenente ad un insieme di alternative a seconda di quello che dobbiamo stimare.
+> * Strati di **unità nascoste** (tipicamente tutte ReLU o sue varianti) che permettono di ottenere non linearità, eventualmente con skip connections.
+> * Unità di **ingresso** che raccolgono gli ingressi e li immettono nella rete.
+
+L'addestramento di una DNN avviene utilizzando un **algoritmo di discesa lungo il gradiente** di una funzione di costo $J(\bold \theta, \bold x)$ rispetto ai parametri del modello: in particolare viene usato l'algoritmo di **discesa stocastica lungo il gradiente** (**Stochastic Gradient Descent**).
+
+> **Gradiente $\nabla$**: vettore delle derivate parziali rispetto ai pesi.
+>
+> La **SGD** è un **algoritmo di ottimizzazione** il cui obiettivo è minimizzare una funzione di costo $J$, che rappresenta la discrepanza tra le previsioni del modello e i valori desiderati.
+>
+> La discesa stocastica è chiamata "stocastica" perché **calcola gli aggiornamenti dei pesi del modello su un sottoinsieme casuale dei dati di addestramento a ogni iterazione**, a differenza della discesa del gradiente tradizionale che utilizza l'intero set di dati di addestramento.
+>
+> Sarà necessario calcolare $\nabla_{\bold \theta} J(\bold \theta, \bold x)$ per minimizzare $J$.
+>
+> Il calcolo di $\nabla_{\bold \theta} J(\bold \theta, \bold x)$ riguarda tutti i parametri, anche quelli negli strati più nascosti.
+
+Prima di addentrarci nell'algoritmo SGD, è necessario stabilire un approccio per il calcolo dei gradienti.
+
+> Questo calcolo viene fatto in **maniera ricorsiva** partendo dal calcolo dei gradienti dello strato di uscita fino ad arrivare al calcolo dell'ultimo strato, che è il layer di ingresso. Verrà utilizzato un **grafo computazionale**.
+>
+> Questo algoritmo ricorsivo prende il nome di **Backpropagation**.
 
 ### Backpropagation
+
+> Va osservato che l'algoritmo di Backpropagation **NON è un algoritmo di addestramento**, ma è un algoritmo di calcolo del gradiente in maniera ricorsiva in tutti gli strati della rete.
+
+La Backpropagation **si basa sul calcolo del gradiente di una funzione di costo composta**:
+
+$$
+z = f \Big( g(\bold x) \Big)
+$$
+
+Siano:
+
+$$
+\bold y = g(\bold x) \ \ \ \ \& \ \ \ \ z = f(\bold y)
+$$
+
+Calcoliamo il gradiente della funzione $z$:
+
+$$
+\nabla_{\bold x} z = \Big( \cfrac {\partial {\bold y}} {\partial \bold x} \Big)^T \nabla_\bold y z
+$$
+
+> È possibile estendere il concetto al caso di funzioni di tensori $n$-dimensionali $\bold X$ in cui $j$ è una $n$-pla di indici degli elementi corrispondenti.
+>
+> $$
+> \nabla_\bold X z = \sum_j \Big( \nabla_\bold X Y_j \Big) \cfrac {\partial z} {\partial Y_j}
+> $$
+
+L'algoritmo prevede una serie di passaggi:
+
+1. Inizializzazione dei pesi: i pesi vengono inizializzati con valori casuali o con valori predefiniti.
+2. **Loop**:
+   1. Forward Propagation e calcolo della funzione di costo.
+   2. Backpropagation ed aggiornamento dei pesi.
+
+#### Forward Propagation
+
+![1685029123545](image/DL/1685029123545.png)
+
+Una volta scelti i pesi iniziali della rete, procediamo al calcolo delle attivazioni per una funzione di loss con termine di regolarizzazione:
+
+> **Input**:
+>
+> * $l$: profondità della rete.
+> * $\bold W^{(i)}, \ i \in \{ 1, 2, \dots, l \}$: matrici dei pesi del modello.
+> * $\bold b^{(i)}, \ i\in \{ 1, 2, \dots, l \}$: parametri di bias del modello.
+> * $\bold x$\: l'input da processare.
+> * $\bold y$\: l'output target.
+>
+> L'algoritmo si compone dei seguenti passi:
+>
+> 1. *$h^{(0)} = \bold x$*
+> 2. $\bold {for} \ k=1,2, \dots, l \ \bold {do}$
+>    1. $a^{(k)} = \bold b^{(k)} + \bold W^{(k)}\bold h^{(k-1)}$
+>    2. $h^{(k)} = f(\bold a^{(k)})$
+> 3. $\bold {end \ for}$
+> 4. $\bold {\hat y} = \bold h^{(l)}$
+> 5. $J = L(\bold{\hat y}, \bold y) + \lambda \Omega(\theta)$
+
+#### Backpropagation
+
+![1685029161784](image/DL/1685029161784.png)
+
+Dopo aver calcolato tutte le attivazioni in avanti, bisogna effettuare il calcolo del gradiente all'indietro. Ricordiamo che per calcolare il gradiente, dobbiamo calcolare le derivate parziali e questa operazione può essere computazionalmente onerosa.
+
+Un approccio efficiente utilizza un **grafo computazionale** delle derivate per il calcolo delle derivate composte:
+
+![1685092737154](image/DL/1685092737154.png)
+
+$$
+\cfrac {\partial z} {\partial w} = \cfrac {\partial z} {\partial y} \cdot \cfrac {\partial y} {\partial x} \cdot \cfrac {\partial x} {\partial w} = f'(y) \cdot f'(x) \cdot f'(w) = f'\bigg( f\Big(f(w)\Big) \bigg) \cdot f'\Big( f(w) \Big) \cdot f'(w)
+$$
+
+A partire dal grafo computazionale di base (a sinistra), vengolo calcolate le attivazioni insieme alle loro derivate.
+
+Quindi, il calcolo delle derivate complessive si riduce a delle moltiplicazioni tra derivate parziali calcolate passo passo (colonna centrale del grafo di destra).
+
+### Stochastic Gradient Descent (SGD)
+
+#### Gradient Descent (GD)
+
+L'algoritmo GD stabilisce che una funzione $f(\bold x)$ può essere minimizzata muovendo $\bold x$ lungo la direzione del gradiente di $f$:
+
+$$
+\bold x \longleftarrow \bold x - \epsilon \nabla_\bold x f
+$$
+
+dove $\epsilon$ è il Learning Rate che definisce il passo di aggiornamento.
+
+Il movimento lungo la **direzione opposta** alla direzione del gradiente di $f$ (salita lungo il gradiente) punta verso il **minimo globale di $f$**.
+
+Nel nostro caso la $f(\bold x)$ altro non è che la **funzione di costo** $J(\bold \theta)$. Pertanto, $J(\bold \theta)$ può essere minimizzata muovendo $\bold\theta$ lungo la direzione del gradiente di $J$:
+
+$$
+\bold \theta \longleftarrow \bold \theta - \epsilon \nabla_\bold \theta J
+$$
+
+Il gradiente di $J(\bold \theta)$ sarà pari alla media di tutti i valori di gradiente calcolati per la funzione di loss $L(\bold x, y, \bold \theta)$ per tutti gli $m$ campioni di ingresso:
+
+$$
+J(\bold \theta) = \mathbb E_{\bold x, y \sim \hat p_{data} } L(\bold x, y, \bold \theta) = \cfrac 1 m \cdot \sum_{i=1}^m L(\bold x^{(i)}, y^{(i)}, \bold \theta) \\ \nabla_{\bold \theta} J(\bold\theta) = \cfrac 1 m \cdot \sum_{i=1}^m \nabla_{\bold \theta} L(\bold x^{(i)}, y^{(i)}, \bold \theta)
+$$
+
+Il costo computazionale, intuitivamente, sarà $O(m)$ e può diventare molto elevato: pertanto, così per com'è, l'algoritmo **GD** non è molto efficiente, considerando il fatto che più campioni abbiamo, migliore sarà la stima e quindi ci si avvicinerà di più al minimo globale (**idealmente**).
+
+Gli viene infatti preferito lo **SGD** che, anzichè utilizzare tutti gli $m$ campioni, ne utilizza un **minibatch** $\mathbb B$ di cardinalità $m'$, contenente alcune decine/centinaia di campioni **prelevati stocasticamente dal data-set** (da qui il nome).
+
+$$
+\mathbb B = \Big\{ \bold x^{(1)}, \bold x^{(2)}, \dots, \bold x^{(m')} \Big\}
+$$
+
+Su questi $m'$ campioni calcola il gradiente e aggiorna l'algoritmo (come viene fatto nello **GD**).
+
+Chiameremo **epoca** una **presentazione dell’intero data-set** all’algoritmo di addestramento.
+
+Dato che:
+
+$$
+\bold g = \cfrac 1 {m'} \cdot \nabla_\bold\theta \sum_{i=1}^{m'} L(\bold x^{(i)}, y^{(i)}, \bold \theta) = \nabla_\bold \theta J
+$$
+
+avremo che:
+
+$$
+\bold \theta \longleftarrow \bold \theta - \epsilon \bold g
+$$
+
+Rendendo **costante il numero di elementi che si vanno a calcolare**, viene eliminata la dipendenza dal numero di campioni e, conseguentemente, l'onere computazionale viene abbattuto.
+
+Il costo dell'algoritmo sarà adesso $O(m'$) e quindi la **dimensione del batch** $m'$ rappresenterà un iperparametro di addestramento.
+
+Questo approccio converge perché oltre un certo numero di campioni, la bontà della stima diventa numericamente poco rilevante.
 
 ## Regolarizzazione e Ottimizzazione
 
 ## Reti Convoluzionali
 
+Le **reti neurali convoluzionali** (**CNN**) sono reti mirate ad analizzare dati che abbiano una **topologia a griglia**.
+
+Le CNN possono essere applicate per:
+
+* Immagini.
+* Sequenze monodimensionali con finestra di analisi fissa
+  * Campionamento di serie temporali.
+  * Serie discrete (frasi).
+  * Molecole.
+  * $\dots$
+
+> La **connessione tra due layer** usa l'operatore di **convoluzione**:
+>
+> $$
+> S(i,j) = (K*I)(i,j) = \sum_m \sum_n I(i-m, j-n) \cdot K(m,n)
+> $$
+
+In realtà, l'operatore è applicato **sempre** a un **tensore** $n$-dimensionale anche nel caso in cui l'input sia monodimensionale.
+
+> **Tensore**: è una generalizzazione dei vettori e delle matrici a dimensioni superiori. In modo più specifico, un tensore è un oggetto matematico che rappresenta una collezione multidimensionale di elementi organizzati in un array di dimensioni definite (è una matrice a più dimensioni contenente valori arbitrari).
+>
+> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Epsilontensor.svg/350px-Epsilontensor.svg.png" width="25%">
+
+In genere, le dimensioni del tensore di ingresso $\bold X_{b,w,h,d}$ sono **batch** $b$ (ovvero il numero $m'$ di ingressi campionati, ognuno dei quali è un tensore 3D), **larghezza** $w$, **ampiezza** $h$ e **profondità** $d$ (canali).
+
+Un vettore $\bold x \in \mathbb R^n$ corrisponde ad un tensore $\bold X_{b,d,1,1}$:
+
+$$
+\bold x \in \mathbb R^d \longrightarrow \bold X_{b,d,1,1}
+$$
+
+La struttura del tensore deriva esplicitamente dal fatto che per le immagini la dimensione della profondità è quella dei tre **canali** R, G e B.
+
+La dimensione del batch non rientra direttamente nell’operazione di convoluzione, ma il nucleo di convoluzione viene applicato alle altre tre dimensioni:
+
+$$
+Y_{i,j,k} = \sum_l \sum_m \sum_n X_{i-l, j-m, k-n} \cdot K_{l,m,n}
+$$
+
+<div style="display:flex; margin-bottom: 30px; margin-top: 30px">
+  <img src="https://cs231n.github.io/assets/nn1/neural_net2.jpeg" width="40%">
+  <img src="https://cs231n.github.io/assets/cnn/cnn.jpeg" width="50%">
+</div>
+
+Il supporto (la dimensione) $s$ del nucleo (filtro) di convoluzione lungo le dimensioni della griglia è un **iperparametro**.
+
+Lungo la direzione della **profondità**, la **convoluzione** è sempre completa (**fully-connected**) e pari alla profondità $d$ del tensore in input.
+
+Ogni layer convoluzionale può avere comunque una propria **profondità diversa da quella dell'input e degli altri layer**, la quale è un altro **iperparametro**:
+
+<img src="https://cs231n.github.io/assets/cnn/depthcol.jpeg" width="30%">
+
+$$
+Y_{i,j,k} = \sum_l^s \sum_m^s \sum_n^d X_{i-l, j-m, k-n} \cdot K_{l,m,n}
+$$
+
+Proprio perché le CNN mirano ad estrarre tante feature via via sempre più aggregate dai primi layer a quelli successivi, **si tende a creare i tensori dei primi layer convoluzionali molto profondi ed a ridurre questa profondità via via che si va verso il layer di uscita**.
+
+> Un **layer convoluzionale complesso** è in genere una sequenza di tre sub-layer:
+>
+> 1. **Layer convoluzionale**: raccoglie gli input su una regione limitata e serve ad estrarre caratteristiche locali applicando il kernel per regioni. Nella dimensione di profondità vengono generate differenti **feature map**.
+> 2. **ReLU**: classico layer DNN per il calcolo della non linearità. Spesso il layer complesso è dato solo da $Conv + ReLu$.
+> 3. **Pool** (opzionale): effettua  un sotto-campionamento degli ingressi per ottenere delle feature map ridotte nella dimensione spaziale (a scala più piccola). Lo strato di pooling è orientato ad ottenere feature aggregate invarianti alla posizione.
+
+Il **layer di pooling** filtra le feature map in un piccolo intorno ($2\times2$) applicando diversi filtri: i più utilizzati sono il **max pooling** e l'**average pooling**.
+
+Il sotto-campionamento si può ottenere anche applicando uno **stride**.
+
+> **Stride**: step di salto nell'applicazione dei kernel convoluzionali o del Pooling.
+
+Spesso è necessario introdurre uno **zero-padding** (cornice di valori nulli) attorno alla feature map al fine di adeguare il passo del kernel e la sua dimensione con quelle delle feature map. Esempio:
+
+<img src="https://cs231n.github.io/assets/cnn/stride.jpeg" width="70%">
+
+**A sinistra**: il neurone attraversa l'ingresso con un passo di $S = 1$.
+
+**A destra**: il neurone attraversa l'ingresso con un passo di $S=2$.
+
+I pesi del neurone sono, in questo esempio, $[1,0,-1]$ (mostrato sulla destra) e il suo bias è $0$. Questi pesi sono condivisi da tutti i neuroni gialli.
+
+<div style="display:flex; margin-top: 10px; margin-bottom: 30px;">
+  <img src="https://cs231n.github.io/assets/cnn/pool.jpeg" width="30%">
+  <img src="https://cs231n.github.io/assets/cnn/maxpool.jpeg" width="50%">
+</div>
+
+### Layer convoluzionale
+
+<img src=https://www.simplilearn.com/ice9/free_resources_article_thumb/Input_feature_map.gif width="60%">
+
+### Layer ReLU
+
+<img src=https://www.simplilearn.com/ice9/free_resources_article_thumb/Input_feature_map1.gif width="60%">
+
+### Layer di max pooling $2 \times 2$ con stride per down-sampling
+
+<img src=https://s3.amazonaws.com/static2.simplilearn.com/ice9/free_resources_article_thumb/Pooling_filters.png width="60%">
+
+<img src=https://s3.amazonaws.com/static2.simplilearn.com/ice9/free_resources_article_thumb/Input_feature_map2.png width="60%">
+
+Ecco come appare la **struttura** della rete neurale convoluzionale:
+
+<img src=https://s3.amazonaws.com/static2.simplilearn.com/ice9/free_resources_article_thumb/Convolution_neural_network.png width="60%">
+
+Con una serie di layer convoluzionali e di pooling, si ottiene un layer detto di **flattening**, cioè di scansione dell'ultimo tensore in modo tale che diventi un vettore monodimensionale.
+
+<img src=https://www.simplilearn.com/ice9/free_resources_article_thumb/flattening.png width="40%">
+
+**L'uscita di questo layer di flattening è l'ingresso della zona fully connected, usata per classificazione** (Random Forests, SVM o, in generale, **qualunque algoritmo di classificazione che parta da un vettore monodimensionale**).
+
+<img src=https://www.simplilearn.com/ice9/free_resources_article_thumb/fully_connected_layer.png width="70%">
+
+### Flattening + Dense Layer
+
+<img src=https://www.simplilearn.com/ice9/free_resources_article_thumb/fully_connected_layer1.png width="70%">
+
+<img src=https://www.simplilearn.com/ice9/free_resources_article_thumb/CNN_recognizes_a_bird.png width="70%" style="margin-top:30px">
+
+### Struttura generale di una CNN
+
+<img src=https://www.simplilearn.com/ice9/free_resources_article_thumb/CNN_recognizes_a_bird1.png width="80%" style="margin-top:20px; margin-bottom:30px">
+
+Ecco come la CNN riconosce esattamente un uccello:
+
+1. I pixel dell'immagine vengono inviati allo strato convoluzionale che esegue l'operazione di convoluzione.
+2. Il risultato è una mappa di convoluzione.
+3. La mappa di convoluzione viene applicata ad una funzione ReLU per generare una feature map.
+4. L'immagine viene elaborata con più livelli di convoluzione e ReLU per individuare le feature.
+5. Per identificare parti specifiche dell'immagine vengono utilizzati diversi livelli di pooling con vari filtri.
+6. La mappa di caratteristiche raggruppate (pooled feature map) viene appiattita e inviata ad un layer fully-connected per ottenere l'output finale.
+
+La presenza di più layer complessi, in genere con molte feature map e con diversi livelli di sotto-campionamento consente di estrarre caratteristiche gerarchicamente sempre più aggregate e invarianti a scala e posizione.
+
+Le CNN sono di derivazione biologica e si basano sugli studi percettivi della visione umana, ma dal 2012 in poi le CNN moderne si sono sviluppate le CNN moderne, quali LeNet, AlexNet, VGGNet, GoogleNet, ResNet, $\dots$
+
+**Le reti sono sempre più profonde**: spesso questi modelli generalisti addestrati a riconoscere decine di classi di oggetti sono usate come **backbone** di architetture più complesse che si addestrano tramite **transfer learning**.
+
+> **Transfer learning**: metodo di Machine Learning in cui un modello sviluppato per un task viene riutilizzato come punto di partenza per un modello in un secondo task (l'insieme dei parametri viene riutilizzato). È un approccio diffuso nel Deep Learning, in cui i modelli pre-addestrati vengono utilizzati come punto di partenza per la visione artificiale e le attività di elaborazione del linguaggio naturale, date le elevate risorse di calcolo e di tempo necessarie per sviluppare modelli di rete neurale su questi problemi.
+
+Le CNN sono caratterizzate da un numero di parametri che esplode e quindi vi è la necessità di reinterpretare l'operatore di convoluzione.
+
+### Depthwise separable convolution
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*QsxXZN0Pq9ZL_lckPtW6pw.png width="55%">
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*VzwZ3Igv9KL-TCV-ZkB4Dg.png width="65%">
+
+Una convoluzione da una layer $w_i \times h_i \times d_i$ ad uno $w_o \times h_o \times d_o$ con un kernel $s \times s \times d_i$ comporta un numero di moltiplicazioni pari a:
+
+$$
+d_o \times (s\times s\times d_i) \times w_o \times h_o
+$$
+
+che nell'esempio corrisponde a $128\times (3 \times 3 \times 3) \times 5 \times 5$.
+
+La **convoluzione separabile in profondità** (**depthwise separable convolution**) disaccoppia il problema ed effettua l'operazione di convoluzione in due fasi:
+
+* Prima vengono eseguite le $d_i$ **convoluzioni spaziali a profondità** $\bold 1$, $s \times s \times 1$ (nell'esempio $3 \times 3 \times 1$):
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*TT2ldUUD2JM2eSayC3i9Lw.png width="55%">
+
+* Successivamente, per ogni convoluzione calcolata nella fase precedente, viene calcolata la **convoluzione in profondità** $1 \times 1 \times d_i$ (nell'esempio $ 1 \times 1 \times 3$):
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*3y5a2WPWbjnZK6bwZw6U1g.png width="55%">
+
+Al termine della seconda fase avremo $d_o$ kernel $1 \times 1 \times d_i$ che forniscono la vera uscita (il volume finale):
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*jqNtWIEJ_lIRrp9nohquLQ.png width="85%">
+
+Costo della DSC in rapporto alla convoluzione normale in un caso bidimensionale:
+
+$$
+\cfrac {d_i (s\times s\times 1) w_0 h_0 + d_0 (1\times 1\times d_i) w_0 h_0} {d_0 (s\times s\times d_i) w_0 h_0} = \cfrac {d_is^2} {d_i d_0 s^2} + \cfrac {d_0 d_i} {d_0 s^2 d_i} = \cfrac 1 {d_0} + \cfrac 1 {s^2} \approx \cfrac 1 {s^2}, \ \ \ \ \ \ d_0 \gg s
+$$
+
+### Inception module e DSC (GoogleNet)
+
+GoogleNet è una realizzazione di DNN per il riconoscimento di oggetti e si basa sull'uso della **fattorizzazione DSC** e del **modulo Inception**.
+
+Il modulo Inception è un processo per accelerare l'apprendimento di pattern tridimensionali, invarianti rispetto a posizione, rotazione e scaling (comportamento che si ottiene grazie alla data augmentation).
+
+I layer realizzati con Inception partono dall'idea di **analizzare contemporaneamente l'input a più scale**: il modulo Inception crea una serie di campi ricettivi su regioni di varia dimensione e premette di osservare la scena contemporaneamente a scale diverse.
+
+Vengono introdotti blocchi convoluzionali $1 \times 1$ per ridurre la dimensionalità dell'input.
+
+<div style="display:flex; margin-top: 10px; margin-bottom: 30px;">
+  <img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*DKjGRDd_lJeUfVlY50ojOA.png" width="52%">
+  <img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*U_McJnp7Fnif-lw9iIC5Bw.png" width="52%">
+</div>
+
+Il layer finale di concatenazione viene utilizzato per concatenare più informazioni provenienti dai layer precedenti.
+
+Il blocco $5 \times 5$ viene fattorizzato in due $3 \times 3$. I blocchi $3 \times 3$ vengono fattorizzati in $1\times 3$ e $3 \times 1$ (DSC in due dimensioni).
+
+La rete ResNet (Residual Network) usa le skip connection dopo due blocchi Inception per evitare il problema dei **vanishing gradients**.
+
+Un blocco Inception ha la seguente struttura:
+
+<img src=https://miro.medium.com/v2/resize:fit:640/format:webp/1*hTwo-hy9BUZ1bYkzisL1KA.png width="35%">
+
+### VGG Net
+
+La **VGG** è una classica architettura di rete neurale convoluzionale.
+
+Nasce per diminuire i parametri di AlexNet (la prima CNN a vincere ImageNet).
+
+Si basa su un'analisi di come aumentare la profondità di tali reti. La rete utilizza piccoli filtri $3 \times 3$. Per il resto, la rete si caratterizza per la sua semplicità: gli unici altri componenti sono gli strati di pooling e uno strato completamente connesso.
+
+Impianto classico, senza DSC.
+
+<img src=https://production-media.paperswithcode.com/methods/vgg_7mT4DML.png width="45%">
+
 ## Autoencoder
+
+Un **autoencoder** è una coppia di reti CNN in cui sono presenti due parti (encoder e decoder) che hanno **struttura simmetrica** e che sono addestrate su coppie input/output **uguali**.
+
+Lo strato più interno (encoder) apprende una rappresentazione degli ingressi in uno **spazio latente a ridotta dimensionalità**.
+
+Si addestrano a codificare ed a decodificare il dato, cercando di riottenere in uscita la stessa quantità dell'ingresso.
+
+* Attivazioni **lineari** $\longrightarrow \ PCA$.
+* Otherwise $\longrightarrow \ ReLU$.
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*oUbsOnYKX5DEpMOK3pH_lg.png width="55%">
+
+Apprendimento (**self-supervised learning**):
+
+$$
+\phi: \mathcal X \rightarrow \mathcal F, \ encoder \\ \psi: \mathcal F \rightarrow \mathcal X, \ decoder
+$$
+
+$$
+\phi, \psi = \underset {\phi, \psi} {arg \min} \| X - (\psi \ o \ \phi) X \|^2
+$$
+
+$$
+\bold z = \sigma(\bold W \bold x + \bold b) \\ \bold{x'} = \sigma'(\bold W' \bold z + \bold b') \\ \mathcal L(\bold x, \bold x') = \| \bold x - \bold x' \|^2 = \bigg \| \bold x - \sigma' \Big(\bold W'\big(\sigma (\bold W \bold x + \bold b)\big) + \bold b' \Big) \bigg\|
+$$
+
+Si cerca la coppia che renda minimo il $MSE$ tra il dato vero e la sua ricostruzione.
+
+Ci sono numerose varianti degli autoencoder sulla base del task che si intende realizzare:
+
+1. **Denoising autoencoder**: Apprendono su input rumorosi, ma usano una loss riferita al dato con rumore. Questo dà un effetto di **regolarizzazione** che diminuisce l'overfit ed aumenta la capacità di generalizzazione. L'inserimento di rumore nei dati in ingresso comporta una distribuzione più ampia dei campioni nello spazio di ingresso, in modo da coprire quanto più spazio possibile.
+2. **Sparse autoencoder**: Apprendono un vettore di codifica sparso con molte unità, ma che non si attivano tutte. Anche questa applicazione dà un effetto di regolarizzazione.
+3. **Contractive autoencoder**: Apprendimento con una regolarizzazione esplicita della loss.
+
+Limiti degli autoencoder:
+
+1. Spazio di ingresso discreto.
+2. Gap nello spazio latente: mancanza di rappresentazione.
+3. Necessità di una distribuzione continua di probabilità (l'apprendimento avviene in maniera campionaria senza la stima di alcuna distribuzione di probabilità).
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*8TICRJWnZXbPXsB7jE2UnA.png width="50%">
+
+### Variational autoencoder (VAE)
+
+Un **autoencoder variazionale** (**VAE**) campiona la codifica da una **distribuzione di probabilità**, quindi non fa un semplice mapping uno a uno come avviene nei tradizionali autoencoder.
+
+I VAE fanno una stima di una distribuzione di probabilità $q(\bold z | \bold x)$ dalla quale generare le uscite $\bold x'$ non osservate a partire dalle variabili latenti $\bold z$.
+
+Addestreremo il VAE ad eseguire una stima MAP (maximum a posteriori) di $q(\bold z | \bold x)$ con un prior $p(\bold z)$ gaussiano.
+
+<img src=https://danijar.com/asset/tf-dist-vae/vae.png width="60%" style="margin-bottom:30px">
+
+Possiamo considerare indipendenti i dati e quindi la loss sarà la somma dei singoli contributi di ogni dato.
+
+La funzione di loss ha due componenti:
+
+* La cross-entropia della distribuzione $p_\phi(x_i|z)$ con $z$ tratto da $q_\phi (z|x_i)$.
+* La divergenza di Kullback-Leibler $\mathbb {KL}$ che misura la dissimilarità di $q_\phi (z|x_i)$ dal prior $p(z)$.
+
+$$
+\mathcal L(\theta, \phi) = \sum_i^N l_i(\theta, \phi)
+$$
+
+$$
+l_i(\theta, \phi) = -\mathbb E_{z \sim q_\theta(z|x_i)} \bigg[ \log \Big(p_\phi(x_i|z) \Big) \bigg] + \mathbb{KL} \Big( q_\theta(z|x_i) \| p(z) \Big)
+$$
+
+Ricordando l’inferenza Bayesiana, il VAE apprende una distribuzione di probabilità congiunta $p(x, z) = p(x|z)p(z)$, di conseguenza il teorema di Bayes ci dice che:
+
+$$
+p(z|x) = \cfrac {p(x,z)} {p(x)} = \cfrac {p(x|z)p(z)} {p(x)}
+$$
+
+$q_\lambda(z|x)$ è un insieme di distribuzioni componenti indipendenti che approssima $p(z|x)$.
+
+Nel caso gaussiano: $\lambda_{x_i} = (\mu_{x_i}, \sigma_{x_i}^2)$.
+
+La distribuzione ottima $q^*_\lambda(z|x)$ minimizza la $\mathbb {KL}$ da $p(z|x)$.
+
+$$
+\mathbb {KL} \Big( q_\lambda (z|x) \big\| p(z|x) \Big) = \mathbb E_q \Big[ \log \big ( q_\lambda(z|x) \big) \Big] - \mathbb E_q \Big[ \log \big ( p(x,z) \big) \Big] + \log\big(p(x)\big) = ELBO(\lambda) + \log\big(p(x)\big)
+$$
+
+> $ELBO (\lambda)$: Evidence Lower BOund, ovvero il limite inferiore della probabilità di osservare i dati dal modello.
+
+$$
+q^*_\lambda(z|x) = \underset {\lambda} {arg \min} \ \mathbb {KL} \Big( q_\lambda (z|x) \big\| p(z|x) \Big)
+$$
+
+Per le singole componenti $ELBO_i(\lambda)$ è pari a:
+
+$$
+ELBO_i(\lambda) = \mathbb E_{q_\lambda(z|x_i)} \Big[ \log \big ( p(x_i|z) \big) \Big] - \mathbb {KL} \Big( q_\lambda (z|x_i) \big\| p(z) \Big)
+$$
+
+L'architettura del VAE si addestra sui parametri $( \theta, \phi)$ del layer e $ELBO_i ( \theta, \phi)$ diviene:
+
+$$
+ELBO_i ( \theta, \phi) = \mathbb E_{q_\theta(z|x_i)} \Big[ \log \big ( p_\phi(x_i|z) \big) \Big] - \mathbb {KL} \Big( q_\theta (z|x_i) \big\| p(z) \Big) = -l_i ( \theta, \phi)
+$$
+
+Si riparametrizza il campionamento di $z$ a partire da due vettori di medie $\bold \mu$ e varianze $\bold \sigma$ e un errore $\epsilon$ sulla varianza estratto dalla distribuzione normale $\mathcal N(0,1)$ al fine di calcolare più efficientemente i gradienti:
+
+$$
+z = \mu + \sigma \cdot \epsilon \\ \epsilon \sim \mathcal N(0,1)
+$$
+
+<div style="display:flex; margin-top: 10px; margin-bottom: 30px;">
+  <img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*WDZmu5pRKLV-MIWqdExC8Q.png " width="48%">
+  <img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*gJTt-zkcccPT5SOXkCbLnQ.png" width="48%">
+</div>
+
+## Generative Adversarial Networks (GAN)
+
+> I VAE sono stati usati spesso per tentare di generare campioni sintetici e realistici tratti dallo spazio di ingresso. Un'applicazione tipica è stata la generazione di **celebrity faces**, ovvero immagini sintetiche non esistenti realistiche ed indistinguibili da foto reali di volti di celebrità.
+
+Le **Generative Adversarial Networks** (**GAN**) sono delle architetture che usano due reti, un **generatore** ed un **discriminatore**, addestrate per competere l'una contro l'altra al fine di generare campioni realistici (secondo il gioco del minmax).
+
+Il **generatore** cerca di ingannare il **discriminatore**, il quale a sua volta cerca di classificare un insieme di input sia reali che generati dal generatore (sintetici), in modo tale da etichettarli come reali o sintetici.
+
+Questo processo porta ad apprendere la distribuzione sui dati.
+
+Il generatore è una rete **non supervisionata**, mentre il discriminatore è una rete **supervisionata**.
+
+<img src=./image/DL/10.png width="50%">
+
+Il **generatore** $G(\bold z, \bold \theta_g)$ è non supervisionato e apprende la probabilità congiunta $p(\bold x, y)$ di ingressi e uscite. Viene addestrato a partire da campioni di rumore gaussiano a produrre esempi realistici.
+
+Il **discriminatore** $D(\bold x, \theta_d)$ è supervisionato e apprende $p(y|\bold x)$. Viene addestrato a discriminare gli esempi reali e quelli sintetici prodotti dal generatore.
+
+Entrambi apprendono con un approccio **minmax**.
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*5rMmuXmAquGTT-odw-bOpw.jpeg width="60%">
+
+$$
+\underset G \min \ \underset D \max \ V(D,G) = \mathbb E_{\bold x\sim p_{data}(\bold x)} \Big[ \log \big(D(\bold x)\big) \Big] + \mathbb E_{\bold z\sim p_{\bold z}(\bold z)} \Big[ \log \big( 1 - D(G(\bold z)) \big) \Big]
+$$
+
+Il **generatore** corrisponde ad un **decoder**, in quanto parte da una rappresentazione interna e genera un campione realistico dello spazio di ingresso, mentre il **discriminatore** corrisponde a un **encoder**.
+
+Questa strategia **minmax** viene implementata da un algoritmo di questo tipo:
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*OZ62_qvC6GAIH7CdajSRqg.png width="70%">
+
+Ecco come funziona una GAN:
+
+1. Campioniamo $m$ campioni di rumore $\bold z$ e dati reali $\bold x$.
+2. Addestriamo $D$ su $\bold x$ e $G(\bold z)$ che non si addestra.
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*dkt6-Jxrq18ZTJinu4j6HA.png width="70%" style="margin-bottom:20px">
+
+4. Campioniamo di nuovo $m$ campioni di rumore $\bold z$.
+5. Addestriamo $G$ sulla base della loss di $D(G(\bold z))$.
+
+<img src=https://miro.medium.com/v2/resize:fit:720/format:webp/1*07aAbZF-qTichNGbS3SkoQ.png width="70%" style="margin-bottom:30px">
+
+Queste architetture sono molto versatili e sono una buona alternativa in tutti quei casi in cui il problema di classificazione è abbastanza arduo e c'è bisogno di generare dei campioni sintetici per aumentare i campioni dei dati in ingresso.
+
+## Reti ricorrenti
+
+Le **reti neurali ricorrenti** (**RNN**) analizzano sequenze di ingressi riproponendo in ingresso le uscite calcolate al passo precedente.
+
+Possono essere viste come catene di reti identiche che analizzano, di volta in volta, $x_t$ e $h_{t-1}$ per produrre $h_t$.
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/RNN-unrolled.png width="70%" style="margin-bottom:30px">
+
+Le RNN in questo modello non riescono a gestire le **long term dependency** perchè non riescono ad apprendere dipendenze da ingressi molto lontani. Questo porta a problemi di **vanishing gradients**.
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/RNN-shorttermdepdencies.png width="60%">
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/RNN-longtermdependencies.png width="60%" style="margin-bottom:30px">
+
+> Per risolvere questo problema, le RNN non vengono utilizzate nella loro forma standard, ma vengono utilizzate con **apposite celle di attivazione**, chiamate **Long-Short Term Memory**.
+
+### Long-Short Term Memory (LSTM)
+
+Nelle **LSTM** le unità apprendono dipendenze a lungo termine attraverso l'uso di uno **stato** $C_t$ della cella che viene propagato verso le celle successive e tiene conto del fatto che la cella vuole **ricordare** o **dimenticare** le dipendenze pregresse.
+
+Le celle propagano tra loro non solo quello che viene chiamato **hidden state $h$** della cella, ma anche uno stato che viene utilizzato per applicare delle operazioni di **forget** della storia pregressa della sequenza.
+
+> Questo consente di **conservare** le attivazioni degli stati precedenti **a lungo termine**.
+
+Le uscite dipendono dall'attivazione accumulata a lungo termine, che potrebbe essere ad un certo punto tagliata da alcune celle che attivano delle funzioni di forget e che portano alla riduzione della finestra di memoria rispetto alla quale si considera la sequenza di ingresso.
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-chain.png width="60%" style="margin-bottom:30px">
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM2-notation.png width="60%" style="margin-bottom:30px">
+
+#### Forget Gate
+
+$f_t$ è il **forget gate** che tiene memoria dello stato $C_{t-1}$. Sarà questo termine a **ricordare** o **dimenticare** alcune parti della sequenza (ad es. selezionare l’attenzione sul verbo della frase).
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-focus-f.png width="60%" style="margin-bottom:30px">
+
+#### Input Gate
+
+$\tilde C_t$ è lo stato candidato della cella.
+
+> La tangente iperbolica $\tanh$ garantisce valori nell'intervallo $\big [ -1, 1 \big ]$ evitando che questa attivazione accumulata esploda lungo la catena di celle.
+
+$i_t$ è l'**input gate** che va a modulare lo stato candidato $\tilde {C_t}$ con l'ingresso alla cella.
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-focus-i.png width="60%" style="margin-bottom:30px">
+
+$C_t$ è lo stato della cella ottenuto pesando lo stato corrente $C_{t-1}$ con il termine candidato $\tilde {C_t}$ generato dalla cella stessa.
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-focus-C.png width="60%" style="margin-bottom:30px">
+
+#### Output Gate
+
+$o_t$ è l'**output gate** che va a filtrare lo stato aggiornato $C_t$ per fornire l'uscita $h_t$ (anche qui viene usata la $\tanh$).
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-focus-o.png width="60%" style="margin-bottom:30px">
+
+### Gate Recurrent Unit (GRU)
+
+Non vi è più lo stato separato $C_t$ ma è presente una **gate di update $z_t$**:
+
+<img src=https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-var-GRU.png width="60%" style="margin-bottom:30px">
+
+> Unisce l’input e il forget gate in un **unico update gate**.
+
+$r_t$ va a pesare $h_{t-1}$ nella generazione dell'uscita candidata $\tilde h_t$.
+
+$z_t$ modula l'uscita precedente $h_{t-1}$ con quella candidata.
+
+La GRU è molto più efficiente delle LSTM, dato che riesce a ricordare le dipendenze molto più a lungo termine.
+
+### Conclusioni
+
+L'architettura tipica è:
+
+* Sequenza di ingresso.
+* Layer(s) LSTM o GRU.
+* Classificatore sugli **hidden state**.
+
+Le uscite vanno sempre passate ad uno stadio di classificazione denso.
+
+Spesso si utilizzano **varianti bidirezionali** delle LSTM o GRU, cioè varianti in cui le sequenze sono fatte apprendere in tutte e due le direzioni, da $x_0$ a $x_t$ e da $x_t$ a $x_0$.
+
+Nel **Natural Language Processing** consentono di catturare il **contesto sinistro e destro** di una parola che è una informazione più ricca al fine di classificarla in termini di task linguistici.
 
 ## Generative Adversarial Networks
 

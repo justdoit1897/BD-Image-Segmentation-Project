@@ -491,7 +491,24 @@ Dato che un approccio a forza bruta per il mining di pattern frequenti richiede 
 Un algoritmo che possiede queste caratteristiche è l'algoritmo Apriori. Innanzitutto, quest'algoritmo riduce lo spazio di ricerca usando la proprietà di chiusura verso il basso (che permette di escludere tutti i candidati a super-insieme di un itemset che, di suo, è raro); l'elgoritmo, infatti, genera candidati di lunghezza $k$ su cui calcola il supporto, prima di generare gli itemset di lunghezza $k+1$, in modo da non calcolare supporti che possono essere solo più rari (questo approccio permette di mantenere più basso il numero di candidati).
 
 Per comprendere come procede l'algoritmo, supponiamo che il nostro universo $U$ sia ordinato in ordine lessicografico, in modo che un itemset (es. $\{ a,b,c,d \}$)possa essere interpretato come una stringa di item.
-Inizialmente, si calcolano i supporti dei singoli item, per generare gli 1-itemset frequenti. Si combinano, quindi, gli 1-itemset frequenti per generare 2-itemset candidati. Dopo aver calcolato i supporti dei 2-itemset candidati, si mantengono gli itemset il cui supporto è almeno $\mathrm{minsup}$
+Inizialmente, si calcolano i supporti dei singoli item, per generare gli 1-itemset frequenti. Si combinano, quindi, gli 1-itemset frequenti per generare 2-itemset candidati. Dopo aver calcolato i supporti dei 2-itemset candidati, si mantengono gli itemset il cui supporto è almeno $\mathrm{minsup}$ e così via, con i $k-$itemset frequenti usati per generare itemset di $k+1$ elementi. Gli algoritmi che contano i supporti dei candidati con lunghezza crescente sono detti algoritmi level-wise.
+Se indichiamo con $\mathcal{F}_k$ l'insieme dei $k-$itemset e con $\mathcal{C}_k$ l'insieme dei $k-$itemset candidati, il cuore dell'algoritmo è un'iterazione che genera i $(k+1)-$itemset candidati a partire dagli itemset frequenti $\in \mathcal{F}_k$. Poiché sono possibili $\binom{k}{2}$ modi per generare $(k+1)-$itemset, si può pensare di imporre un ordinamento lessicografico sugli itemset per assicurasi che i $k-$itemset che generano un $(k+1)-$itemset siano contigui, cosa che semplifica la ricerca all'interno di $\mathcal{F}_k$. L'ordinamento, unito con la proprietà di chiusura verso il basso, fa sì che un itemset candidato $I \in \mathcal{C}_{k+1}$ sia frequente se e solo se tutti i suoi $k-$sottoinsiemi sono presenti in $\mathcal{F}_k$, altrimenti si può rimuovere $I$ da $\mathcal{C}_{k+1}$.
+Per quanto riguarda il calcolo dei supporti, basta contare il numero di occorrenze di ciascun candidato $I \in \mathcal{C}_{k+1}$ all'interno del database $\mathcal{T}$, mantenendo solo i candidati con supporto oltre $\mathrm{minsup}$.
+L'algoritmo termina quando $\mathcal{F}_{k+1} = \emptyset$ e il suo output è $\bigcup _{i=1}^k \mathcal{F}_i$, join dei pattern frequenti a diverse lunghezze.
+
+Per com'è stato definito, specie se si controlla che ogni itemset sia sottoinsieme di una transazione, quest'algoritmo è ancora molto inefficiente.
+
+### Calcolo Efficiente del Supporto
+
+Si utilizza un hash tree, per organizzare meglio i pattern in $\mathcal{C}_{k+1}$ in modo da semplificare i calcoli.
+In un hash tree, ogni nodo interno è associato a una funzione hash casuale, che effettua un mapping all'indice dei diversi figli del nodo (rappresentato come tabella), mentre i nodi foglia contengono elenchi di itemset ordinati lessicograficamente, ciascun itemset associato ad una sola foglia.
+Le funzioni hash dei nodi interni sono usate per decidere quale itemset candidato appartiene a quale nodo foglia:
+
+> Supposta $f(\cdot)$ funzione di hashing tale che $f(\cdot) \rightarrow \left[ 0,\cdots h-1\right]$, un itemset candidato $I \in \mathcal{C}_{k+1}$ ordinato lessicograficamente viene mappato ad un nodo foglia dell'albero, definendo così un percorso dalla radice al nodo foglia usando le funzioni hash dei nodi interni.
+
+L'albero viene costruito ricorsivamente in modalità top-down e viene usato come criterio di terminazione il numero minimo di candidati nel nodo foglia.
+
+Per eseguire il conteggio, tutti 
 
 ## Mining di pattern interessanti
 

@@ -4,16 +4,16 @@
 
 ## Distanza e similarità
 
-Servono per valutare (QUANTIFICARE) la somiglianza tra oggetti o istanzeall’interno di un dataset. Questo è un compito cruciale in molteapplicazioni di data mining, come il CLUSTERING, la CLASSIFICAZIONE ela RICERCA DI PATTERN.
+Servono per valutare (QUANTIFICARE) la somiglianza tra oggetti o istanze all’interno di un data-set. Questo è un compito cruciale in molte applicazioni di data mining, come il CLUSTERING, la CLASSIFICAZIONE e la RICERCA DI PATTERN.
 
-* **SIMILARITÀ**: dati due oggetti $O_i$ e $O_j$ la similarità $Sim(O_i, \ O_j)$ è una funzione che ritorna unvalore tanto più GRANDE quanto $O_i$ e $O_j$ sono simili.
+* **SIMILARITÀ**: dati due oggetti $O_i$ e $O_j$ la similarità $Sim(O_i, \ O_j)$ è una funzione che ritorna un valore tanto più GRANDE quanto $O_i$ e $O_j$ sono simili.
 * **DISTANZA**: dati due oggetti $O_i$ e $O_j$ la distanza $Dist(O_i, \ O_j)$ è una funzione che ritorna un valore tanto più PICCOLO quanto  e  sono simili.
 
-Siparla di distanza o di similarità a seconda del dominio in analisi, ma va ricordato che I PRINCIPI DI PROGETTAZIONE SONO IDENTICI, A PRESCINDERE DAL DOMINIO.
+Si parla di distanza o di similarità a seconda del dominio in analisi, ma va ricordato che I PRINCIPI DI PROGETTAZIONE SONO IDENTICI, A PRESCINDERE DAL DOMINIO.
 
 Tali funzioni sono, in genere, espresse:
 
-1. in FORMA CHIUSA: la funzione viene espressa secondo una FORMULA MATEMATICA (ad esempio la distanza euclidea)
+1. in FORMA CHIUSA: la funzione viene espressa secondo una FORMULA MATEMATICA (ad esempio la distanza euclidea).
 2. in FORMULAZIONE ALGORITMICA: la funzione viene espressa mediante un ALGORITMO.
 
 In base al tipo di dato, abbiamo distanze e/o similarità differenti.
@@ -23,24 +23,22 @@ In base al tipo di dato, abbiamo distanze e/o similarità differenti.
 La funzione di distanza più comune è la **norma $L_p$**:
 
 $$
-Dist(\bar X,\ \bar Y) = \big( \ \sum_{i=1}^d |x_i - y_i|^p \ \big)^{\frac{1}{p}}
+Dist(\bar X,\ \bar Y) = \Bigg( \ \sum_{i=1}^d |x_i - y_i|^p \ \Bigg)^{\frac{1}{p}}
 $$
 
 dove $\bar X = x_1, x_2, ..., x_d$ e $\bar Y = y_1, y_2, ..., y_d$ sono dati multidimensionali (ovvero **vettori**).
 
 In particolare:
 
-* $p=1 \Rightarrow DISTANZA \ DI \ MANHATTAN$, ovvero la somma delle differenze (in valore assoluto) tra le corrispondenti coordinate di $\bar X$ e $\bar Y$. È quindi la distanza percorsa tra due punti, se si dovesse camminare
-  su una griglia ortogonale seguendo solo percorsi orizzontali e verticali.
-* $p=2 \Rightarrow DISTANZA \ EUCLIDEA$, ovvero la distanza lineare (in linea retta) tra due vettori (dati
-  multidimensionali). Essa è **invariante alla rotazione dello spazio dei dati**, dato che la distanza lineare tra due punti (dati) non cambia con l’orientamento del sistema di assi. Allora trasformazioni come  **PCA** ,**SVD** o **DWT** per serie temporali, possono essere usate sui dati senza incidere sulla distanza, dato che le distanze vengono modificate dopo che le dimensioni vengono eliminate.
+* $p=1 \Rightarrow DISTANZA \ DI \ MANHATTAN$, ovvero la somma delle differenze (in valore assoluto) tra le corrispondenti coordinate di $\bar X$ e $\bar Y$. È quindi la distanza percorsa tra due punti, se si dovesse camminare su una griglia ortogonale seguendo solo percorsi orizzontali e verticali.
+* $p=2 \Rightarrow DISTANZA \ EUCLIDEA$, ovvero la distanza lineare (in linea retta) tra due vettori (dati multidimensionali). Essa è **invariante alla rotazione dello spazio dei dati**, dato che la distanza lineare tra due punti (dati) non cambia con l’orientamento del sistema di assi. Allora trasformazioni come  **PCA** ,**SVD** o **DWT** per serie temporali, possono essere usate sui dati senza incidere sulla distanza, dato che le distanze vengono modificate dopo che le dimensioni vengono eliminate.
 * $p=\infty \Rightarrow NORMA \ DEL \ MASSIMO \ O \ NORMA \ DI \ CHEBYSHEV$, ovvero la misura di distanza tra due vettori (dati multidimensionali) definita come la **MASSIMA DIFFERENZA** tra le corrispondenti componenti dei due vettori.
 
 Considerato che la **norma $L_p$** prende in considerazione tutti gli attributi in **MANIERA UNIFORME**, essa potrebbe non operare molto bene in alcuni casi, risentendo dell'influenza di diversi fattori:
 
-* Importanza delle feature (specifica del dominio)
-* Alta dimensionalità
-* Feature localmente irrilevanti
+* Importanza delle feature (specifica del dominio).
+* Alta dimensionalità.
+* Feature localmente irrilevanti.
 
 ### Impatto dell'importanza delle feature
 
@@ -49,7 +47,7 @@ Un analista può sapere quali feature sono più significative di altre per una d
 In tal caso viene usata la **distanza $L_p$ generalizzata**, nota anche come **distanza di Minkowski**:
 
 $$
-Dist(\bar X, \ \bar Y) = \big( \sum_{i=1}^d a_i \cdot |x_i - y_i|^p \big)^{\frac 1 p}
+Dist(\bar X, \ \bar Y) = \Bigg( \sum_{i=1}^d a_i \cdot |x_i - y_i|^p \Bigg)^{\frac 1 p}
 $$
 
 dove $a_i$ è il peso della feature i-esima.
@@ -58,7 +56,7 @@ dove $a_i$ è il peso della feature i-esima.
 
 Molte applicazioni di data mining basate sulla distanza, al crescere della dimensionalità dei dati, sono soggette ad un fenomeno noto come **curse of dimensionality**: le norme, al crescere della dimensionalità dei dati, perdono di capacità discriminativa.
 
-Per meglio comprendere il fenomeno, si consideri un ipercubo unitario d-dimensionale, interamente situato nel quadrante non negativo dello spazio e con uno spigolo coincidente col vettore di origine $\bar O$.
+Per meglio comprendere il fenomeno, si consideri un ipercubo unitario $d$-dimensionale, interamente situato nel quadrante non negativo dello spazio e con uno spigolo coincidente col vettore di origine $\bar O$.
 
 Se volessimo calcolare la distanza di Manhattan tra $ \bar O$ e un punto (vettore) n-dimensionale $ \bar {X} = \big( Y_1, Y_2, ..., Y_n \big)$ appartenente all'ipercubo, otterremmo:
 
@@ -68,7 +66,7 @@ $$
 
 Il risultato è una variabile aleatoria con media $\mu = \frac d 2$ e deviazione standard $ \sigma = \sqrt{\frac d {12}}$.
 
-Si dimostra che, per la legge dei grandi numeri, al crescere della dimensionalità *d* dei dati, la distanza tra due punti qualunque dell'ipercubo cadrà nell'intervallo $\big[ D_{min}, \ D_{max} \big] = \big [ \mu - 3\sigma, \ \mu + 3\sigma \big]$ e ciascun punto disterà dall'origine $\bar O$ esattamente $D_{max} - D_{min} = 6\sigma = \sqrt{3d}$.
+Si dimostra che, per la legge dei grandi numeri, al crescere della dimensionalità *$d$* dei dati, la distanza tra due punti qualunque dell'ipercubo cadrà nell'intervallo $\big[ D_{min}, \ D_{max} \big] = \big [ \mu - 3\sigma, \ \mu + 3\sigma \big]$ e ciascun punto disterà dall'origine $\bar O$ esattamente $D_{max} - D_{min} = 6\sigma = \sqrt{3d}$.
 
 Il **contrasto** della distanza di Manhattan, ovvero il rapporto tra la differenza tra il valor massimo di distanza e il minimo rispetto al valor medio $\mu$ delle grandezze in gioco è dunque:
 
@@ -76,7 +74,7 @@ $$
 Contrast(d)=\frac{D_{max} - D_{min}}{\mu} = \frac {\sqrt{3d}} {\frac d 2} = \sqrt{\frac {12} d}
 $$
 
-All’aumentare di **p**, il contrasto decresce ancora più velocemente con **d**.
+All’aumentare di $p$, il contrasto decresce ancora più velocemente con $d$.
 
 ![1684246869755](image/big_data/1684246869755.png)
 
@@ -86,20 +84,20 @@ All’aumentare di **p**, il contrasto decresce ancora più velocemente con **d*
 
 Questi due fattori, combinati con l'uso di norme basate su somme di quadrati (come norme $L_1$ ed $L_2$) causano degli errori nel calcolo delle distanze. È quindi importante, al fine di non avere distanze falsate e di evitare la **course of dimensionality**:
 
-1. eliminare le feature irrilevanti (**Proximity Thresholding**)
-2. ridurre il rumore sui dati
+1. eliminare le feature irrilevanti (**Proximity Thresholding**).
+2. ridurre il rumore sui dati.
 
 ### Eliminazione delle feature irrilevanti
 
 Dato che, come abbiamo visto, è desiderabile **selezionare feature rilevanti** a livello locale per il calcolo della distanza, come facciamo a mettere in pratica questo approccio per le applicazioni di data mining?
 
-Un approccio generale, che sembra funzionare bene con dati ad alta dimensionalità è il  **PROXIMITY THRESHOLDING** . Esso si basa sul fatto che l’impatto della variazione dei dati dovuta al rumore lungo i singoli attributi deve essere de-enfatizzato mentre la corrispondenza cumulativa su molte dimensioni deve essere conteggiata.
+Un approccio generale, che sembra funzionare bene con dati ad alta dimensionalità è il **PROXIMITY THRESHOLDING**. Esso si basa sul fatto che l’impatto della variazione dei dati dovuta al rumore lungo i singoli attributi deve essere de-enfatizzato mentre la corrispondenza cumulativa su molte dimensioni deve essere conteggiata.
 
 Viene usata una **PROXIMITY THRESHOLD** (soglia di prossimità) che dipende dalla dimensionalità. Prima di applicare questa sogliatura, è necessario preparare opportunamente (discretizzare) i dati:
 
 Si suddividono le dimensioni dei dati in $k_d$ intervalli equiprofondi, in modo da rendere costante la probabilità che due dati condividano lo stesso intervallo in una data dimensione.
 
-Siano $ \bar X = (x_1, x_2, ..., x_d)$ e $\bar Y = (y_1, y_2, ..., y_d)$ due record d-dimensionali.
+Siano $ \bar X = (x_1, x_2, ..., x_d)$ e $\bar Y = (y_1, y_2, ..., y_d)$ due record $d$-dimensionali.
 
 Se $x_i, y_i \in k_i \ \ \Rightarrow \ \ Dist(x_i, y_i) < PROXIMITY \ \ THRESHOLD \ \ \Rightarrow \ \ \bar X, \bar Y$ **sono in prossimità della dimensione *i-esima***.
 
@@ -120,8 +118,8 @@ Poiché ogni singola espressione della sommatoria è compresa tra 0 e 1, il valo
 
 La scelta di $k_d$ anzichè $d$ fa sì che questo approccio si adatti in maniera automatica al crescere della dimensionalità:
 
-* Per **valori piccoli** di $d$ si avrà un comportamento simile alla norma $L_p$
-* Per **valori grandi** di *d* si avrà un comportamento simile alle funzioni di similarità dei **domini testuali**, dove si usa la similarità sulla corrispondenza degli attributi.
+* Per **valori piccoli** di $d$ si avrà un comportamento simile alla norma $L_p$.
+* Per **valori grandi** di $d$ si avrà un comportamento simile alle funzioni di similarità dei **domini testuali**, dove si usa la similarità sulla corrispondenza degli attributi.
 
 ### Impatto della distribuzione dei dati
 
@@ -173,7 +171,7 @@ S(x_i, y_i) =
 \end{cases}
 $$
 
-dove $p_k(x)$ è la frazione di record per cui il k-esimo attributo vale *x*: va vista come una **frequenza di occorrenze**, ovvero un conteggio del numero delle volte che il k-esimo attributo vale *x* nel dataset.
+dove $p_k(x)$ è la frazione di record per cui il $k$-esimo attributo vale $x$: va vista come una **frequenza di occorrenze**, ovvero un conteggio del numero delle volte che il $k$-esimo attributo vale $x$ nel data-set.
 
 #### Goodall similarity
 
@@ -189,8 +187,8 @@ $$
 
 Come abbiamo visto, un dato testuale può essere considerato un dato quantitativo multidimensionale quando viene trattato come bag-of-words:
 
-* la **frequenza di parole** può essere trattata come un attributo quantitativo
-* il **lessico** di base (insieme delle parole) può essere trattato come l’insieme degli attributi
+* la **frequenza di parole** può essere trattata come un attributo quantitativo.
+* il **lessico** di base (insieme delle parole) può essere trattato come l’insieme degli attributi.
 
 Così facendo, si otterrebbe una matrice sparsa e, come abbiamo visto precedentemente, misure come le norme $L_p$ non gestirebbero bene documenti di lunghezza differente appartenenti ad un corpus documentale e avrebbero la tendenza a riportare valori sempre più alti. Ad esempio, la norma $L_2$ tra due documenti lunghi sarà sempre maggiore rispetto a quella tra due documenti brevi, anche se i primi avrebbero molte parole in comune e i secondi sarebbero completamente disgiunti.
 
@@ -202,7 +200,7 @@ $$
 \cos(\bar X, \bar Y) = \frac {\sum_{i=1}^d x_i \cdot y_i} {\sqrt{\sum_{i=1}^d x_i^2} \cdot \sqrt{\sum_{i=1}^d y_i^2}}
 $$
 
-La distanza coseno calcola quindi l'**angolo tra due documenti** $\bar X = (x_1, x_2, ..., x_d)$ e $\bar Y = (y_1, y_2, ..., y_d)$ **su un lessico di dimensione *d***.
+La distanza coseno calcola quindi l'**angolo tra due documenti** $\bar X = (x_1, x_2, ..., x_d)$ e $\bar Y = (y_1, y_2, ..., y_d)$ **su un lessico di dimensione *$d$***.
 
 ### Dati binari
 
@@ -221,24 +219,36 @@ La distanza coseno calcola quindi l'**angolo tra due documenti** $\bar X = (x_1,
 ## Definizione di stimatore
 
 In statistica, si definisce **stimatore** una ***funzione che associa ad ogni possibile campione (scelto casualmente all'interno di una popolazione) un valore del parametro da stimare***.
-Il valore che viene assunto dallo stimatore in presenza di un campione è detto **stima**. In generale, vale che la stima di una variabile $y$ è una funzione del tipo $y=f(x)+\epsilon$, da cui si evince che:
 
-* la relazione tra $x$ e $y$ non è espressa totalmente da $f$
-* si desidera una funzione che approssimi $f$
-* $y$ è una stima puntuale nello spazio delle funzioni
+Il valore che viene assunto dallo stimatore in presenza di un campione è detto **stima**.
+
+In generale, vale che la stima di una variabile $y$ è una funzione del tipo $y=f(x)+\epsilon$, da cui si evince che:
+
+* la relazione tra $x$ e $y$ non è espressa totalmente da $f$.
+* si desidera una funzione che approssimi $f$.
+* $y$ è una stima puntuale nello spazio delle funzioni.
+
+> Uno stimatore o una **statistica** è una funzione dei dati in nostro possesso la quale cerca di fornire la **migliore predizione possibile** di una quantità o funzione a cui siamo interessati.
 
 ## Stimatori polarizzati e non polarizzati
 
-In statistica sono state proposte delle caratteristiche che un buono stimatore dovrebbe soddisfare, tra cui che **l'errore commesso tra la stima e il valore del parametro dev'essere minimo**. Di solito, si sfrutta proprio questa caratteristica per valutare la bontà di uno stimatore, soltanto che, non potendo valutare l'errore puntualmente, si sfrutta lo **scostamento medio**.
-Più nello specifico, detto $\theta$ il parametro da stimare e $\hat{\theta}_m$ lo stimatore, funzione del campione m, possiamo calcolare il valore atteso dello scostamento tra stimatore e parametro, detto **distorsione** o **bias**
+> Non si dispone di un criterio per determinare quale stimatore per una data quantità sia il migliore. 
+>
+> Tuttavia, nella statistica classica, si segue una traccia per determinare le proprietà desiderabili di uno stimatore.
+
+In statistica sono state proposte delle caratteristiche che un buono stimatore dovrebbe soddisfare, tra cui che **l'errore commesso tra la stima e il valore del parametro dev'essere minimo**. 
+
+Di solito, si sfrutta proprio questa caratteristica per valutare la **bontà** di uno stimatore, soltanto che, non potendo valutare l'errore puntualmente, si sfrutta lo **scostamento medio**.
+
+Più nello specifico, detto $\theta$ il parametro da stimare e $\hat{\theta}_m$ lo stimatore, funzione del campione $m$, possiamo calcolare il **valore atteso** dello scostamento tra stimatore e parametro, detto **polarizzazione** o **bias**:
 
 $$
 \mathrm{bias}\left( \hat{\theta}_m \right) = \mathbb{E}\left[ \hat{\theta}_m \right] - \theta
 $$
 
-Diciamo che lo stimatore è non polarizzato se $\mathrm{bias}\left( \hat{\theta}_m \right)=0$.
+Diciamo che lo stimatore è **non polarizzato** se $\mathrm{bias}\left( \hat{\theta}_m \right)=0$.
 
-Lo stimatore $\hat{\theta}_m$ si dice asintoticamente non polarizzato se vale
+Lo stimatore $\hat{\theta}_m$ si dice **asintoticamente non polarizzato** se vale:
 
 $$
 \lim _{m\rightarrow \infty} \mathbb{E}\left[ \hat{\theta}_m \right] = \theta
@@ -246,26 +256,53 @@ $$
 
 ### Stimatori Campionari di Media
 
-Noto che la **media** è data da $\hat{\mu}_m = \frac{1}m \sum_{i=1}^m x^{(i)}$ e, supposto che i campioni siano tratti da distribuzione gaussiana $\forall i,\ x^{(i)} \sim \mathcal{N}\left( x; \mu, \sigma \right) $, risulta che $\mathrm{bias}\left( \hat{\mu}_m \right) = 0$, dunque che **uno stimatore campionario di media è uno stimatore non polarizzato**.
+Noto che la **media campionaria** è data da $\hat{\mu}_m = \frac{1}m \sum_{i=1}^m x^{(i)}$ e, supposto che i campioni siano tratti da distribuzione gaussiana $\forall i,\ x^{(i)} \sim \mathcal{N}\left( x; \mu, \sigma \right) $, risulta che $\mathrm{bias}\left( \hat{\mu}_m \right) = 0$, dunque che **uno stimatore campionario di media è uno stimatore non polarizzato**.
+
+$$
+\mathrm{bias}\left( \hat{\mu}_m \right) = \mathbb{E}\left[ \hat{\mu}_m \right] - \mu = \mathbb{E}\left[ \cfrac{1}m \sum_{i=1}^m x^{(i)} \right] - \mu = \cfrac{1}m \sum_{i=1}^m \mathbb{E}\left[  x^{(i)} \right] - \mu = \cfrac {m\cdot \mu} {m} - \mu = 0
+$$
+
+considerato che $\mathbb{E_{x^{(i)} \sim \mathcal N}} \left[  x^{(i)} \right] = \mu$.
 
 ### Stimatori Campionari di Varianza
 
-Noto che la varianza è data da $\hat{\sigma}_m^2 = \frac{1}m \sum_{i=1}^m \left( x^{(i)}-\hat{\mu}_m \right) ^2 $ e, supposto che i campioni siano tratti da distribuzione gaussiana $\forall i,\ x^{(i)} \sim \mathcal{N}\left( x; \mu, \sigma \right) $, risulta che **uno stimatore campionario di varianza è uno stimatore polarizzato**, e che il fattore polarizzante è $\frac{m-1}m$.
-Basterà scegliere, infatti, una varianza $\hat{\sigma}^2_m = \frac{1}{m-1} \sum_{i=1}^m \left( x^{(i)}-\hat{\mu}_m \right) ^2 $ per ottenere uno stimatore non polarizzato.
+Noto che la **varianza** è data da $\hat{\sigma}_m^2 = \frac{1}m \sum_{i=1}^m \left( x^{(i)}-\hat{\mu}_m \right) ^2 $ e, supposto che i campioni siano tratti da distribuzione gaussiana $\forall i,\ x^{(i)} \sim \mathcal{N}\left( x; \mu, \sigma \right) $, risulta che **uno stimatore campionario di varianza è uno stimatore polarizzato**, e che il fattore polarizzante è $\frac{m-1}m$.
+
+$$
+\mathrm{bias}\left( \hat{\sigma}^2_m \right) = \mathbb{E}\left[ \hat{\sigma}^2_m \right] - \sigma^2 = \cfrac {m-1} {m} \cdot \sigma^2 - \sigma^2 \ne 0
+$$
+
+Basterà scegliere, infatti, una **varianza campionaria** $\hat{\sigma}^2_m = \frac{1}{m-1} \sum_{i=1}^m \left( x^{(i)}-\hat{\mu}_m \right) ^2 $ per ottenere uno **stimatore non polarizzato**.
+
+$$
+\mathrm{bias}\left( \hat{\sigma}^2_m \right) = \mathbb{E}\left[ \hat{\sigma}^2_m \right] - \sigma^2 = \sigma^2 - \sigma^2 = 0
+$$
 
 ### Varianza di uno stimatore
 
-È la misura ***utilizzata per valutare quanto sia stabile la stima rispetto alla variazione dei campioni utilizzati***. Da questa misura, indicata come $\mathrm{Var}\left( \hat{\theta} _m \right)$, si può ricavare lo **standard error** come
+È la misura **utilizzata per valutare quanto sia stabile la stima rispetto alla variazione dei campioni utilizzati**. 
+
+Da questa misura, indicata come $\mathrm{Var}\left( \hat{\theta} _m \right)$, si può ricavare lo **standard error** come:
 
 $$
 \mathrm{SE}\left( \hat{\theta}_m \right) = \sqrt{\mathrm{Var}\left( \hat{\theta} _m \right)}
 $$
 
-Lo standard error è definito come la ***stima della deviazione standard dello stimatore***.
+> Lo standard error è definito come la **stima della deviazione standard dello stimatore**.
+
+Possiamo definire anche lo **standard error della media campionaria** come:
+
+$$
+\mathrm{SE}\left( \hat{\mu}_m \right) = \sqrt{\mathrm{Var}\left( \hat{\mu} _m \right)} = \sqrt{\mathrm{Var} \Bigg[ \cfrac{1}m \sum_{i=1}^m x^{(i)} \Bigg]} = \sqrt{\cfrac {\sigma^2} m}
+$$
+
+> **Qual è la differenza rispetto alla varianza?** La varianza è calcolata sull'intera popolazione, la varianza campionaria è calcolata su un campione della popolazione. La formula della varianza campionaria ha il denominatore ridotto di una unità $(m-1)$, dove $m$ è il numero di unità nel campione.
 
 ### Errore Quadratico Medio (MSE)
 
-Si usa per giudicare la bontà di uno stimatore a minimo bias e a minima varianza, ossia ideale. Indica la ***discrepanza quadratica media tra i valori dei dati osservati e i valori dei dati stimati***, secondo la relazione
+Si usa per giudicare la bontà di uno stimatore a minimo bias e a minima varianza, ossia ideale. 
+
+Indica la ***discrepanza quadratica media tra i valori dei dati osservati e i valori dei dati stimati***, secondo la relazione:
 
 $$
 \mathrm{MSE} = \mathbb{E}\left[ \left( \hat{\theta}_m - \theta \right) ^2 \right] = \mathrm{bias}\left( \hat{\theta}_m \right) + \mathrm{Var}\left( \hat{\theta} _m \right)
@@ -276,8 +313,10 @@ $$
 Gli stimatori visti finora rientrano tra quelli ottenuti coi metodi di ***Monte Carlo***, metodi basati sul campionamento casuale.
 
 Quando si usano i metodi di Monte Carlo, si ottiene una **stima della quantità ricercata con un certo errore**, per cui bisogna fare molta attenzione al processo di **campionamento**, ossia la scelta dei campioni necessari alla stima.
+
 In genere, si campionano dati da una distribuzione per approssimare un integrale non trattabile numericamente o attraverso una serie finita di somme.
-Se osserviamo tale integrale come il calcolo di un valore atteso, stimato attraverso la corrispondente media
+
+Se osserviamo tale integrale come il **calcolo di un valore atteso**, stimato attraverso la corrispondente media
 
 $$
 s = \int p(x)f(x) dx = \mathbb{E}_p \left[ f(x) \right]
@@ -287,31 +326,54 @@ Osserviamo, adesso, alcuni metodi di campionamento.
 
 ### Campionamento con Distribuzione Uniforme
 
-È un tipo di campionamento che fornisce gli stimatori visti in precedenza
+È un tipo di campionamento che fornisce gli stimatori visti in precedenza. La stima della varianza è **polarizzata**.
 
 ### Campionamento Stratificato
 
 È un tipo di campionamento che funziona in questo modo:
 
 1. Si suddivide la popolazione in **strati omogenei** rispetto alla variabile da stimare **usando**, però, **un'altra variabile correlata**.
+   Se ad esempio se si vuole studiare l'utilizzo di Internet da parte di persone di età diversa, si suddividerà la popolazione in “gruppi” di età diverse.
 2. Si estrae con una procedura di campionamento con rimpiazzo il campione relativo a ciascuno strato.
 3. Si mettono insieme i campioni estratti ottenendo un campione globale.
 
-**La stima della varianza**, con questo metodo, **dipende dal numero di strati** $S$ **e dal numero di campioni per strato** $n_k$
+**La stima della media e della varianza**, con questo metodo, **dipendono dal numero $L$ di strati**, che possono avere dimensioni diverse $S_k$ ($S=\sum_k S_k$) **e dal numero di campioni per strato** $n_k$:
+
+Sia $\hat \mu$ la **media**:
 
 $$
-\hat{\sigma}^2 = \sum_{k=1}^L \left( \frac{S_k}S \right) ^2 \frac{\sigma_k^2}{n_k}
+\hat \mu = \sum_{k=1}^L \cfrac {S_k} S \mu_k
 $$
 
-Da notare che, se gli strati hanno tutti la stessa dimensione e viene prelevato un campione per strato ($n_k=1$), la funzione diventa
+> Per calcolare la **media campionaria** facciamo la somma dei dati e dividiamo per il numero degli stessi.
+
+Sia $\hat {\sigma}^2$ la **varianza campionaria**:
 
 $$
-\hat{\sigma}^2 = \frac{1}L \sum_{k=1}^L \sigma_k^2
+\hat {\sigma}^2 = \sum_{k=1}^L \sigma_k^2
+$$
+
+> La varianza campionaria è semplicemente la varianza totale dei dati cioè la somma delle singole varianze di strato perché sono stati campionati indipendentemente in ogni strato.
+
+Sia $\mathrm{Var}[\hat \mu] $ la varianza:
+
+$$
+{\sigma}^2 = \mathrm{Var}[\hat \mu] = \sum_{k=1}^L \left( \frac{S_k}S \right) ^2 \frac{\sigma_k^2}{n_k}
+$$
+
+Da notare che, se gli strati hanno tutti la stessa dimensione ($S_k = \mathrm{cost}$) e viene prelevato un campione per strato ($n_k=1$), la funzione diventa:
+
+$$
+\mathrm{Var}[\hat \mu] = \frac{1}L \sum_{k=1}^L \sigma_k^2
 $$
 
 ### Campionamento per Importanza
 
-L'idea alla base è quella di **approssimare la distribuzione di probabilità di cui calcolare il valore atteso**. Poiché tale distribuzione di probabilità non è nota, si possono estrarre campioni da una distribuzione nota, detta **funzione importanza**, che, si spera, approssimi la distribuzione originaria. Ne risulta
+L'idea alla base è quella di **approssimare la distribuzione di probabilità di cui calcolare il valore atteso**. 
+
+Poiché tale distribuzione di probabilità non è nota, si possono estrarre campioni da una distribuzione nota, detta **funzione importanza**, che, si spera, approssimi la distribuzione originaria. 
+
+Ne risulta:
 
 $$
 s = \int p(x)f(x) dx = \int q(x)\frac{p(x)f(x)}{q(x)} dx
@@ -351,25 +413,37 @@ Osserviamo, adesso, il comportamento degli stimatori:
 
   Da cui, paradossalmente, possiamo dedurre che basta un solo campione per avere una stima esatta, anche se stiamo lavorando con l'ipotesi di conoscere $p(x)$ e $f(x)$, che non è sempre vera. In ogni caso, **lo stimatore di varianza è non polarizzato**.
 
+> La scelta di $q^*$ è critica rispetto alla reale magnitudo di $p|f|$ perché porta a sovrastimare o sottostimare pesantemente l'integrale e ad ottenere varianze troppo elevate. 
+>
+> Possono insorgere problemi di stima in elevata dimensionalità di $x$. 
+>
+> Il campionamento per importanza è comunque molto utilizzato in diversi ambiti del machine learning (**Stochastic Gradient Descent**).
+
 ## Stima MLE e MAP
 
 ### Maximum Likelihood Estimation
 
 È un **procedimento matematico per determinare uno stimatore**, e consiste nel **massimizzare una funzione di verosimiglianza**, definita in base alla probabilità di osservare una determinata realizzazione campionaria condizionatamente ai valori assunti dai parametri statistici da stimare.
 
-La MLE è uno dei principi che possono essere utilizzati per definire se una funzione rappresenta un buono stimatore per una certa classe di modelli di apprendimento. Dato un **insieme** $\mathbb{X} = \{ x^{(1)}, \cdots, x^{(m)} \}$ **di dati osservati** e una **distribuzione di probabilità** $p_{\mathrm{data}}(x)$ **non nota**, **la stima dei parametri** della MLE è data da
+> La MLE è uno dei principi che possono essere utilizzati per definire se una funzione **rappresenta un buono stimatore per una certa classe di modelli di apprendimento**.
+>
+> Di conseguenza è uno dei principi fondanti del machine learning poiché se, dato il problema da risolvere, si riesce a identificare il modello più adatto, la MLE ci fornisce un criterio certo per poter stimare l’errore commesso e l’affidabilità della predizione.
+>
+> Il termine **likelihood** si riferisce specificamente alla situazione in cui, data una serie di misure osservate, si cerca di trovare il valore ottimale per la media o la deviazione standard di una distribuzione.
+
+Dato un **insieme** $\mathbb{X} = \{ x^{(1)}, \cdots, x^{(m)} \}$ **di dati osservati** e una **distribuzione di probabilità** $p_{\mathrm{data}}(x)$ **non nota**, **la stima dei parametri** della MLE è data da:
 
 $$
-\theta _{ML} = \mathrm{argmax}_{\theta} p_{\mathrm{model}} \left( \mathbb{X}; \theta \right) = \mathrm{argmax}_{\theta} \prod _{i=1}^m p_{\mathrm{model}} \left( x^{(i)}; \theta \right)
+\theta _{ML} = \underset {\theta} {\mathrm{argmax}} \ p_{\mathrm{model}} \left( \mathbb{X}; \theta \right) = \underset {\theta} {\mathrm{argmax}} \ \prod _{i=1}^m p_{\mathrm{model}} \left( x^{(i)}; \theta \right)
 $$
 
 Passando ai logaritmi
 
 $$
-\theta _{ML} = \mathrm{argmax}_{\theta} \sum _{i=1}^m \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right) = \mathrm{argmax}_{\theta} \mathbb{E}_{x\sim p_{\mathrm{data}}} \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right)
+\theta _{ML} = \underset {\theta} {\mathrm{argmax}} \sum _{i=1}^m \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right) = \underset {\theta} {\mathrm{argmax}} \ \mathbb{E}_{x\sim p_{\mathrm{data}}} \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right)
 $$
 
-Dove abbiamo, però, che $\mathbb{E}_{x\sim p_{\mathrm{data}}}$ è n**ota dall'osservazione empirica** dei dati.
+Dove abbiamo, però, che $\mathbb{E}_{x\sim p_{\mathrm{data}}}$ è **n****ota dall'osservazione empirica** dei dati.
 
 Supponiamo di voler minimizzare la distanza tra la distribuzione empirica e quella del modello in termini della loro $D_{KL}$
 
@@ -379,25 +453,28 @@ $$
 
 Ovvero la cross-entropia della distribuzione del modello rispetto a quella dei dati.
 
-**È possibile estendere la MLE anche alle stime dei classificatori**. Sfruttando l'ipotesi che i dati siano indipendenti e identicamente distribuiti (i.i.d. assumption), possiamo scrivere che
+**È possibile estendere la MLE anche alle stime dei classificatori**. Sfruttando l'ipotesi che i dati siano **indipendenti e identicamente distribuiti** (i.i.d. assumption), possiamo scrivere che:
 
 $$
-\theta _{ML} = \mathrm{argmax}_{\theta} \mathrm{Pr}\left( Y|\bold{x}; \theta \right) = \mathrm{argmax}_{\theta} \sum _{i=1}^m \log \mathrm{P}\left( y^{(i)}| x^{(i)};\theta \right)
+\theta _{ML} = \underset {\theta} {\mathrm{argmax}} \ \mathrm{P}\left( Y|X; \theta \right) =  \underset {\theta} {\mathrm{argmax}} \ \sum _{i=1}^m \log \mathrm{P}\left( y^{(i)}| x^{(i)};\theta \right)
 $$
 
 **Sotto l'ipotesi di una distribuzione gaussiana,** si dimostra che **l'errore quadratico medio (MSE) corrisponde alla MLE**.
 
+> Minimizzare il **MSE** corrisponde a massimizzare la **MLE**.
+
 ### Stima Maximum a Posteriori
 
-Mentre la **MLE** opera secondo **statistica frequentista**, la stima **MAP** opera secondo **statistica bayesiana**. La differenza principale tra i due tipi
-di statistica risiede nel fatto che mentre, per la statistica frequentista, i parametri del modello sono considerati fissi e che i risultati degli esperimenti ripetibili, per la statistica di Bayes i parametri del modello sono considerati come **variabili casuali** e la cui osservazione è condizionata da una **conoscenza precedente imperfetta**, rappresentata da una distribuzione di probabilità **detta prior**.
+Mentre la **MLE** opera secondo **statistica frequentista**, la stima **MAP** opera secondo **statistica bayesiana**. 
+
+La differenza principale tra i due tipi di statistica risiede nel fatto che mentre, per la statistica frequentista, i parametri del modello sono considerati fissi e che i risultati degli esperimenti ripetibili, per la statistica di Bayes i parametri del modello sono considerati come **variabili casuali** e la cui osservazione è condizionata da una **conoscenza precedente imperfetta**, rappresentata da una distribuzione di probabilità **detta prior**.
 
 La stima MAP è una moda della distribuzione a posteriori della formulazione di Bayes, e può essere usata per ottenere una stima puntuale di una quantità inosservata sulla base dei dati empirici.
 
 Il processo di stima avviene a partire dalla regola di Bayes, che stima una **distribuzione di probabilità a posteriori** su una variabile casuale $\theta$
 
 $$
-p\left( \theta | x^{(1)}, \cdots ,x^{(m)} \right) = \frac{p\left( x^{(1)}, \cdots ,x^{(m)} | \theta \right) p(\theta)}{p\left( x^{(1)}, \cdots ,x^{(m)}\right)}
+p\left( \theta | x^{(1)}, \cdots ,x^{(m)} \right) = \frac{p\left( x^{(1)}, \cdots ,x^{(m)} | \theta \right) p(\theta)}{p\left( x^{(1)}, \cdots ,x^{(m)}\right)} = \cfrac {likelihood \cdot prior} {evidence} = posterior
 $$
 
 dove:
@@ -413,10 +490,10 @@ In questo contesto, **è importante la scelta del prior**, che:
 * deve avere una **distribuzione uniforme/gaussiana** sul dominio di variazione
 * deve avere **alta entropia**
 
-La stima MAP non è altro che la scelta di un valore puntuale per $\theta$ al posto dell'intera distribuzione
+La stima MAP non è altro che la scelta di un valore puntuale per $\theta$ al posto dell'intera distribuzione:
 
 $$
-\theta_{\mathrm{MAP}} = \mathrm{argmax}_{\theta} p\left( \theta | x \right) = \mathrm{argmax}_{\theta} \left[ \log p\left( x | \theta \right) + \log p\left( \theta \right) \right]
+\theta_{\mathrm{MAP}} = \underset {\theta} {\mathrm{argmax}} \ p\left( \theta | x \right) = \underset {\theta} {\mathrm{argmax}} \ \left[ \log p\left( x | \theta \right) + \log p\left( \theta \right) \right]
 $$
 
 Caratteristica importante della stima MAP è che **riduce la varianza dello stimatore rispetto alla MLE**.
@@ -425,7 +502,13 @@ Caratteristica importante della stima MAP è che **riduce la varianza dello stim
 
 1. Cos'è uno stimatore statistico? Cosa si intende per stima? Stima bayesiana (maximum a posteriori)
 2. MLE
+
+   > Sceglie i parametri $\theta$ che massimizzano la **likelihood** $p\left( x^{(1)}, \cdots ,x^{(m)} | \theta \right)$
+   >
 3. MAP
+
+   > Sceglie i parametri $\theta$ che massimizzano la **posterior** $p\left( \theta | x^{(1)}, \cdots ,x^{(m)} \right)$
+   >
 4. Campionamento. Cos'è una stima? Cosa vuol dire rendere la stima più precisa?
 
 # 6 - Mining di Pattern Frequenti
@@ -439,11 +522,16 @@ Un **itemset** (un insieme di elementi) è detto di **cardinalità** $k$ **se co
 Si definisce **supporto di un itemset** $I$ **la frazione delle transazioni del database** $\mathcal{T} = \{ T_1, T_2,\cdots , T_n \}$ **che contiene** $I$ come sottoinsieme, secondo la relazione
 
 $$
-\mathrm{supp}(I) = \frac{|\{ T_i : T_i \supset I  \}|}{\mathcal{T}}
+\mathrm{supp}(I) = \frac{|\{ T_i : T_i \supset I  \}|}{|\mathcal{T}|} = \cfrac {\# \ transazioni \ di \ \mathcal T \ che \ contengono \ I} {\# \ transazioni \ totali \ di \ \mathcal T}
 $$
 
-All'interno di un database transazionale, è probabile che un certo itemset sia presente con una certa frequenza, data dal supporto, cosa che evince che gli elementi all'interno dell'itemset sono, in qualche modo, correlati. Per rilevare le correlazioni tra item nasce il problema del mining di pattern frequenti, il cui obiettivo è quello di rilevare gli itemset che presentano un supporto superiore a una certa soglia di interesse.
-Volendo dare una definizione più rigorosa, si definisce **mining di pattern frequenti il problema per cui**, dato un set di transazioni $\mathcal{T}=\{ T_i \}$ tratte da un insieme $U$, **si determinano gli itemset $I$ che occorrono come sottoinsiemi di almeno una data frazione $\mathrm{minsup}$ in $\mathcal{T}$**.
+> Il supporto è la **frequenza** con cui un certo pattern appare nel data-set in esame.
+
+All'interno di un database transazionale, è probabile che un certo itemset sia presente con una certa frequenza, data dal supporto, cosa che evince che gli elementi all'interno dell'itemset sono, in qualche modo, correlati.
+
+Per rilevare le correlazioni tra item nasce il problema del mining di pattern frequenti, il cui obiettivo è quello di rilevare gli itemset che presentano un supporto superiore a una certa soglia di interesse.
+
+> Volendo dare una definizione più rigorosa, si definisce mining di pattern frequenti il problema per cui, dato un set di transazioni $\mathcal{T}=\{ T_i \}$ tratte da un insieme $U$, si determinano gli itemset $I$ che occorrono come sottoinsiemi di almeno una data frazione $\mathrm{minsup}$ in $\mathcal{T}$.
 
 Bisogna attenzionare, però, il valore di $\mathrm{minsup}$ della definizione. Esso può essere sia un valore frazionario che un numero intero, nel cui caso ci si riferisce al numero grezzo di transazioni in cui un itemset compare, e può essere utilizzato per scremare più o meno pattern frequenti (una soglia più bassa ne rileva di più).
 
@@ -489,6 +577,8 @@ Un'ulteriore proprietà interessante delle regole di associazione è quella di *
 ## Algoritmo Apriori e sue varianti
 
 Dato che un approccio a forza bruta per il mining di pattern frequenti richiede uno sforzo computazionale molto elevato (tra numero di nodi del grafo e calcolo dei supporti), **si preferisce adottare algoritmi che riducano lo spazio di ricerca** (potando nodi del grafo grazie alle proprietà degli itemset), **che permettano di contare il supporto di un itemset in modo più efficiente** (eliminando le transazioni irrilevanti per il calcolo degli itemset candidati) **e che utilizzino una struttura dati compatta per gestire gli itemset frequenti candidati**.
+
+<img src=./image/big_data/6/1.png style="margin-bottom:30px">
 
 Un algoritmo che possiede queste caratteristiche è l'**algoritmo Apriori**. Innanzitutto, quest'algoritmo riduce lo spazio di ricerca usando la proprietà di chiusura verso il basso (che permette di escludere tutti i candidati a super-insieme di un itemset che, di suo, è raro); l'algoritmo, infatti, genera candidati di lunghezza $k$ su cui calcola il supporto, prima di generare gli itemset di lunghezza $k+1$, in modo da non calcolare supporti che possono essere solo più rari (questo approccio permette di mantenere più basso il numero di candidati).
 
@@ -718,22 +808,25 @@ Un'altra possibile soluzione è l'uso di **tecniche di partizionamento dei dati*
 Un **database** è una collezione di dati **persistente** e **condivisa**, gestita in modo **efficace**, **efficiente** e **affidabile** attraverso un **DBMS**, che
 altro non è che un software progettato per consentire la **creazione**, la **manipolazione** e l'**interrogazione** della base di dati.
 
-Al giorno d'oggi, sarebbe desiderabile che ogni organizzazione abbia un DB, che ciascuna applicazione abbia accesso solo alla porzione
-di dati di sua competenza, in tempo reale e senza duplicazione, senza dimenticarsi di alte prestazioni nell'esecuzione di tutte le
-operazioni. Le caratteristiche appena elencate caratterizzano quella che viene definita base di dati **ideale**.
+Al giorno d'oggi, sarebbe desiderabile che ogni organizzazione abbia un DB, che ciascuna applicazione abbia accesso solo alla porzione di dati di sua competenza, in tempo reale e senza duplicazione, senza dimenticarsi di alte prestazioni nell'esecuzione di tutte le operazioni. 
+
+> Le caratteristiche appena elencate caratterizzano quella che viene definita base di dati **ideale**.
+
+![img](./image/big_data/7/1.png)
 
 In realtà, vista la realtà mutevole nel tempo, è più facile imbattersi in basi di dati distribuite, eterogenee e autonome.
 
-### Risorse e Processi
+## Risorse e Processi
 
-Si definisce **risorsa** di un'organizzazione **tutto ciò su cui essa opera** (materiale/immateriale) **per perseguire gli obiettivi aziendali**, mentre si definisce
-**processo** aziendale **l'insieme di attività** (inteso come sequenza di azioni) che l'organizzazione svolge nel suo complesso **per raggiungere un'obiettivo** aziendale.
+Si definisce **risorsa** di un'organizzazione **tutto ciò su cui essa opera** (materiale/immateriale) **per perseguire gli obiettivi aziendali**, mentre si definisce **processo** aziendale **l'insieme di attività** (inteso come sequenza di azioni) che l'organizzazione svolge nel suo complesso **per raggiungere un'obiettivo** aziendale.
 
 Esistono tre categorie di processi:
 
-1. **Processi Decisionali**, che operano su **dati integrati e fortemente aggregati**, facendo uso di **operazioni non strutturate** (senza criteri precisi)
+1. **Processi Direzionali**, che operano su **dati integrati e fortemente aggregati**, facendo uso di **operazioni non strutturate** (senza criteri precisi)
 2. **Processi Gestionali**, che operano su **dati settoriali e parzialmente aggregati**, facendo uso di **operazioni semi-strutturate** (regole note, ma dipendenti dall'essere umano)
 3. **Processi Operativi**, che operano su **dati dipartimentali e dettagliati**, facendo uso di **operazioni strutturate** (basate su regole ben definite)
+
+![img](https://file+.vscode-resource.vscode-cdn.net/home/mario/Scrivania/big_data/BD-Image-Segmentation-Comp/teoria/image/big_data/7/2.png)
 
 Sulla base dei processi aziendali, possiamo distinguere tre tipologie di sistemi informatici:
 
@@ -741,26 +834,26 @@ Sulla base dei processi aziendali, possiamo distinguere tre tipologie di sistemi
 2. Processi Gestionali $\longrightarrow$ **Sistemi di Gestione delle Informazioni**
 3. Processi Operativi $\longrightarrow$ **Sistemi di Elaborazione delle Transazioni**
 
-### OLTP e OLAP
+### Sistemi di Supporto alle Decisioni
 
-Definiamo **sistema di supporto alle decisioni** un qualsiasi sistema informatico che aiuta quanti devono prendere **decisioni strategiche per risolvere problemi non risolvibili con strategie
-di ricerca operativa**.
+Definiamo **sistema di supporto alle decisioni** (**DSS**) un qualsiasi sistema informatico che aiuta quanti devono prendere **decisioni strategiche per risolvere problemi non risolvibili con strategie di ricerca operativa**.
 
-Il supporto alle decisioni avviene attraverso l'aggregazione dei dati dei processi gerarchicamente sottostanti. Dal punto di vista dell'elaborazione
-dei dati, abbiamo due categorie di processing:
+Il supporto alle decisioni avviene attraverso l'aggregazione dei dati dei processi gerarchicamente sottostanti (gestionali e operativi).
+
+Dal punto di vista dell'elaborazione dei dati, abbiamo due categorie di processing:
 
 1. **On-Line Transaction Processing (OLTP)** - su basi di dati nei sistemi di **livello operativo**
 2. **On-Line Analytical Processing (OLAP)** - su sistemi di **livello più alto**
 
 #### OLTP
 
-Detti anche **sistemi transazionali**, permettono di registare, modificare e mostrare record in tempo reale. **I dati sono distribuiti su più tabelle**, mentre le
-informazioni vengono inserite solo una volta, cosa che evita ridondanze. I sistemi OLTP sono caratterizzati da **operazioni elementari estremamente veloci** e,
-dati il livello di competenza dell'utenza e la sua natura esecutiva, **possibilità di generare errori minima**.
+Detti anche **sistemi transazionali**, permettono di registare, modificare e mostrare record in tempo reale. **I dati sono distribuiti su più tabelle**, mentre le informazioni vengono inserite solo una volta, cosa che evita ridondanze. 
 
-Proprio per l'ultima caratteristica citata, i sitemi OLTP fanno enorme uso di **transazioni**, ossia **insiemi di operazioni atomiche sequenziali**, che quindi ha
-successo/fallimento in blocco. Per le caratteristiche delle sue transazioni, si dice che i sistemi OLTP possiedono le proprietà di **Atomicità**, **Coerenza**,
-**Isolamento** e **Durabilitintegratoreà** (**ACID**), rendendo tutte le operazioni rapide e fluide.
+I sistemi OLTP sono caratterizzati da **operazioni elementari estremamente veloci** e, dati il livello di competenza dell'utenza e la sua natura esecutiva, **possibilità di generare errori minima**.
+
+Proprio per l'ultima caratteristica citata, i sitemi OLTP fanno enorme uso di **transazioni**, ossia **insiemi di operazioni atomiche sequenziali**, che quindi ha successo/fallimento in blocco. 
+
+Per le caratteristiche delle sue transazioni, si dice che i sistemi OLTP possiedono le proprietà di **Atomicità**, **Coerenza**, **Isolamento** e **Durabilità** (**ACID**), rendendo tutte le operazioni rapide e fluide.
 
 Tra le altre caratteristiche ricordiamo:
 
@@ -925,7 +1018,7 @@ In un'implementazione MOLAP i dati sono accessibili in modo diretto grazie all'*
 #### ROLAP
 
 L'OLAP Relazionale è un OLAP che esegue l'analisi multidimensionale dinamica dei dati archiviati un un RDB. L'elaborazione dei dati può avvenire sul client, nel sistema di database o su un server. In un'architettura a due livelli, il client interroga il database e riceve i dati richiesti, in una a tre livelli l'utente invia, invece, una richiesta di analisi multidimensionale e il motore ROLAP la converte in SQL per l'invio al database, con il processo eseguito al contrario per l'invio dei dati.
-Usando database relazionali, ROLAP richiede più tempo di elaborazione e spazio su disco per operazioni tipiche dei database multidimensionali, ma supporta più utenti e maggiori quantità di dati. Lo schema usato da ROLAP è detto a stella e si compone di:
+Usando database relazionali, ROLAP richiede più tempo di elaborazione e spazio su disco per operazioni tipiche dei database multidimensionali, ma supporta più utenti e maggiori quantità di dati. Lo **schema** usato da ROLAP è detto **a stella** e si compone di:
 
 * tabella dei fatti, che memorizza le misure di un processo in forma molto disaggregata
 * due o più tabelle di dimensione, che rappresentano prospettive di analisi dei dati (ossia fenomeni per cui è utile analizzare i fatti)
@@ -1833,7 +1926,7 @@ I $k$ cluster sono generalmente determinati dall'utente.
 Assumiamo di avere un dataset $\mathcal D$ contenente *$n$* dati $\bar {X_1}, \bar{X_2}, \dots , \bar {X_n}$. L'obiettivo è quello di determinare *k* prototipi rappresentativi $\bar {Y_1}, \bar{Y_2}, \dots , \bar {Y_k}$ che minimizzino la seguente funzione obiettivo:
 
 $$
-O = \sum_{i=1}^{n} \bigg[ min_j \ Dist(\bar{X_i}, \ \bar{Y_j}) \bigg]
+O = \sum_{i=1}^{n} \bigg[ \min_j \ Dist(\bar{X_i}, \ \bar{Y_j}) \bigg]
 $$
 
 > La somma delle distanze dei diversi dati dai loro prototipi rappresentativi più vicini deve essere ridotta al minimo.

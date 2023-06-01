@@ -232,11 +232,11 @@ In generale, vale che la stima di una variabile $y$ è una funzione del tipo $y=
 
 ## Stimatori polarizzati e non polarizzati
 
-> Non si dispone di un criterio per determinare quale stimatore per una data quantità sia il migliore. 
+> Non si dispone di un criterio per determinare quale stimatore per una data quantità sia il migliore.
 >
 > Tuttavia, nella statistica classica, si segue una traccia per determinare le proprietà desiderabili di uno stimatore.
 
-In statistica sono state proposte delle caratteristiche che un buono stimatore dovrebbe soddisfare, tra cui che **l'errore commesso tra la stima e il valore del parametro dev'essere minimo**. 
+In statistica sono state proposte delle caratteristiche che un buono stimatore dovrebbe soddisfare, tra cui che **l'errore commesso tra la stima e il valore del parametro dev'essere minimo**.
 
 Di solito, si sfrutta proprio questa caratteristica per valutare la **bontà** di uno stimatore, soltanto che, non potendo valutare l'errore puntualmente, si sfrutta lo **scostamento medio**.
 
@@ -280,7 +280,7 @@ $$
 
 ### Varianza di uno stimatore
 
-È la misura **utilizzata per valutare quanto sia stabile la stima rispetto alla variazione dei campioni utilizzati**. 
+È la misura **utilizzata per valutare quanto sia stabile la stima rispetto alla variazione dei campioni utilizzati**.
 
 Da questa misura, indicata come $\mathrm{Var}\left( \hat{\theta} _m \right)$, si può ricavare lo **standard error** come:
 
@@ -300,7 +300,7 @@ $$
 
 ### Errore Quadratico Medio (MSE)
 
-Si usa per giudicare la bontà di uno stimatore a minimo bias e a minima varianza, ossia ideale. 
+Si usa per giudicare la bontà di uno stimatore a minimo bias e a minima varianza, ossia ideale.
 
 Indica la ***discrepanza quadratica media tra i valori dei dati osservati e i valori dei dati stimati***, secondo la relazione:
 
@@ -369,9 +369,9 @@ $$
 
 ### Campionamento per Importanza
 
-L'idea alla base è quella di **approssimare la distribuzione di probabilità di cui calcolare il valore atteso**. 
+L'idea alla base è quella di **approssimare la distribuzione di probabilità di cui calcolare il valore atteso**.
 
-Poiché tale distribuzione di probabilità non è nota, si possono estrarre campioni da una distribuzione nota, detta **funzione importanza**, che, si spera, approssimi la distribuzione originaria. 
+Poiché tale distribuzione di probabilità non è nota, si possono estrarre campioni da una distribuzione nota, detta **funzione importanza**, che, si spera, approssimi la distribuzione originaria.
 
 Ne risulta:
 
@@ -413,9 +413,9 @@ Osserviamo, adesso, il comportamento degli stimatori:
 
   Da cui, paradossalmente, possiamo dedurre che basta un solo campione per avere una stima esatta, anche se stiamo lavorando con l'ipotesi di conoscere $p(x)$ e $f(x)$, che non è sempre vera. In ogni caso, **lo stimatore di varianza è non polarizzato**.
 
-> La scelta di $q^*$ è critica rispetto alla reale magnitudo di $p|f|$ perché porta a sovrastimare o sottostimare pesantemente l'integrale e ad ottenere varianze troppo elevate. 
+> La scelta di $q^*$ è critica rispetto alla reale magnitudo di $p|f|$ perché porta a sovrastimare o sottostimare pesantemente l'integrale e ad ottenere varianze troppo elevate.
 >
-> Possono insorgere problemi di stima in elevata dimensionalità di $x$. 
+> Possono insorgere problemi di stima in elevata dimensionalità di $x$.
 >
 > Il campionamento per importanza è comunque molto utilizzato in diversi ambiti del machine learning (**Stochastic Gradient Descent**).
 
@@ -443,7 +443,7 @@ $$
 \theta _{ML} = \underset {\theta} {\mathrm{argmax}} \sum _{i=1}^m \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right) = \underset {\theta} {\mathrm{argmax}} \ \mathbb{E}_{x\sim p_{\mathrm{data}}} \log p_{\mathrm{model}} \left( x^{(i)}; \theta \right)
 $$
 
-Dove abbiamo, però, che $\mathbb{E}_{x\sim p_{\mathrm{data}}}$ è **n****ota dall'osservazione empirica** dei dati.
+Dove abbiamo, però, che $\mathbb{E}_{x\sim p_{\mathrm{data}}}$ è **nota dall'osservazione empirica** dei dati.
 
 Supponiamo di voler minimizzare la distanza tra la distribuzione empirica e quella del modello in termini della loro $D_{KL}$
 
@@ -465,7 +465,7 @@ $$
 
 ### Stima Maximum a Posteriori
 
-Mentre la **MLE** opera secondo **statistica frequentista**, la stima **MAP** opera secondo **statistica bayesiana**. 
+Mentre la **MLE** opera secondo **statistica frequentista**, la stima **MAP** opera secondo **statistica bayesiana**.
 
 La differenza principale tra i due tipi di statistica risiede nel fatto che mentre, per la statistica frequentista, i parametri del modello sono considerati fissi e che i risultati degli esperimenti ripetibili, per la statistica di Bayes i parametri del modello sono considerati come **variabili casuali** e la cui osservazione è condizionata da una **conoscenza precedente imperfetta**, rappresentata da una distribuzione di probabilità **detta prior**.
 
@@ -493,7 +493,7 @@ In questo contesto, **è importante la scelta del prior**, che:
 La stima MAP non è altro che la scelta di un valore puntuale per $\theta$ al posto dell'intera distribuzione:
 
 $$
-\theta_{\mathrm{MAP}} = \underset {\theta} {\mathrm{argmax}} \ p\left( \theta | x \right) = \underset {\theta} {\mathrm{argmax}} \ \left[ \log p\left( x | \theta \right) + \log p\left( \theta \right) \right]
+\theta_{\mathrm{MAP}} = \underset {\theta} {\mathrm{argmax}} \ p\left( \theta | \bold x \right) = \underset {\theta} {\mathrm{argmax}} \ \Big[ \log p\left( \bold x | \theta \right) + \log p\left( \theta \right) \Big]
 $$
 
 Caratteristica importante della stima MAP è che **riduce la varianza dello stimatore rispetto alla MLE**.
@@ -515,10 +515,18 @@ Caratteristica importante della stima MAP è che **riduce la varianza dello stim
 
 ## Generalità e definizioni
 
+> È una tecnica di analisi dei dati che viene utilizzata per individuare pattern ricorrenti in un data-set.
+>
+> In particolare, è usata per identificare i gruppi di elementi che compaiono insieme in un insieme di transazioni.
+
 Il problema del **mining di pattern frequenti** nasce nel contesto dei dati transazionali, con particolare riferimento a dati non ordinati.
-Dato un database di **transazioni** $\mathcal{T} = \{ T_1, T_2,\cdots , T_n \}$ di $n$ transazioni relative a un universo $U$ di item, ogni transazione $T_i$ è una **lista di item rappresentata come un record multidimensionale di dati binari di lunghezza** $|U|$, in cui un elemento pari a 1 indica la presenza dell'item nella transazione.
+
+Dato un database (tabella) di **transazioni** $\mathcal{T} = \{ T_1, T_2,\cdots , T_n \}$ di $n$ transazioni relative a un universo $U$ di item, ogni transazione $T_i$ è una **lista di item rappresentata come un record multidimensionale di dati binari di lunghezza** $|U|$, in cui un elemento pari a 1 indica la presenza dell'item nella transazione.
 
 Un **itemset** (un insieme di elementi) è detto di **cardinalità** $k$ **se contiene esattamente** $k$ **item all'interno della transazione**. È possibile che uno stesso itemset si rilevi in più transazioni, per cui è opportuno definire il concetto di supporto.
+
+> Il processo di mining dei pattern frequenti prevede l'identificazione di pattern che soddisfano un certo valore di **supporto**.
+
 Si definisce **supporto di un itemset** $I$ **la frazione delle transazioni del database** $\mathcal{T} = \{ T_1, T_2,\cdots , T_n \}$ **che contiene** $I$ come sottoinsieme, secondo la relazione
 
 $$
@@ -527,7 +535,7 @@ $$
 
 > Il supporto è la **frequenza** con cui un certo pattern appare nel data-set in esame.
 
-All'interno di un database transazionale, è probabile che un certo itemset sia presente con una certa frequenza, data dal supporto, cosa che evince che gli elementi all'interno dell'itemset sono, in qualche modo, correlati.
+All'interno di un database transazionale $\mathcal{T}$, è probabile che un certo itemset $I$ sia presente con una certa frequenza, data dal supporto, cosa che evince che gli elementi all'interno dell'itemset sono, in qualche modo, correlati.
 
 Per rilevare le correlazioni tra item nasce il problema del mining di pattern frequenti, il cui obiettivo è quello di rilevare gli itemset che presentano un supporto superiore a una certa soglia di interesse.
 
@@ -537,26 +545,55 @@ Bisogna attenzionare, però, il valore di $\mathrm{minsup}$ della definizione. E
 
 ## Proprietà di Itemset e Regole
 
-Una proprietà interessante degli itemset è che, se un itemset $I$ è contenuto in una transazione, anche tutti i suoi sottoinsiemi sono contenuti nella transazione, ma potrebbero essere presenti in altre. Pertanto, il supporto di un sottoinsieme $J \subset I$ sarà sempre tale che $\mathrm{supp}(J)\geq \mathrm{supp}(I)$, secondo la **proprietà di monotonicità del supporto**.
+Una proprietà interessante degli itemset è che, se un itemset $I$ è contenuto in una transazione, anche tutti i suoi sottoinsiemi sono contenuti nella transazione, ma potrebbero essere presenti in altre.
+
+Pertanto, il supporto di un sottoinsieme $J \subset I$ sarà sempre tale che $\mathrm{supp}(J)\geq \mathrm{supp}(I)$, secondo la **proprietà di monotonicità del supporto**.
+
 Tale proprietà afferma che **il supporto di un qualunque sottoinsieme $J \subset I$ è almeno uguale al supporto di $I$, secondo la relazione**
 
 $$
 \mathrm{supp}(J)\geq \mathrm{supp}(I) \qquad \forall J\subset I
 $$
 
-Dalla proprietà di monotonicità ne discende un'altra, quella di **chiusura verso il basso**, per cui **ogni sottoinsieme di un itemset frequente è anch'esso frequente**. Bisogna prestare attenzione al fatto che tale proprietà fornisca una **condizione solo necessaria** affinchè un itemset sia un pattern frequente.
+Dalla proprietà di monotonicità ne discende un'altra, quella di **chiusura verso il basso**:
+
+> **Chiusura verso il basso**: ogni sottoinsieme di un itemset frequente è anch'esso frequente.
+>
+> Bisogna prestare attenzione al fatto che tale proprietà fornisca una **condizione solo necessaria** affinchè un itemset sia un pattern frequente.
+
+> **Itemset frequente** = itemset $I$ che appare frequentemente all'interno di $\mathcal T$, ovvero il cui supporto soddisfa una soglia di frequenza predefinita, detta minsup.
+>
+> $$
+> I \ frequente \iff \mathrm{supp}(I) \ge \mathrm{minsup}
+> $$
 
 Un'altra proprietà è quella del **massimo itemset frequente**, per cui un itemset frequente $J$ ad un dato supporto minimo $\mathrm{minsup}$ si dice massimo **se non esistono altri itemset frequenti che lo contengono**.
 
+> **Massimo itemset** **frequente** (**MIF**): un itemset $J$ è il MIF $\iff$$J$ è frequente e $\not \exist \ I$ tale che $J\subset I$.
+
 Poiché la rappresentazione basata sul solo supporto non fornisce indicazioni sui supporti di tutti i sottoinsiemi di un itemset frequente, spesso si preferisce una rappresentazione tramite **rete di itemset**, una rete costituita da $2^{|U|}$ (uno per ogni itemset) in cui **gli archi connettono i nodi solo se differiscono esattamente di un elemento**.
+
 Con una rappresentazione del genere, si possono separare gli itemset in frequenti e rari grazie ad un confine, la cui caratteristica interessante è che è prossimo a tutti i massimi itemset frequenti.
 
 Gli itemset frequenti possono essere utilizzati, inoltre, per definire delle **regole di associazione**, sfruttando una misura nota come **confidenza**. Innanzitutto, **definiamo una regola di associazione $X\implies Y$, per due itemset $X$ e $Y$, se vi è una co-occorrenza dei due itemset nella stessa transazione** (intesa, intermini insiemistici, come $X\cup Y$).
+
 Dopo di ché, dati due itemset $X$ e $Y$, definiamo la **confidenza** $\mathrm{conf}\left( X\cup Y \right)$ della regola $X \cup Y$ come la **probabilità condizionata che si verifichi $X\cup Y$ in una transazione, data la transazione $X$**, secondo la relazione
 
 $$
-\mathrm{conf}\left( X\cup Y \right) = \frac{\mathrm{supp}\left( X\cup Y \right)}{\mathrm{supp}(X)}
+\mathrm{conf}\left( X\Rightarrow Y \right) = \frac{\mathrm{supp}\left( X\cup Y \right)}{\mathrm{supp}(X)}
 $$
+
+> **Confidenza** = metrica usata per valutare la "forza" delle regole di associazione tra due o più itemset frequenti.
+>
+> $$
+> \mathrm{conf}\left( X\Rightarrow Y \right) = \frac{\mathrm{supp}\left( X\cup Y \right)}{\mathrm{supp}(X)} = \mathrm {Pr} (Y'|X)
+> $$
+>
+> Misura la probabilità che un certo itemset frequente $Y' = X\cup Y$, detto **conseguente**, sia presente in un insieme di transazioni, condizionatamente al fatto che un altro itemset frequente $X$, detto **antecedente**, sia presente nello stesso insieme di transazioni.
+>
+> $$
+> \mathrm{conf}\left( X\Rightarrow Y \right) = \frac{\mathrm{supp}\left( X\cup Y \right)}{\mathrm{supp}(X)} = \cfrac {frequenza \ con \ cui \ X \ e \ Y \ compaiono \ contemporaneamente \ nello \ stesso \ insieme \ di \ transazioni } {frequenza \ con \ cui \ X \ compare \ in \ quell'insieme \ di \ transazioni}
+> $$
 
 Banalmente, la probabilità dell'occorrenza di un itemset è il suo supporto.
 
@@ -565,29 +602,42 @@ Dati due itemset $X$ e $Y$, una regola di associazione $X \implies Y$ si dice **
 1. $\mathrm{supp}\left( X\cup Y \right) \geq \mathrm{minsup}$
 2. $\mathrm{conf}\left( X\implies Y \right) \geq \mathrm{minconf}$
 
-La prima condizione ci assicura che un numero sufficiente di transazioni sia rilevante per la regola, la seconda, invece, ci assicura che la regola sia robusta rispetto alle probabilità condizionate.
+La prima condizione ci assicura che un numero sufficiente di transazioni sia rilevante per la regola (conferisce **significatività**), la seconda, invece, ci assicura che la regola sia robusta rispetto alle probabilità condizionate (conferisce **casualità**).
 
 Detto ciò, è possibile suddividere il processo di generazione di regole di associazione in **due fasi, ognuna corrispondente ai due criteri** perché sia a supporto minimo:
 
-1. **Nella prima fase si generano tutti gli itemset frequenti con supporto minimo** $ \mathrm{minsup} $. In questa fase viene sostenuta la maggior parte del costo computazionale, divenendo, quindi, la parte più interessante del processo.
-2. **Nella seconda fase vengono generate le regole di associazione a partire dagli itemset frequenti con livello di confidenza minimo $ \mathrm{minconf} $**. Questa fase è relativamente semplice: per ogni itemset $I \in \mathcal{F}$, si partiziona $I$ in tutte le possibili combinazioni di $X$ e $Y = I - X$ e si verificano quali coppie generino regole di associazione a confidenza minima.
+1. **Generazione di tutti gli itemset frequenti con supporto minimo** $ \mathrm{minsup} $.
+   In questa fase viene sostenuta la maggior parte del costo computazionale, divenendo, quindi, la parte più interessante del processo.
+2. **Generazione delle regole di associazione a partire dagli itemset frequenti con livello di confidenza minimo $ \mathrm{minconf} $**.
+   Questa fase è relativamente semplice: per ogni itemset $I \in \mathcal{F}$, si partiziona $I$ in tutte le possibili combinazioni di $X$ e $Y = I - X$ e si verificano quali coppie generino regole di associazione a confidenza minima.
 
 Un'ulteriore proprietà interessante delle regole di associazione è quella di **monotonicità della confidenza**, per cui, dati gli itemset $X_1$, $X_2$ e $I$, tali che $X_1 \subset X_2 \subset I$, **la confidenza della regola $X_2 \implies I-X_2$ è almeno pari a quella della regola $X_1 \implies I-X_1$**
 
 ## Algoritmo Apriori e sue varianti
 
-Dato che un approccio a forza bruta per il mining di pattern frequenti richiede uno sforzo computazionale molto elevato (tra numero di nodi del grafo e calcolo dei supporti), **si preferisce adottare algoritmi che riducano lo spazio di ricerca** (potando nodi del grafo grazie alle proprietà degli itemset), **che permettano di contare il supporto di un itemset in modo più efficiente** (eliminando le transazioni irrilevanti per il calcolo degli itemset candidati) **e che utilizzino una struttura dati compatta per gestire gli itemset frequenti candidati**.
+> Un **approccio a forza bruta** per il mining di pattern frequenti richiede uno sforzo computazionale molto elevato, dato che, oltre al calcolo dei supporti, prevede l'esplorazione di tutti i $2^{|U|} - 1$ nodi del grafo degli itemset.
+
+Si preferisce adottare algoritmi che:
+
+1. **Riducano lo spazio di ricerca** (potando nodi del grafo grazie alle proprietà degli itemset).
+2. **Permettano di contare il supporto di un itemset in modo più efficiente** (eliminando le transazioni irrilevanti per il calcolo degli itemset candidati).
+3. **Utilizzino una struttura dati compatta per gestire gli itemset frequenti candidati**.
+
+Un algoritmo che possiede queste caratteristiche è l'**algoritmo Apriori**.
 
 <img src=./image/big_data/6/1.png style="margin-bottom:30px">
 
-Un algoritmo che possiede queste caratteristiche è l'**algoritmo Apriori**. Innanzitutto, quest'algoritmo riduce lo spazio di ricerca usando la proprietà di chiusura verso il basso (che permette di escludere tutti i candidati a super-insieme di un itemset che, di suo, è raro); l'algoritmo, infatti, genera candidati di lunghezza $k$ su cui calcola il supporto, prima di generare gli itemset di lunghezza $k+1$, in modo da non calcolare supporti che possono essere solo più rari (questo approccio permette di mantenere più basso il numero di candidati).
+Dati in input il database di transazioni $\mathcal T$ e il $\mathrm{minsup}$, l'algoritmo si compone delle seguenti fasi:
 
-Per comprendere come procede l'algoritmo, supponiamo che il nostro universo $U$ sia ordinato in ordine lessicografico, in modo che un itemset (es. $\{ a,b,c,d \}$)possa essere interpretato come una stringa di item.
-1. Inizialmente, si calcolano i supporti dei singoli item, per generare gli 1-itemset frequenti. 
+Innanzitutto, quest'algoritmo riduce lo spazio di ricerca usando la proprietà di chiusura verso il basso (che permette di escludere tutti i candidati a super-insieme di un itemset che, di suo, è raro); l'algoritmo, infatti, genera candidati di lunghezza $k$ su cui calcola il supporto, prima di generare gli itemset di lunghezza $k+1$, in modo da non calcolare supporti che possono essere solo più rari (questo approccio permette di mantenere più basso il numero di candidati).
+
+Per comprendere come procede l'algoritmo, supponiamo che il nostro universo $U$ sia ordinato in ordine lessicografico, in modo che un itemset (es. $\{ a,b,c,d \}$) possa essere interpretato come una stringa di item.
+
+1. Inizialmente, si calcolano i supporti dei singoli item, per generare gli 1-itemset frequenti.
 2. Si combinano, quindi, gli 1-itemset frequenti per generare 2-itemset candidati. Dopo aver calcolato i supporti dei 2-itemset candidati, si mantengono gli itemset il cui supporto è almeno $\mathrm{minsup}$ e così via, con i $k-$itemset frequenti usati per generare itemset di $k+1$ elementi. Gli algoritmi che contano i supporti dei candidati con lunghezza crescente sono detti algoritmi level-wise.
 
-Se indichiamo con $\mathcal{F}_k$ l'insieme dei $k-$itemset e con $\mathcal{C}_k$ l'insieme dei $k-$itemset candidati, il **cuore dell'algoritmo** è un'iterazione che genera i $(k+1)-$itemset candidati a partire dagli itemset frequenti $\in \mathcal{F}_k$. 
-Poiché sono possibili $\binom{k}{2}$ modi per generare $(k+1)-$itemset, si può pensare di imporre un **ordinamento lessicografico sugli itemset** per assicurasi che i $k-$itemset che generano un $(k+1)-$itemset siano contigui, cosa che semplifica la ricerca all'interno di $\mathcal{F}_k$. 
+Se indichiamo con $\mathcal{F}_k$ l'insieme dei $k-$itemset e con $\mathcal{C}_k$ l'insieme dei $k-$itemset candidati, il **cuore dell'algoritmo** è un'iterazione che genera i $(k+1)-$itemset candidati a partire dagli itemset frequenti $\in \mathcal{F}_k$.
+Poiché sono possibili $\binom{k}{2}$ modi per generare $(k+1)-$itemset, si può pensare di imporre un **ordinamento lessicografico sugli itemset** per assicurasi che i $k-$itemset che generano un $(k+1)-$itemset siano contigui, cosa che semplifica la ricerca all'interno di $\mathcal{F}_k$.
 L'ordinamento, unito con la proprietà di chiusura verso il basso, fa sì che **un itemset candidato $I \in \mathcal{C}_{k+1}$ sia frequente se e solo se tutti i suoi $k-$sottoinsiemi sono presenti in $\mathcal{F}_k$**, altrimenti si può rimuovere $I$ da $\mathcal{C}_{k+1}$.
 Per quanto riguarda il calcolo dei supporti, basta contare il numero di occorrenze di ciascun candidato $I \in \mathcal{C}_{k+1}$ all'interno del database $\mathcal{T}$, mantenendo solo i candidati con supporto oltre $\mathrm{minsup}$.
 L'algoritmo termina quando $\mathcal{F}_{k+1} = \emptyset$ e il suo output è $\bigcup _{i=1}^k \mathcal{F}_i$, join dei pattern frequenti a diverse lunghezze.
@@ -605,6 +655,7 @@ Supposta $f(\cdot)$ funzione di hashing tale che $f(\cdot) \rightarrow \left[ 0,
 L'albero viene **costruito ricorsivamente in modalità top-down** e viene usato come criterio di terminazione il numero minimo di candidati nel nodo foglia.
 
 Per eseguire il conteggio, per ogni transazione $T_i \in \mathcal{T}$ si analizzano ricorsivamente i suoi item:
+
 * Al livello $1$ (nodo radice) si seguono tutti i rami in modo che qualunque item in $T_i$ possa essere preso successivamente in considerazione
 * Al livello di profondità $k$, raggiunto per hashing dell'item $j$ in $T_j$, si esegue l'hashing di tutti i successivi $T_i^{(j)}$ per seguire tutti i possibili percorsi che contengano itemset di $T_i$
 * Tutti i nodi foglia rilevanti (che possono contenere un itemset di $T_i$) vengono raccolti, ordinati e confrontati con $T_i$: se vi sono contenuti, si incrementa il conteggio del supporto
@@ -613,8 +664,8 @@ Per eseguire il conteggio, per ogni transazione $T_i \in \mathcal{T}$ si analizz
 
 Si tratta di algoritmi, basati sul concetto di enumerazione degli insiemi, con l'obiettivo di **generare itemset candidati all'interno di un enumeration tree** (albero lessicografico).
 Per gli itemset frequenti, un **enumeration tree** è definito come un albero in cui:
-1. Vi è **un nodo per ogni itemset frequente**, con la radice pari all'itemset vuoto
 
+1. Vi è **un nodo per ogni itemset frequente**, con la radice pari all'itemset vuoto
 2. Dato un itemset frequente $I=\{ i_1,\cdots , i_k \}$, il genitore del nodo $I$ è l'itemset $\{ i_1,\cdots , i_{k-1} \}$, per cui ogni nodo può essere esteso in un figlio solo aggiungendo un item che occorre lessicograficamente dopo tutti i suoi item.
 
 La **generazione dei pattern** candidati avviene per **accrescimento dell'enumeration tree**, che può avvenire in tre modi sulla base del compromesso tra archiviazione, costi di accesso al disco ed efficienza di calcolo.
@@ -622,26 +673,21 @@ La **generazione dei pattern** candidati avviene per **accrescimento dell'enumer
 Innanzitutto, il nodo radice dell'albero viene esteso trovando gli itemset frequenti di un elemento. Successivamente, questi nodi possono essere estesi per creare candidati, che vengono confrontati con il database delle transazioni per determinare quelli che sono frequenti. La struttura dell’enumeration tree fornisce un ordine alla scoperta di itemset frequenti, che può essere sfruttato per migliorare il processo di conteggio e l’eliminazione dei candidati.
 
 Come possono essere generati nuovi nodi candidati a partire da quelli presenti nell'enumeration tree?
+
 * Sia $P$ un itemset frequente, $Q$ il suo genitore e $F(Q)$ l'insieme di estensioni frequenti di $Q$, ossia dei singoli item (ordinati lessicograficamente), che permettono di estendere $Q$ verso altri itemset frequenti
-
 * Sia $i\in F(Q)$ l'item che estende $Q$ in $P$, cioè $P = Q\cup \{ i\} $
-
 * Allora, per ordinamento lessicografico, l'insieme degli item candidati ad estendere $P$ per creare $F(P)$ sono solo e soltanto i successori di $i$ in $F(Q)$
-
 * Vale sempre che $F(P)\subseteq C(P)\subset F(Q)$
-
 * $F(P)$ si genera da $C(P)$ facendo il conteggio esplicito del supporto dei candidati
 
 ![Algoritmo Generico di Accrescimento di Enumeration Tree](image/big_data/6/GenEnumTreeGrw.png)
 
 Gli algoritmi di accrescimento dell'enumeration tree condividono una strategia simile, che esegue iterativamente per accrescere l'albero $\mathcal{ET}$:
+
 1. Si definisce un insieme di nodi $\mathcal{P}$ in $\mathcal{ET}$
-
 2. Si determinano le estensioni candidate in $C(P)$ per ognuno dei nodi $P \in $mathcal{P}$
-
 3. Si contano i supporti dei candidati generati
-
-4. Si aggiungono i candidati frequenti a $\mathcal{ET}$   
+4. Si aggiungono i candidati frequenti a $\mathcal{ET}$
 
 Le varie implementazioni differiscono sulla base dei diversi approcci di visita dell'albero: l'algoritmo Apriori costruisce l'enumeration tree in ampiezza, per cui il join di due $k-$itemset, che permette di generare un $(k+1)-$itemset, consiste nel join di due nodi fratelli diretti a profondità $k$ dell'albero.
 
@@ -676,17 +722,19 @@ Le `tid` lists possono essere memorizzate con i nodi durante l'accrescimento del
 
 Può essere vista come un **caso speciale dell'algoritmo generico dell'enumeration tree**.
 
-All'inizio dell'algoritmo, il database delle transazioni $\mathcal{T}$ viene scansionato ed espresso in termini di 1-itemset frequenti e **ordinati lessicograficamente per supporto decrescente** (un ordinamento utile per definire prefissi e suffissi di un itemset e di una transazione). 
-Dati in input un database $\mathcal{T}$, un supporto minimo $\mathrm{minsup}$ e un suffisso $P$ dell'itemset frequente corrente, l'obiettivo di ogni chiamata ricorsiva è di **determinare tutti i pattern frequenti che hanno suffisso** $P$. 
-Il presupposto per le chiamate ricorsive più profonde è che, a quel punto, il database $\mathcal{T}$ contenga solo quelle transazioni che includono l'itemset $P$, ossia che il database $\mathcal{T}$ sia stato proiettato rispetto al suffisso $P$. 
-Si accrescono, quindi, gli itemset in ordinamento lessicografico inverso (ossia dall'ultimo item al primo). Grazie alla proprietà di chiusura verso il basso, inoltre, possiamo essere sicuri che, **al crescere del suffisso dell'itemset, il supporto dell'itemset decrescerà**, pur mantenendosi al di sopra di $\mathrm{minsup}$. 
+All'inizio dell'algoritmo, il database delle transazioni $\mathcal{T}$ viene scansionato ed espresso in termini di 1-itemset frequenti e **ordinati lessicograficamente per supporto decrescente** (un ordinamento utile per definire prefissi e suffissi di un itemset e di una transazione).
+Dati in input un database $\mathcal{T}$, un supporto minimo $\mathrm{minsup}$ e un suffisso $P$ dell'itemset frequente corrente, l'obiettivo di ogni chiamata ricorsiva è di **determinare tutti i pattern frequenti che hanno suffisso** $P$.
+Il presupposto per le chiamate ricorsive più profonde è che, a quel punto, il database $\mathcal{T}$ contenga solo quelle transazioni che includono l'itemset $P$, ossia che il database $\mathcal{T}$ sia stato proiettato rispetto al suffisso $P$.
+Si accrescono, quindi, gli itemset in ordinamento lessicografico inverso (ossia dall'ultimo item al primo). Grazie alla proprietà di chiusura verso il basso, inoltre, possiamo essere sicuri che, **al crescere del suffisso dell'itemset, il supporto dell'itemset decrescerà**, pur mantenendosi al di sopra di $\mathrm{minsup}$.
 Le chiamate ricorsive terminano nel momento in cui non si possono aggiungere più item frequenti ad un itemset, che a quel punto diventa non frequente.
 
 In altri termini, ad ogni livello di ricorsione abbiamo in input:
+
 * un suffisso $P$ di item, di per sé frequente
 * un database proiettato $\mathcal{T}$ di item frequenti di lunghezza 1 relativi alle transazioni che contengono $P$
 
 Per ogni item $i$ vogliamo ottenere i suffissi $P_i = \{ i\} \cup P$ frequenti, oltre che la proiezione $\mathcal{T}_i$ di $\mathcal{T}$ per il suffisso $P_i$. Il database $\mathcal{T}_i$ è ottenuto come segue:
+
 1. Si considerano le transazioni in $\mathcal{T}$ che contengono l'item $i$;
 2. Si escludono da ogni transazione l'item $i$ e i suoi successori (a supporto più elevato);
 3. Si mantengono in $\mathcal{T}_i$ solo gli item frequenti ($\mathrm{supp}(j) \geq \mathrm{minsup} \ \forall j \in \mathcal{T}_i$)
@@ -714,6 +762,7 @@ Il **percorso dalla radice alla foglia** rappresenta una **transazione** nel dat
 Per ottimizzare i vantaggi della compressione basata su prefissi, questi sono ordinati in ordine lessicografico decrescente di frequenza.
 
 Lo FP-Tree iniziale $\mathcal{FPT}$ viene costruito in questo modo:
+
 1. si rimuovono gli item poco frequenti da $\mathcal{T}$ e si inseriscono nell'albero
 2. i conteggi sui nodi sovrapposti vengono incrementati di 1 quando il prefisso di una transazione si sovrappone con un percorso nell'albero esistente
 3. se non vi è sovrapposizione, si crea un nuovo percorso nell'albero e si attribuisce conteggio 1
@@ -725,70 +774,81 @@ I puntatori funzionano allo stesso modo del caso matriciale, con il puntatore de
 ## Mining di pattern interessanti
 
 Gli algoritmi di generazione degli itemset frequenti permettono di calcolare i supporti e confidenza in modo molto semplice, ma per farlo sfruttano frequenze grezze, che **non sempre sono capaci di discriminare i pattern più interessanti**. In questo senso, possono essere più interessanti altri criteri di misura dell'interesse del pattern, come:
+
 * **Coefficiente statistico di correlazione**
-   Detto anche coefficiente di Pearson, per una coppia di variabili casuali $X$ e $Y$ viene definito come
-   $$
-   \rho = \frac{\mathbb{E}\left[ X\cdot Y \right] - \mathbb{E}\left[ X\right]\cdot \mathbb{E}\left[ Y\right]}{\sigma (X) \cdot \sigma (Y)}
-   $$
+  Detto anche coefficiente di Pearson, per una coppia di variabili casuali $X$ e $Y$ viene definito come
 
-   Nel caso dei dati di mercato, però, $X$ e $Y$ sono due variabili binarie che determinano la presenza/assenza dell'item in una transazione. Possiamo adattare la correlazione statistica attraverso il concetto di supporto. Dati due item $i$ e $j$, la correlazione complessiva può essere espressa come
-   $$
-   \rho = \frac{\mathrm{supp}(\{ i,j\}) - \mathrm{supp} (i)\cdot \mathrm{supp} (j)}{\sqrt{\mathrm{supp} (i)\cdot \mathrm{supp} (j) \cdot (1-\mathrm{supp} (i)) \cdot (1- \mathrm{supp} (j))}}
-   $$
+  $$
+  \rho = \frac{\mathbb{E}\left[ X\cdot Y \right] - \mathbb{E}\left[ X\right]\cdot \mathbb{E}\left[ Y\right]}{\sigma (X) \cdot \sigma (Y)}
+  $$
 
-   Ha valori in $[-1,+1]$, dove $+1$ indica la perfetta correlazione, $-1$ la perfetta correlazione negativa e $0$ la non correlazione.
+  Nel caso dei dati di mercato, però, $X$ e $Y$ sono due variabili binarie che determinano la presenza/assenza dell'item in una transazione. Possiamo adattare la correlazione statistica attraverso il concetto di supporto. Dati due item $i$ e $j$, la correlazione complessiva può essere espressa come
+
+  $$
+  \rho = \frac{\mathrm{supp}(\{ i,j\}) - \mathrm{supp} (i)\cdot \mathrm{supp} (j)}{\sqrt{\mathrm{supp} (i)\cdot \mathrm{supp} (j) \cdot (1-\mathrm{supp} (i)) \cdot (1- \mathrm{supp} (j))}}
+  $$
+
+  Ha valori in $[-1,+1]$, dove $+1$ indica la perfetta correlazione, $-1$ la perfetta correlazione negativa e $0$ la non correlazione.
 * **Misura $\chi ^2$**
-   È un classico **test simmetrico per misurare l'indipendenza statistica tra variabili** o per comparare distribuzioni. Si assuma che $X$ sia una variabile statistica associata all'osservazione di un itemset descritto come stringa "one-hot encoded", per cui sono possibili $2^k$ stati. Considerato lo stato $i-$esimo, posti $O_i$ e $E_i$, rispettivamente, il numero di osservazioni dello stato ed il numero di valori attesi del supporto assoluto dello stato (prodotto transazioni per supporti assoluti degli item), il test $\chi ^2$ per $X$ è definito come
-   $$
-   \chi ^2 \left( X \right) = \sum _{i=1} ^ {2^{|X|}} \frac{\left( O_i - E_i \right)^2}{E_i}
-   $$
+  È un classico **test simmetrico per misurare l'indipendenza statistica tra variabili** o per comparare distribuzioni. Si assuma che $X$ sia una variabile statistica associata all'osservazione di un itemset descritto come stringa "one-hot encoded", per cui sono possibili $2^k$ stati. Considerato lo stato $i-$esimo, posti $O_i$ e $E_i$, rispettivamente, il numero di osservazioni dello stato ed il numero di valori attesi del supporto assoluto dello stato (prodotto transazioni per supporti assoluti degli item), il test $\chi ^2$ per $X$ è definito come
 
-   Dove valore $0$ indica indipendenza statistica, mentre valori crescenti implicano maggiore correlazione, senza specificare se positiva o negativa (a differenza dei coefficienti di Pearson)
+  $$
+  \chi ^2 \left( X \right) = \sum _{i=1} ^ {2^{|X|}} \frac{\left( O_i - E_i \right)^2}{E_i}
+  $$
+
+  Dove valore $0$ indica indipendenza statistica, mentre valori crescenti implicano maggiore correlazione, senza specificare se positiva o negativa (a differenza dei coefficienti di Pearson)
 * **Interest Ratio**
-   Il rapporto di interesse per un itemset $\{ i_1, \cdots, i_k \}$ indicato come $I\left( \{ i_1, \cdots, i_k \} \right)$ si misura come
-   $$
-   I\left( \{ i_1, \cdots, i_k \} \right) = \frac{\mathrm{supp}\left( \{ i_1, \cdots, i_k \} \right)}{\prod _{j=1}^k \mathrm{supp} \left(i_j\right)}
-   $$
+  Il rapporto di interesse per un itemset $\{ i_1, \cdots, i_k \}$ indicato come $I\left( \{ i_1, \cdots, i_k \} \right)$ si misura come
 
-   Quando gli elementi sono statisticamente indipendenti, il supporto congiunto sarà pari al prodotto dei supporti, per un rapporto pari a 1. Valori maggiori di 1 indicano una correlazione positiva tra gli item, mentre valori minori di 1 indicano una correlazione negativa.
-   Può capitare che, con **item estremamente rari**, quindi con supporto molto basso, si ottengano **valori di interest ratio elevati, ma statisticamente poco significativi**.
+  $$
+  I\left( \{ i_1, \cdots, i_k \} \right) = \frac{\mathrm{supp}\left( \{ i_1, \cdots, i_k \} \right)}{\prod _{j=1}^k \mathrm{supp} \left(i_j\right)}
+  $$
+
+  Quando gli elementi sono statisticamente indipendenti, il supporto congiunto sarà pari al prodotto dei supporti, per un rapporto pari a 1. Valori maggiori di 1 indicano una correlazione positiva tra gli item, mentre valori minori di 1 indicano una correlazione negativa.
+  Può capitare che, con **item estremamente rari**, quindi con supporto molto basso, si ottengano **valori di interest ratio elevati, ma statisticamente poco significativi**.
 * **Coefficiente Coseno tra Colonne del Database**
-   Dopo aver riorganizzato un database $\mathcal{T}$ in rappresentazione verticale, si possono calcolare **similarità tra item** rappresentati **come vettori binari** corrispondenti ai `tid` che contengono l'item, secondo la relazione
-   $$
-   \cos \left(i,j\right) = \frac{\mathrm{supp} \left( \{ i,j\} \right)}{\sqrt{\mathrm{supp}(i)} \cdot \sqrt{\mathrm{supp} (j)} }
-   $$
+  Dopo aver riorganizzato un database $\mathcal{T}$ in rappresentazione verticale, si possono calcolare **similarità tra item** rappresentati **come vettori binari** corrispondenti ai `tid` che contengono l'item, secondo la relazione
 
-   Dove $\mathrm{supp} \left( \{ i,j\} \right)$ può essere calcolato come intersezione delle `tid` lists di $i$ e $j$.
-   Poiché il coefficiente coseno può essere visto come media geometrica delle confidenze delle regole $\{ i\} \implies \{ j\}$ e $\{ j\} \implies \{ i\}$, esso è una sorta di **misura di confidenza simmetrica**.
+  $$
+  \cos \left(i,j\right) = \frac{\mathrm{supp} \left( \{ i,j\} \right)}{\sqrt{\mathrm{supp}(i)} \cdot \sqrt{\mathrm{supp} (j)} }
+  $$
+
+  Dove $\mathrm{supp} \left( \{ i,j\} \right)$ può essere calcolato come intersezione delle `tid` lists di $i$ e $j$.
+  Poiché il coefficiente coseno può essere visto come media geometrica delle confidenze delle regole $\{ i\} \implies \{ j\}$ e $\{ j\} \implies \{ i\}$, esso è una sorta di **misura di confidenza simmetrica**.
 * **Coefficiente di Jaccard**
-   Riorganizzando il database $\mathcal{T}$ per colonne, si può generalizzare il coefficiente di Jaccard per insiemi con la relazione
-   $$
-   J\left(S_1, \cdots ,S_k\right) = \frac{|\cap S_i|}{|\cup S_i|}
-   $$
+  Riorganizzando il database $\mathcal{T}$ per colonne, si può generalizzare il coefficiente di Jaccard per insiemi con la relazione
 
-   Dove $S_i$ è la `tid` list dell'$i-$esimo item. Il coefficiente di Jaccard permette anche di stabilire una **soglia minima per individuare gli item rilevanti**.
-   Una proprietà soddisfatta dal coefficiente di Jaccard è quella di **monotonia**, per cui, dati i coefficienti $J\left(S_1, \cdots ,S_k\right)$ e $J\left(S_1, \cdots ,S_{k+1}\right)$, vale $J\left(S_1, \cdots ,S_k\right) \geq J\left(S_1, \cdots ,S_{k+1}\right)$ (ciò succede perché il numeratore è monotonicamente non decrescente)
+  $$
+  J\left(S_1, \cdots ,S_k\right) = \frac{|\cap S_i|}{|\cup S_i|}
+  $$
+
+  Dove $S_i$ è la `tid` list dell'$i-$esimo item. Il coefficiente di Jaccard permette anche di stabilire una **soglia minima per individuare gli item rilevanti**.
+  Una proprietà soddisfatta dal coefficiente di Jaccard è quella di **monotonia**, per cui, dati i coefficienti $J\left(S_1, \cdots ,S_k\right)$ e $J\left(S_1, \cdots ,S_{k+1}\right)$, vale $J\left(S_1, \cdots ,S_k\right) \geq J\left(S_1, \cdots ,S_{k+1}\right)$ (ciò succede perché il numeratore è monotonicamente non decrescente)
 * **Collective Strength**
-   Viene definito in termini di **violation rate** di un itemset. Si dice che un itemset **viola una transazione** se alcuni item che lo compongono **sono presenti nella transazione e altri no**. Il violation rate $v(I)$ di un itemset $(I)$ è la frazione di transazioni di un database $\mathcal{T}$ che contengono solo alcuni elementi di $I$.
-   A partire da ciò, possiamo definire la collective strength di $I$ come
-   $$
-   C(I) = \frac{1-v(I)}{1-\mathbb{E}\left[ v(I)\right]} \cdot \frac{\mathbb{E} \left[ v(I)\right]}{v(I)}
-   $$
+  Viene definito in termini di **violation rate** di un itemset. Si dice che un itemset **viola una transazione** se alcuni item che lo compongono **sono presenti nella transazione e altri no**. Il violation rate $v(I)$ di un itemset $(I)$ è la frazione di transazioni di un database $\mathcal{T}$ che contengono solo alcuni elementi di $I$.
+  A partire da ciò, possiamo definire la collective strength di $I$ come
 
-   È un numero compreso tra 0 e $\infty$, dove $C(I)=0$ implica **correlazione negativa perfetta**, mentre $C(I)=1$ implica **indipendenza statistica**.
-   Nel calcolo della $C(I)$ compare il valore atteso di $v(I)$, che viene definito considerando gli item statisticamente indipendenti. Posta $p_i$ la frazione di transazioni in cui è presente l'item $i$, il valore atteso del violation rate è dato da 
-   $$
-   \mathbb{E} \left[ v(I)\right] = 1 - \prod _{i \in I} p_i - \prod _{i\in I} \left( 1-p_i\right)
-   $$
+  $$
+  C(I) = \frac{1-v(I)}{1-\mathbb{E}\left[ v(I)\right]} \cdot \frac{\mathbb{E} \left[ v(I)\right]}{v(I)}
+  $$
 
-   Il concetto di forza collettiva può essere ristretto al concetto di **itemset fortemente collettivi**. Si definisce collettivo a livello $s$ un itemset $I$ che soddisfa le proprietà:
-   1. $C(I)\geq s$
-   2. $C(J) \geq C(I)\ \forall J \subset I$ (proprietà di chiusura)
+  È un numero compreso tra 0 e $\infty$, dove $C(I)=0$ implica **correlazione negativa perfetta**, mentre $C(I)=1$ implica **indipendenza statistica**.
+  Nel calcolo della $C(I)$ compare il valore atteso di $v(I)$, che viene definito considerando gli item statisticamente indipendenti. Posta $p_i$ la frazione di transazioni in cui è presente l'item $i$, il valore atteso del violation rate è dato da
+
+  $$
+  \mathbb{E} \left[ v(I)\right] = 1 - \prod _{i \in I} p_i - \prod _{i\in I} \left( 1-p_i\right)
+  $$
+
+  Il concetto di forza collettiva può essere ristretto al concetto di **itemset fortemente collettivi**. Si definisce collettivo a livello $s$ un itemset $I$ che soddisfa le proprietà:
+
+  1. $C(I)\geq s$
+  2. $C(J) \geq C(I)\ \forall J \subset I$ (proprietà di chiusura)
 
 ## Gestione di grandi database
 
 Gli algoritmi di pattern frequenti o interessanti necessitano di dati residenti nella **memoria principale**, ma nel caso reale **i database sono spesso molto più grandi**, cosa che mette a dura prova gli algoritmi visti finora (es. algoritmi in profondità su enumeration trees).
 Una possibile soluzione al problema è il **campionamento delle transazioni**, per ridurre il numero di elementi su cui lavorare e rendere efficienti gli algoritmi di mining dei pattern. L'applicazione di un algoritmo di mining dei pattern su dati campionari va incontro, però, a due potenziali problemi:
+
 1. **falsi positivi**, ossia itemset con **elevato supporto sul database campionato** che presentano **bassi supporti nel database originale**
 2. **falsi negativi**, ossia itemset con **basso supporto nel database campionato** che presentano **elevati supporti nel database originale**
 
@@ -808,7 +868,7 @@ Un'altra possibile soluzione è l'uso di **tecniche di partizionamento dei dati*
 Un **database** è una collezione di dati **persistente** e **condivisa**, gestita in modo **efficace**, **efficiente** e **affidabile** attraverso un **DBMS**, che
 altro non è che un software progettato per consentire la **creazione**, la **manipolazione** e l'**interrogazione** della base di dati.
 
-Al giorno d'oggi, sarebbe desiderabile che ogni organizzazione abbia un DB, che ciascuna applicazione abbia accesso solo alla porzione di dati di sua competenza, in tempo reale e senza duplicazione, senza dimenticarsi di alte prestazioni nell'esecuzione di tutte le operazioni. 
+Al giorno d'oggi, sarebbe desiderabile che ogni organizzazione abbia un DB, che ciascuna applicazione abbia accesso solo alla porzione di dati di sua competenza, in tempo reale e senza duplicazione, senza dimenticarsi di alte prestazioni nell'esecuzione di tutte le operazioni.
 
 > Le caratteristiche appena elencate caratterizzano quella che viene definita base di dati **ideale**.
 
@@ -847,11 +907,11 @@ Dal punto di vista dell'elaborazione dei dati, abbiamo due categorie di processi
 
 #### OLTP
 
-Detti anche **sistemi transazionali**, permettono di registare, modificare e mostrare record in tempo reale. **I dati sono distribuiti su più tabelle**, mentre le informazioni vengono inserite solo una volta, cosa che evita ridondanze. 
+Detti anche **sistemi transazionali**, permettono di registare, modificare e mostrare record in tempo reale. **I dati sono distribuiti su più tabelle**, mentre le informazioni vengono inserite solo una volta, cosa che evita ridondanze.
 
 I sistemi OLTP sono caratterizzati da **operazioni elementari estremamente veloci** e, dati il livello di competenza dell'utenza e la sua natura esecutiva, **possibilità di generare errori minima**.
 
-Proprio per l'ultima caratteristica citata, i sitemi OLTP fanno enorme uso di **transazioni**, ossia **insiemi di operazioni atomiche sequenziali**, che quindi ha successo/fallimento in blocco. 
+Proprio per l'ultima caratteristica citata, i sitemi OLTP fanno enorme uso di **transazioni**, ossia **insiemi di operazioni atomiche sequenziali**, che quindi ha successo/fallimento in blocco.
 
 Per le caratteristiche delle sue transazioni, si dice che i sistemi OLTP possiedono le proprietà di **Atomicità**, **Coerenza**, **Isolamento** e **Durabilità** (**ACID**), rendendo tutte le operazioni rapide e fluide.
 

@@ -1319,6 +1319,11 @@ Vi sono diverse filosofie di realizzazione dei database NoSQL. Distinguiamo tra:
   Si tratta di database in cui **i dati sono rappresentati da nodi e archi etichettati di un grafo**. Qui le entità, ossia i nodi, sono uniti tramite relazioni, ossia gli archi, caratterizzate da un significato e da proprietà proprie. In questo tipo di database le operazioni tra entità diventano operazioni su grafi.
   **Neo4j** è un esempio di database a grafo.
 
+## Domande Frequenti
+1. Database colonnari (non relazionali) [IN GENERALE]
+   Si tratta di database NoSQL in cui l'indicizzazione avviene per colonne (contro al classico approccio per righe dei RDBMS). Si tratta di database in cui il concetto di tabella viene sostituito da quello di famiglia di colonne, e lo schema della tabella non è del tipo schema-on-write, definito a priori come nei RDBMS, ma viene definito dall'utente in base alle colonne considerate nella famiglia. Un esempio di database colonnare è Cassandra.
+   Se la domanda fa riferimento, in generale, ai database non relazionali, si tratta di database che non fanno uso del classico modello entità-relazione dei database relazionali e si tratta di basi di dati che devono poter garantire le proprietà BASE, su tutte la consistenza lasca, non potendo garantire il soddisfacimento del teorema CAP (nessuna base di dati è come quella ideale). Si tratta di database distribuiti che possono implementare una strategia del tipo  read-your-own-writes, per cui una parte costituente della rete di calcolatori può leggere solo dai dati in proprio possesso, generando risultati dipendenti dal livello di aggiornamento delle transazioni.
+
 ## Vantaggi e svantaggi dei database NoSQL
 
 Tra i vantaggi ricordiamo:
@@ -1362,8 +1367,26 @@ Tra gli svantaggi abbiamo, invece:
 ## Domande Frequenti
 
 1. MongoDB, come funziona dal punto di vista architetturale? Com'è strutturato dal punto di vista dell'organizzazione dei dati?
-2. Implementazione del framework MapReduce in MongoDB e MongoDB in generale.
-   I nodi del cluster come sono organizzati?
+2. Come funziona l'aggregation framework di Mongo (in particolare il map/reduce)?
+   L'aggregation framework di MongoDB prevede la possibilità sia di fare operazioni MapReduce che aggregazioni single-purpose. In generale, possiamo descrivere le operazioni aggregate come la composizione di due fasi:
+      1. Avviene una fase di 'matching' attraverso l'operatore `$match`, che permette di filtrare gli elementi in modo condizionale
+		2. Il risultato viene passato ad una fase di aggregazione attraverso l'operatore `$group`, che permette di dividere i dati filtrati in gruppi (sulla base di qualche combinazione degli attributi) su cui applicare l'operazione aggregata (es. `$sum` per il totale).
+   Se ci soffermiamo sul MapReduce in MongoDB, possiamo utilizzare semplicemente il metodo omonimo, che accetta in input:
+		* Una funzione di map
+		* Una funzione di reduce
+		* Una query di pre-selezione
+		* Il formato di output
+		* Eventuali criteri di indicizzazione
+		* Il numero massimo di risultati
+   Per quanto riguarda le funzioni di map e reduce, esse possono essere funzioni anonime (callbacks) di JavaScript, che devono gestire il flusso tipico del MapReduce: la funzione di map deve prendere in ingresso una collezione di documenti filtrati e deve mapparli in una lista di coppie (k,v),  generando un documento intermedio in cui le chiavi sono quelle determinate dalla funzione, mentre i valori sono array dei valori corrispondenti alla chiave; la funzione di reduce prende in input questa collezione di documenti intermedi e, per ogni gruppo, applica un'operazione aggregata, andando a generare una lista di coppie chiave valore in cui i formati di output sono quelli definiti nella dichiarazione di mapReduce.
+   Se ci soffermiamo sulle operazioni aggregate single-purpose, il concetto è molto più semplice, in quanto sono disponibili operatori come $distinct e $group che permettono, rispettivamente, di  selezionare elementi distinti e raggruppare gli elementi per qualche attributo, similarmente alle
+   operazioni SQL SELECT DISTINCT e GROUP BY.
+3. Come funziona il cluster in MongoDB?
+Principalmente abbiamo un nodo primario e uno o più nodi secondari, con il nodo primario prima interfaccia con le interazioni utente e i nodi secondari usati per fare replication. Se, per esempio, viene fatta un'operazione di write da un client, questo la chiederà al nodo primario, che la svolgerà e procederà alla replica dei dati in proprio possesso sui nodi secondari.
+Se, per qualche motivo, il nodo primario dovesse andare in fault, avviene un processo di elezione di uno dei nodi secondari a nuovo nodo primario. Perché avvenga il processo, bisogna che ogni nodo secondario controlli di essere al passo con le transazioni del nodo primario. Fatto ciò, avviene la votazione vera e propria facendo uso di altre tipologie di nodi come:
+* Nodi secondari con priorità 0: si tratta di nodi secondari che non possono essere eletti a nodo primario, ma servono per dare robustezza all'architettura (possono votare)
+* Nodi secondari con aggiornamento delayed: si tratta di nodi secondari il cui aggiornamento è ritardato di un $\Delta t$ in modo da poter essere usati come punti di ripristino (possono votare)
+* Nodi arbitri: si tratta di nodi che non contengono dati al loro interno, ma possono votare e servono per permettere un numero dispari di nodi votanti (cosa che garantisce una maggioranza assoluta).
 
 # 11 - Cassandra
 
@@ -1480,10 +1503,32 @@ A quel punto, il filtro di Bloom verifica se i dati sono già in MemTable. In ca
 Un cluster contiene più nodi, che possono contenere più spazi delle chiavi. Lo spazio delle chiavi è il concetto equivalente di database. All'interno dello spazio delle chiavi vi sono le famiglie di colonne, che suddividono lo spazio delle chiavi e sono assimilabili a tabelle.
 Per accedere alle colonne (viste come tabelle), si utilizza il linguaggio CQL (Cassandra Query Language).
 
+La struttura dei dati è colonnare, con indici di riga che raggruppano singoli dati (ciascuno con la propria chiave, intesa come chiave di colonna) per tuple, restituendo, di fatto, un'interfaccia di tipo tabellare.
+
 ## Domande Frequenti
 
 1. Come funziona un cluster Cassandra?
+   Un cluster Cassandra è definito come un insieme di nodi distribuiti circolarmente per ciascun data center costituente. Ogni nodo rappresenta un server all'interno del rack.
+   La trasmissione delle informazioni nel cluster avviene attraverso il Gossip Protocol, ossia un protocollo di comunicazione casuale tra coppie di nodi. L'uso di questo protocollo permette di distribuire più o meno uniformemente le informazioni tra tutti i nodi del cluster e garantisce un rapporto P2P.
+   Il DBMS Cassandra, dopo aver suddiviso il database in partizioni, permette la replica di ciascuna di esse tra i vari nodi all'interno del cluster, secondo un fattore di replica che esprime il numero di copie che dev'essere presente all'interno del cluster. Sostanzialmente esistono due strategie di replica per un'operazione di scrittura, dipendenti dalla topologia della rete in oggetto:
+   1. SimpleStrategy (molto utile per casi di singolo data center)
+   2. NetworkTopologyStrategy (molto utile per casi di due o più data center)
+   In ogni nodo del cluster possiamo individuare come componenti:
+   * SST (Sorted String Table) Table, ossia la rappresentazione persistente della partizione di dati sul nodo.
+   * MemTable, ossia la rappresentazione di una porzione della partizione sulla memoria principale del nodo.
+   * Commit Log, ossia un report delle transazioni eseguite sulla partizione dei dati nel nodo.
+   * Row Cache, ossia una cache in memoria principale che tiene traccia delle righe maggiormente lette (velocizza, in termini di probabilità, le operazioni di read).
+   * Key Cache, ossia una cache in memoria principale che tiene traccia degli indici di chiave maggiormente utilizzati (velocizza anch'essa le operazioni di read).
+   * Bloom Filter, ossia un filtro probabilistico che permette di rilevare le chiavi all'interno di uno spazio delle chiavi.
 2. Cassandra
+3. Lettura e scrittura in Cassandra
+   Il processo di scrittura è molto semplice, in quanto un'operazione di write richiesta dal client viene inviata su un nodo, che diventa il coordinatore per il data center, il quale eseguirà la transazione sui dati nella propria MemTable, per poi proseguire con il passaggio dei dati sulla SST Table tramite un flush per batch.
+   Discorso diverso per le operazioni di lettura, che dipendono dallo stato della Row Cache. Se la Row Cache è attivata, questi possono essere letti direttamente dalla Row Cache. Se, però, la Row Cache è attivata, ma la lettura avviene dalla Key Cache, vuol dire che non ci sono righe adatte a soddisfare la richiesta di read, pertanto i dati vengono cercati nella Key Cache, che indirizza la richiesta nelle chiavi corrispondenti nella SST Table. Vengono, quindi, estratti i dati e portati sulla MemTable, che permette di restituire la risposta al client. Infine, i dati della MemTable usati per la risposta vengono posti sulla Row Cache.
+   Se la Row Cache è non funzionante, o disabilitata, i dati devono essere ottenuti grazie al Bloom Filter, che verifica se i dati sono nella Key Partition Cache, da cui si accede al Partition Summary (una rappr. aggregata degli indici di partizione). Se i dati sono presenti in MemTable, la KeyPartition Cache indirizza la Compression Offset Map verso i dati nel disco, altrimenti si passa dal Partition Index per ottenere il riferimento per la Compression Offset Map da cui avviene l'effettiva lettura.
+4. Modello dei dati
+5. Perché potrebbe servire un database colonnale? Nella pratica, perché Cassandra vs Mongo?
+   Un database colonnare può essere utile in tutti quei compiti in cui viene richiesta alta possibilità di scaling, dato che un DBMS come Cassandra permette lo scaling sia in orizzontale (aggiungendo un nodo al datacenter che prima o poi conterrà una replica di partizione) che in verticale (semplicemente usando nodi/macchine più potenti). Inoltre un database colonnare come Cassandra permette di avere più tolleranza ai failure di sistema, dato che con le strategie di replica come SimpleStrategy e NetworkTopologyStrategy è possibile sempre avere una versione "funzionante" dell'intero database. Un punto a favore dei database documentali come MongoDB può essere l'assenza di un linguaggio di query esplicito, dato che è possibile manipolare un database semplicemente grazie alle API messe a disposizione. Un punto ulteriore a favore dei database	documentali è dato dalla possibilità di fare operazioni aggregate, sia di tipo single-purpose che di tipo MapReduce.
+   
 
 # 12 - Hadoop
 
@@ -1600,6 +1645,31 @@ Abbiamo, infine, **operatori di base**, come quelli aritmetici, booleani e di ca
 2. Architettura a cluster Hadoop (in generale). Input e output degli step map e reduce.
 3. È possibile eseguire su Hadoop processi non map/reduce?
 4. Funzionamento di YARN.
+5. Architettura a cluster Hadoop (in generale). Input e output degli step map e reduce.
+   Hadoop è un framework open source utilizzato per l'elaborazione distribuita e parallela di grandi moli di dati. Si compone di:
+   * File system HDFS
+   * Negoziatore di risorse YARN
+   * Framework MapReduce
+   * Gestore del lavoro parallelo Spark
+   Hadoop viene usato per distribuire il carico di lavoro su cluster di computer dalle prestazioni normali, riuscendo ad ottenere risultati molto performanti nell'esecuzione distribuita dei propri task.
+   Per quanto riguarda HDFS, si tratta di un file system distribuito tra più nodi, in cui una grande mole di dati (anche nell'ordine dei PB) viene suddivisa in blocchi di dimensione fissa (128-256 MB).
+   YARN è un negoziatore di risorse che fa uso di tre elementi all'interno del cluster:
+   1. Un ResourceManager, utilizzato per gestire le risorse a livello di cluster. Si tratta del componente che ha piena coscienza delle risorse a disposizione sui singoli nodi e di quelle richieste dall'applicazione. È deputato all'assegnazione di parti dell'applicazione ai diversi nodi sulla base delle risorse disponibili.
+   2. Un NodeManager, presente su ogni nodo, utilizzato per la gestione delle risorse a livello di nodo. È il componente dedicato al rilevamento delle risorse computazionali disponibili ed è quello che deve segnalarli al ResourceManager
+   3. Un ApplicationMaster, specifico dell'applicazione, è il componente necessario all'applicazione per chiedere le risorse al cluster, oltre che al coordinamento tra applicazione e ResourceManager.
+
+   Un altro componente importante di YARN è il JobSubmitter, che viene utilizzato alla sottomissione di un lavoro da parte del client. Il suo compito è quello di incapsulare il job in un container, con questi ultimi assegnati ai vari nodi del cluster. Tra i suoi compiti vi è anche la gestione del carico di lavoro tra i nodi.
+   Per quanto riguarda il flusso di lavoro su YARN abbiamo che:
+   1. L'utente sottomette la richiesta di esecuzione di un'applicazione al ResourceManager
+   2. Il ResManager interroga i nodi del cluster (nello specifico i NodeManager) per sapere quali nodi possiedono risorse sufficienti.
+   3. Il ResManager assegna un carico di lavoro ai nodi possibili sulla base delle loro risorse disponibili.
+   4. L'AppMaster viene eseguito su ogni nodo e richiede al ResourceManager le risorse necessarie all'esecuzione della parte di applicazione di competenza.
+   5. L'AppMaster comunica con i NodeManager per assicurarsi che ogni nodo abbia ancora le risorse sufficienti all'esecuzione della parte di applicazione di competenza.
+   6. L'applicazione viene eseguita dai singoli nodi.
+   Per quanto riguarda map e reduce, si tratta di due processi che permettono di eseguire operazioni aggregate in forma distribuita. (Vale un discorso analogo a quanto visto con MongoDB)
+6. È possibile eseguire su Hadoop processi non map/reduce?
+   Sì, sebbene Hadoop sia stato principalmente pensato per processi MapReduce, in quanto esistono dei framework (come Spark) che permettono l'esecuzione distribuita e parallela di applicazioni (es. machine learning, elaborazione in streaming, ecc.).
+   
 
 # 13 - Spark
 

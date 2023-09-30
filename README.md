@@ -71,3 +71,5 @@ Bisogna tener nota che il nome del file include 4 numeri (es. 276_276_1.63_1.63.
 * id - identificatore univoco per l’oggetto
 * class - la classe prevista per l’oggetto
 * EncodedPixels - pixel codificati in formato RLE per l’oggetto identificato
+
+*Developed By **Vincenzo Fardella** & **Mario Tortorici** @ **Università degli Studi di Palermo***
